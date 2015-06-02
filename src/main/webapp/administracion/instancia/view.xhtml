@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/WEB-INF/facelets/templates/entidadTemplate.xhtml"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:h="http://xmlns.jcp.org/jsf/html">
+        <ui:define name="content">
+            <h:form>
+                <p:panel id="pnView" header="#{bundle.InstanciaViewTitle}" style="margin-bottom:10px;">
+                    <p:messages id="messages" />
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_nombre} "/>
+                            <h:outputText value="#{mbInstancia.selected.nombre}" 
+                                          title="#{bundle.nombre}"/> 
+                            
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_ruta} "/>
+                            <h:outputText value="#{mbInstancia.selected.ruta}" 
+                                          title="#{bundle.CreateInstanciaTitle_ruta}"/>                            
+
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_codigo} "/>
+                            <h:outputText value="#{mbInstancia.selected.codigo}" 
+                                          title="#{bundle.CreateInstanciaTitle_codigo}"/>
+
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_estado} "/>
+                            <h:outputText value="#{mbInstancia.selected.estado}" 
+                                          title="#{bundle.CreateInstanciaTitle_estado}"/>                            
+                        
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_vencimiento} "/>
+                            <h:outputText value="#{mbInstancia.selected.cantidadVencimiento}" 
+                                          title="#{bundle.CreateInstanciaTitle_sinonimos}"/>  
+                            
+                            <h:outputLabel value="#{bundle.ViewInstanciaLabel_alerta} "/>
+                            <h:outputText value="#{mbInstancia.selected.cantidadAlerta}" 
+                                          title="#{bundle.ViewInstanciaTitle_alerta}"/> 
+                            
+                            <h:outputLabel value="#{bundle.ViewInstanciaLabel_unidadDeTiempo} "/>
+                            <h:outputText value="#{mbInstancia.selected.unidadDeTiempo}" 
+                                          title="#{bundle.ViewInstanciaTitle_unidadDeTiempo}"/>  
+                            
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_observaciones} "/>
+                            <h:outputText value="#{mbInstancia.selected.observaciones}" 
+                                          title="#{bundle.CreateInstanciaTitle_observaciones}"/> 
+                            
+                            <h:outputLabel value="#{bundle.UsuarioAlta}"/>
+                            <h:outputText value="#{mbInstancia.selected.adminentidad.usAlta}"
+                                          title="#{bundle.UsuarioAlta}"/>                        
+
+                            <h:outputLabel value="#{bundle.FechaAlta}"/>
+                            <h:outputText value="#{mbInstancia.selected.adminentidad.strFechaAlta}" 
+                                          title="#{bundle.FechaAlta}"/>                         
+
+                            <h:outputLabel value="#{bundle.UsuarioModifica}"/>
+                            <h:outputText value="#{mbInstancia.selected.adminentidad.usModif}"
+                                          title="#{bundle.UsuarioModifica}"/>                        
+
+                            <h:outputLabel value="#{bundle.FechaModifica}"/>
+                            <h:outputText value="#{mbInstancia.selected.adminentidad.strFechaModif}"
+                                          title="#{bundle.FechaModifica}"/>                          
+
+                            <h:outputLabel value="#{bundle.UsuarioBaja}" rendered="#{not mbInstancia.selected.adminentidad.habilitado}"/>
+                            <h:outputText value="#{mbInstancia.selected.adminentidad.usBaja}"
+                                          title="#{bundle.UsuarioBaja}" rendered="#{not mbInstancia.selected.adminentidad.habilitado}"/>                        
+
+                            <h:outputLabel value="#{bundle.FechaBaja}" rendered="#{not mbInstancia.selected.adminentidad.habilitado}"/>
+                            <h:outputText value="#{mbInstancia.selected.adminentidad.strFechaBaja}"
+                                          title="#{bundle.FechaBaja}" rendered="#{not mbInstancia.selected.adminentidad.habilitado}"/>  
+                              
+                        </h:panelGrid> 
+                    </p:panel>
+                <p:toolbar>
+                    <f:facet name="left">
+                        <p:commandButton icon="ui-icon-refresh" action="#{mbInstancia.prepareList}" value="Volver" ajax="false"/>
+                    </f:facet>
+                </p:toolbar>
+            </h:form>
+        </ui:define>
+</ui:composition>
+

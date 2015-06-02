@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/facelets/templates/entidadTemplate.xhtml">
+        <ui:define name="content">
+        <h:form id="frmProcedimientoView">
+                <p:panel id="pnView" header="#{bundle.ProcedimientoViewTitle}" style="margin-bottom:10px;">
+                    <p:messages id="messages" />
+                    
+                    <h:panelGrid columns="2">
+                        <h:outputLabel  value="#{bundle.CreateProcedimientoLabel_nombre}"/>
+                        <h:outputText   value="#{mbProcedimiento.selected.nombre}" title="#{bundle.CreateProcedimientoTitle_nombre}"/>
+                        
+                        <h:outputLabel  value="#{bundle.CreateProcedimientoLabel_app}"/>
+                        <h:outputText   value="#{mbProcedimiento.selected.app}" title="#{bundle.CreateProcedimientoTitle_app}"/>
+                        
+                        <h:outputLabel  value="#{bundle.UsuarioAlta}"/>
+                        <h:outputText   value="#{mbProcedimiento.selected.adminentidad.usAlta.nombre}" title="#{bundle.UsuarioAlta}"/>                        
+
+                        <h:outputLabel  value="#{bundle.FechaAlta}"/>
+                        <h:outputText   value="#{mbProcedimiento.selected.adminentidad.strFechaAlta}" title="#{bundle.FechaAlta}"/>                         
+
+                        <h:outputLabel  value="#{bundle.UsuarioModifica}"/>
+                        <h:outputText   value="#{mbProcedimiento.selected.adminentidad.usModif.nombre}" title="#{bundle.UsuarioModifica}"/>                        
+
+                        <h:outputLabel  value="#{bundle.FechaModifica}"/>
+                        <h:outputText   value="#{mbProcedimiento.selected.adminentidad.strFechaModif}" title="#{bundle.FechaModifica}"/>                          
+
+                        <h:outputLabel  value="#{bundle.UsuarioBaja}" rendered="#{not mbProcedimiento.selected.adminentidad.habilitado}"/>
+                        <h:outputText   value="#{mbProcedimiento.selected.adminentidad.usBaja.nombre}" rendered="#{not mbProcedimiento.selected.adminentidad.habilitado}"
+                                        title="#{bundle.UsuarioBaja}"/>                        
+
+                        <h:outputLabel  value="#{bundle.FechaBaja}" rendered="#{not mbProcedimiento.selected.adminentidad.habilitado}"/>
+                        <h:outputText   value="#{mbProcedimiento.selected.adminentidad.strFechaBaja}" rendered="#{not mbProcedimiento.selected.adminentidad.habilitado}"
+                                        title="#{bundle.FechaBaja}"/>    
+                        
+                        <h:outputLabel value="#{bundle.InstanciasAsociadas}" />
+                        <p:commandButton value="Ver" type="button" onclick="PF('Instancias').show();" actionListener="#{mbProcedimiento.selected.instancias}" />                           
+                    </h:panelGrid>                    
+                </p:panel>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton icon="ui-icon-refresh" action="#{mbProcedimiento.prepareList}" value="Volver" ajax="false"/>
+                    </f:facet>
+                </p:toolbar>
+            
+                <p:dialog style="font-size: 80%" 
+                          header="Listado de Instancias asociadas" 
+                          widgetVar="Instancias" 
+                          showEffect="fade" 
+                          hideEffect="fade" 
+                          height="100" 
+                          width="30%">
+                    <p:dataTable value="#{mbProcedimiento.selected.instancias}" var="p" id="procedimientoList">
+                        <p:column headerText="Instancia" filterMatchMode="contains" filterBy="#{p.nombre}" sortBy="#{p.nombre}" rendered="#{p.adminentidad.habilitado == 'true'}" >
+                            <p:outputLabel value="#{p.nombre}"/> 
+                        </p:column>                        
+                    </p:dataTable>
+                </p:dialog>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/facelets/templates/entidadTemplate.xhtml">
+        <ui:define name="content">
+            <f:metadata>  
+                <f:event listener="#{mbProcedimiento.iniciar}" type="preRenderView"></f:event>  
+            </f:metadata>      
+            <h:form>
+                <p:panel id="procedimientoForm" header="#{bundle.ProcedimientoListTitle}" style="margin-bottom:10px;" toggleable="true" toggleTitle="Ver/Ocultar">
+                    <h:panelGrid columns="6">
+                        <p:commandButton icon="ui-icon-newwin" value="Agregar Nuevo" action="#{mbProcedimiento.prepareCreate}"/>
+                        <p:commandButton icon="ui-icon-refresh" value="Refrescar Listado" action="#{mbProcedimiento.prepareList}" update="procedimientoList"/>                      
+                    </h:panelGrid>   
+                </p:panel>   
+                <p:dataTable value="#{mbProcedimiento.items}" 
+                             var="e" 
+                             id="procedimientoList" 
+                             rows="5" filteredValue="#{mbProcedimiento.listFilter}"
+                             paginator="true"  
+                             widgetVar="proTable"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15">
+                    
+                    <f:facet name="header">#{bundle.ProcedimientoListTitle}
+                        <p:commandButton id="toggler" type="button" value="Columnas" icon="ui-icon-calculator" style="margin-left: 10px"/>
+                        <p:columnToggler datasource="procedimientoList" trigger="toggler" />                        
+                    </f:facet>
+                    
+                    <p:column headerText="Procedimiento" filterMatchMode="contains" sortBy="#{e.nombre}" filterBy="#{e.nombre}" > 
+                        <p:outputLabel value="#{e.nombre}"/>
+                    </p:column>      
+                    
+                    <p:column headerText="app" filterMatchMode="contains" sortBy="#{e.app}" filterBy="#{e.app}" > 
+                        <p:outputLabel value="#{e.app}"/>
+                    </p:column>                     
+
+                    <p:column filterBy="#{e.adminentidad.habilitado}" headerText="Estado" filterMatchMode="equals">
+                        <f:facet name="filter">
+                            <p:selectOneMenu onchange="PF('proTable').filter()" style="font-size: 80%">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem itemLabel="Todos" itemValue="" />
+                                <f:selectItem itemLabel="Activos" itemValue="true" />
+                                <f:selectItem itemLabel="Inactivos" itemValue="false" />
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{e.adminentidad.habilitado ? 'Habilitado': 'Deshabilitado'}" />
+                    </p:column>
+                    
+                    <p:column headerText="Acciones" style="width:140px">
+                        <p:growl id="messages" showDetail="true" />    
+                        <p:commandButton icon="ui-icon-zoomin" action="#{mbProcedimiento.prepareView}" title="Ver Detalle">
+                                <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-pencil" action="#{mbProcedimiento.prepareEdit}">
+                                <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
+                         </p:commandButton>
+
+                        <p:commandButton icon="ui-icon-close" action="#{mbProcedimiento.deshabilitar}" rendered="#{e.adminentidad.habilitado == 'true'}" 
+                                         title="Deshabilitar" update="procedimientoList">
+                                <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
+                                <p:confirm header="Confirmar"  message="¿Desea deshabilitar el Procedimiento?" icon="ui-icon-alert" />
+                        </p:commandButton>                
+
+                        <p:commandButton icon="ui-icon-check" action="#{mbProcedimiento.habilitar}" rendered="#{e.adminentidad.habilitado == 'false'}" 
+                                         title="Habilitar" update="procedimientoList">
+                                <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
+                                <p:confirm header="Confirmar" message="¿Desea habilitar el Procedimiento?" icon="ui-icon-alert" />
+                            </p:commandButton>  
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                           </p:confirmDialog>      
+                    </p:column> 
+                </p:dataTable>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+
