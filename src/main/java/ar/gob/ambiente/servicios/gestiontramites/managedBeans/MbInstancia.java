@@ -26,14 +26,12 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.validator.ValidatorException;
-import javax.persistence.Query;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -48,6 +46,7 @@ public class MbInstancia implements Serializable{
     private List<Procedimiento> listProFilter;
     private List<Instancia> listado = null;    
     private List<Procedimiento> listaProcedimientos;
+    private List<Estado> listaEstados;
     
     @EJB
     private ProcedimientoFacade procedimientoFacade;
@@ -65,8 +64,11 @@ public class MbInstancia implements Serializable{
     private UnidadDeTiempo selectedUnidadDeAlerta;
     private UnidadDeTiempo selectedUnidadDeVto;
     private Procedimiento selectedProcedimiento;
-    private List<UnidadDeTiempo> listaUnidadDeTiempos;
-    private List<Estado> listaEstados;
+    private List<UnidadDeTiempo> listaUnidadDeTiemposAlerta;
+    private List<UnidadDeTiempo> listaUnidadDeTiemposVto;
+    private List<Estado> listaEstadosIniciales;
+    private List<Estado> listaEstadosFinales;
+
    
     private Usuario usLogeado;
     private boolean iniciado;  
@@ -128,20 +130,36 @@ public class MbInstancia implements Serializable{
         this.listaFilter = listaFilter;
     }
 
-    public List<UnidadDeTiempo> getListaUnidadDeTiempos() {
-        return listaUnidadDeTiempos;
+    public List<UnidadDeTiempo> getListaUnidadDeTiemposAlerta() {
+        return listaUnidadDeTiemposAlerta;
     }
 
-    public void setListaUnidadDeTiempos(List<UnidadDeTiempo> listaUnidadDeTiempos) {
-        this.listaUnidadDeTiempos = listaUnidadDeTiempos;
+    public void setListaUnidadDeTiemposAlerta(List<UnidadDeTiempo> listaUnidadDeTiemposAlerta) {
+        this.listaUnidadDeTiemposAlerta = listaUnidadDeTiemposAlerta;
     }
 
-    public List<Estado> getListaEstados() {
-        return listaEstados;
+    public List<UnidadDeTiempo> getListaUnidadDeTiemposVto() {
+        return listaUnidadDeTiemposVto;
     }
 
-    public void setListaEstados(List<Estado> listaEstados) {
-        this.listaEstados = listaEstados;
+    public void setListaUnidadDeTiemposVto(List<UnidadDeTiempo> listaUnidadDeTiemposVto) {
+        this.listaUnidadDeTiemposVto = listaUnidadDeTiemposVto;
+    }
+
+    public List<Estado> getListaEstadosIniciales() {
+        return listaEstadosIniciales;
+    }
+
+    public void setListaEstadosIniciales(List<Estado> listaEstadosIniciales) {
+        this.listaEstadosIniciales = listaEstadosIniciales;
+    }
+
+    public List<Estado> getListaEstadosFinales() {
+        return listaEstadosFinales;
+    }
+
+    public void setListaEstadosFinales(List<Estado> listaEstadosFinales) {
+        this.listaEstadosFinales = listaEstadosFinales;
     }
 
 
@@ -167,6 +185,14 @@ public class MbInstancia implements Serializable{
 
     public void setListaProcedimientos(List<Procedimiento> listaProcedimientos) {
         this.listaProcedimientos = listaProcedimientos;
+    }
+
+    public List<Estado> getListaEstados() {
+        return listaEstados;
+    }
+
+    public void setListaEstados(List<Estado> listaEstados) {
+        this.listaEstados = listaEstados;
     }
 
     /****************************
@@ -218,10 +244,11 @@ public class MbInstancia implements Serializable{
      * @return acción para el formulario de nuevo
      */
     public String prepareCreate() {
-        listaProcedimientos = procedimientoFacade.getHabilitadas();
-        listaEstados = estadoFacade.findAll();
-        listaUnidadDeTiempos = unidadDeTiempoFacade.findAll();
-                
+        listaEstadosIniciales = estadoFacade.findAll();
+        listaEstadosFinales = estadoFacade.findAll();
+        listaUnidadDeTiemposAlerta = unidadDeTiempoFacade.findAll();
+        listaUnidadDeTiemposVto = unidadDeTiempoFacade.findAll();   
+        
         current = new Instancia();
         return "new";
     }
@@ -230,10 +257,10 @@ public class MbInstancia implements Serializable{
      * @return acción para la edición de la entidad
      */
     public String prepareEdit() {
-        listaProcedimientos = procedimientoFacade.getHabilitadas();
-        listaEstados = estadoFacade.findAll();
-        listaUnidadDeTiempos = unidadDeTiempoFacade.findAll();
-                
+        listaEstadosIniciales = estadoFacade.findAll();
+        listaEstadosFinales = estadoFacade.findAll();
+        listaUnidadDeTiemposAlerta = unidadDeTiempoFacade.findAll();
+        listaUnidadDeTiemposVto = unidadDeTiempoFacade.findAll();                
         return "edit";
     }
            
@@ -393,27 +420,27 @@ public class MbInstancia implements Serializable{
         admEnt.setFechaAlta(date);
         admEnt.setHabilitado(true);
         admEnt.setUsAlta(usLogeado);
-        current.setAdminentidad(admEnt);        
-        try {
+        current.setAdminentidad(admEnt);           
+        try{    
             getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoCreated"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaCreated"));
             return "view";
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoCreatedErrorOccured"));
+            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("InstanciaCreatedErrorOccured"));
             return null;
         }
     }
-  
+    
      /**
      * Método que actualiza una nueva Provincia en la base de datos.
      * Previamente actualiza los datos de administración
      * @return mensaje que notifica la actualización
      */
-    public String update() {    
+    public String update() {  
         boolean edito;
         Instancia ins;
         try {
-            ins = getFacade().getExistente(current.getNombre(), current.getProcedimiento());
+            ins = getFacade().getExistente(current.getNombre());
             if(ins == null){
                 edito = true;  
             }else{

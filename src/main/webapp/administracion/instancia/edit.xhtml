@@ -8,93 +8,80 @@
      xmlns:h="http://xmlns.jcp.org/jsf/html">
         <ui:define name="content">
             <h:form>
-                <p:panel id="pnEdit" header="#{bundle.EspecieEditTitle}" style="margin-bottom:10px;">
+                <p:panel id="pnEdit" header="#{bundle.InstanciaEditTitle}" style="margin-bottom:10px;">
                     <p:growl id="messages" />
                     <h:panelGrid columns="2">
                         
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_familia}" for="familia"/>                             
-                        <p:selectOneMenu id="familia" value="#{mbEspecie.selected.genero.familia}" valueChangeListener="#{mbEspecie.familiaChangeListener}" >
-                            <f:selectItem itemLabel="Seleccione el Genero" itemValue="" noSelectionOption="true" />                           
-                            <f:selectItems value="#{mbEspecie.listaFamilia}" var="familia" itemLabel="#{familia.nombre}" itemValue="#{familia}"/>
-                            <p:ajax event="change" update="genero"/>
-                        </p:selectOneMenu>   
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_nombre}" for="nombre"/>                       
+                        <p:inputText id="nombre" value="#{mbInstancia.selected.nombre}" requiredMessage="#{bundle.CreateInstanciaRequiredMessage_nombre}" required="true"/>                           
+                        
+   
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_ruta}" for="ruta"/>
+                        <p:inputText id="ruta" value="#{mbInstancia.selected.ruta}" requiredMessage="#{bundle.CreateInstanciaRequiredMessage_ruta}" required="true"/>
+                        <p:message for="ruta" />  
 
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_genero}" for="genero"/>                             
-                        <p:selectOneMenu id="genero" value="#{mbEspecie.selected.genero}" >
-                            <f:selectItem itemLabel="Seleccione el Genero" itemValue="" noSelectionOption="true" />                           
-                            <f:selectItems value="#{mbEspecie.listaGenero}" var="genero" itemLabel="#{genero.nombre}" itemValue="#{genero}"/>
-                        </p:selectOneMenu>   
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_codigo}" for="codigo"/>
+                        <p:inputText id="codigo" value="#{mbInstancia.selected.codigo}" requiredMessage="#{bundle.CreateInstanciaRequiredMessage_codigo}" required="true"/>
+                        <p:message for="codigo" />  
+                                                                        
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_estadoInicial}" for="estadoInicial"/>      
+                        <p:selectOneMenu id="estadoInicial" value="#{mbInstancia.selected.estadoInicial}" 
+                                         requiredMessage="#{bundle.CreateInstanciaProcedimientoRequiredMessage_estadoInicial}" required="true">
+                            <f:selectItem itemLabel="Seleccione el Estado Inicial" itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{mbInstancia.listaEstadosIniciales}" var="estado" itemLabel="#{estado.nombre}" itemValue="#{estadoInicial}"/>
+                        </p:selectOneMenu>  
                         
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_nombre}" for="nombre"/>                       
-                        <p:inputText id="nombre" value="#{mbEspecie.selected.nombre}" 
-                                     requiredMessage="#{bundle.CreateEspecieRequiredMessage_nombre}" required="true"/>                           
-                        
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_subEspecie}" for="subespecie"/>
-                        <p:inputText id="subespecie" value="#{mbEspecie.selected.subEspecie}" 
-                                     requiredMessage="#{bundle.CreateEspecieRequiredMessage_subEspecie}" required="false" />   
-                        
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_sinonimos}" for="sinonimos"/>
-                        <p:inputText id="sinonimos" value="#{mbEspecie.selected.sinonimo}" 
-                                     requiredMessage="#{bundle.CreateEspecieRequiredMessage_sinonimos}" required="false" />
-                        
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_origen}" for="origen"/>                             
-                        <p:selectOneMenu id="origen" value="#{mbEspecie.selected.origen}" 
-                                         requiredMessage="El campo #{bundle.CreateEspecieTitle_origen} es obligatorio" required="true">
-                            <f:selectItem itemLabel="Seleccione el #{bundle.CreateEspecieTitle_origen}" itemValue="" noSelectionOption="true" />                           
-                            <f:selectItems value="#{mbEspecie.listaOrigenes}" var="origen" itemLabel="#{origen.nombre}" itemValue="#{origen}"/>
-                        </p:selectOneMenu>   
-                        
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_morfologia}" for="morfologia"/>                             
-                        <p:selectOneMenu id="morfologia" value="#{mbEspecie.selected.morfologia}" 
-                                         requiredMessage="El campo #{bundle.CreateEspecieTitle_morfologia} es obligatorio" required="true">
-                            <f:selectItem itemLabel="Seleccione la #{bundle.CreateEspecieTitle_morfologia}" itemValue="" noSelectionOption="true" />                           
-                            <f:selectItems value="#{mbEspecie.listaMorfologias}" var="morfologia" itemLabel="#{morfologia.nombre}" itemValue="#{morfologia}"/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_estadoFinal}" for="estadoFinal"/>      
+                        <p:selectOneMenu id="estadoFinal" value="#{mbInstancia.selected.estadoFinal}" 
+                                         requiredMessage="#{bundle.CreateInstanciaProcedimientoRequiredMessage_estadoFinal}" required="true">
+                            <f:selectItem itemLabel="Seleccione el Estado Final" itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{mbInstancia.listaEstadosFinales}" var="estado" itemLabel="#{estado.nombre}" itemValue="#{estadoFinal}"/>
                         </p:selectOneMenu> 
+
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_alerta}" for="alerta"/>
+                        <p:inputText id="alerta" value="#{mbInstancia.selected.cantidadAlerta}" 
+                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_cantidadAlerta}" required="true"/>
+                        <p:message for="alerta" /> 
                         
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_cites}" for="cites"/>                             
-                        <p:selectOneMenu id="cites" value="#{mbEspecie.selected.cites}" >
-                            <f:selectItem itemLabel="Seleccione el tipo Cites" itemValue="" noSelectionOption="true" />                           
-                            <f:selectItems value="#{mbEspecie.listaCites}" var="cites" itemLabel="#{cites.nombre}" itemValue="#{cites}"/>
-                        </p:selectOneMenu>   
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTAlerta}" for="unidadDeTiempoAlerta"/>      
+                        <p:selectOneMenu id="unidadDeTiempoAlerta" value="#{mbInstancia.selected.unidadDeTiempoAlerta}" 
+                                         requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTAlerta}" required="true">
+                            <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para alerta" itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{mbInstancia.listaUnidadDeTiemposAlerta}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoAlerta}"/>
+                        </p:selectOneMenu>                        
+
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_vto}" for="cantidadVencimiento"/>
+                        <p:inputText id="cantidadVencimiento" value="#{mbInstancia.selected.cantidadVencimiento}" 
+                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_vto}" required="true"/>
+                        <p:message for="cantidadVencimiento" /> 
                         
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_rango}" for="rango"/>                             
-                        <p:selectOneMenu id="rango" value="#{mbEspecie.selected.rango}" 
-                                         requiredMessage="El campo #{bundle.CreateEspecieTitle_rango} es obligatorio" required="true">
-                            <f:selectItem itemLabel="Seleccione el #{bundle.CreateEspecieTitle_rango}" itemValue="" noSelectionOption="true" />                           
-                            <f:selectItems value="#{mbEspecie.listaRangos}" var="rango" itemLabel="#{rango.nombre}" itemValue="#{rango}"/>
-                        </p:selectOneMenu> 
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>      
+                        <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbInstancia.selected.unidadDeTiempoVto}" 
+                                         requiredMessage="#{bundle.CreateInstanciaProcedimientoRequiredMessage_UdTVto}" required="true">
+                            <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el Vto." itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{mbInstancia.listaUnidadDeTiemposVto}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoVto}"/>
+                        </p:selectOneMenu>                        
+
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_observaciones}" for="observaciones"/>
+                        <p:inputText id="observaciones" value="#{mbInstancia.selected.observaciones}" 
+                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_observaciones}" required="true"/>
+                        <p:message for="observaciones" />          
                         
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_publicacion}" for="publicacion"/>                             
-                        <p:selectOneMenu id="publicacion" value="#{mbEspecie.selected.publicacion}" 
-                                         requiredMessage="El campo #{bundle.CreateEspecieTitle_publicacion} es obligatorio" required="true">
-                            <f:selectItem itemLabel="Seleccione la #{bundle.CreateEspecieTitle_publicacion}" itemValue="" noSelectionOption="true" />                           
-                            <f:selectItems value="#{mbEspecie.listaPublicaciones}" var="publicacion" itemLabel="#{publicacion.nombre} - #{publicacion.anio}" itemValue="#{publicacion}"/>
-                        </p:selectOneMenu> 
-                        
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_autorEspecie}" for="autorEspecie"/>                             
-                        <p:selectOneMenu id="autorEspecie" value="#{mbEspecie.selected.autorEspecie}" 
-                                         requiredMessage="El campo #{bundle.CreateEspecieTitle_autorEspecie} es obligatorio" required="true">
-                            <f:selectItem itemLabel="Seleccione el Autor de la #{bundle.CreateEspecieTitle_autorEspecie}" itemValue="" noSelectionOption="true" />                           
-                            <f:selectItems value="#{mbEspecie.listaAutores}" var="autorEspecie" itemLabel="#{autorEspecie.nombre}" itemValue="#{autorEspecie}"/>
-                        </p:selectOneMenu> 
-                        
-                        <p:outputLabel value="#{bundle.CreateEspecieLabel_autores}" for="autores"/>                             
-                        <p:selectOneMenu id="autores" value="#{mbEspecie.selected.autores}" 
-                                         requiredMessage="El campo #{bundle.CreateEspecieTitle_autores} es obligatorio" required="true">
-                            <f:selectItem itemLabel="Seleccione los #{bundle.CreateEspecieTitle_autores}" itemValue="" noSelectionOption="true" />                           
-                            <f:selectItems value="#{mbEspecie.listaAutores}" var="autores" itemLabel="#{autores.nombre}" itemValue="#{autores}"/>
-                        </p:selectOneMenu> 
 
                     </h:panelGrid>
                 </p:panel>
 
                 <p:toolbar>
                     <f:facet name="left">
-                        <p:commandButton icon="ui-icon-check" value="Guardar" action="#{mbEspecie.update}" update="pnEdit"/>
+                        <p:commandButton icon="ui-icon-check" value="Guardar" action="#{mbInstancia.update}" update="pnEdit"/>
                         <p:commandButton icon="ui-icon-cancel" value="Limpiar" style="float: next">
                             <p:ajax update="pnEdit" resetValues="true" />
                         </p:commandButton>
-                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" action="#{mbEspecie.prepareList}" value="Volver" immediate="true"/>
+                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" action="#{mbInstancia.prepareList}" value="Volver" immediate="true"/>
                     </f:facet>
                 </p:toolbar>
             </h:form>

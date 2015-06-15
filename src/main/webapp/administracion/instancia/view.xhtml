@@ -23,21 +23,29 @@
                             <h:outputText value="#{mbInstancia.selected.codigo}" 
                                           title="#{bundle.CreateInstanciaTitle_codigo}"/>
 
-                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_estado} "/>
-                            <h:outputText value="#{mbInstancia.selected.estado}" 
-                                          title="#{bundle.CreateInstanciaTitle_estado}"/>                            
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_estadoInicia} "/>
+                            <h:outputText value="#{mbInstancia.selected.estadoInicial}" 
+                                          title="#{bundle.CreateInstanciaTitle_estadoInicial}"/>  
+                            
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_estadoFinal} "/>
+                            <h:outputText value="#{mbInstancia.selected.estadoFinal}" 
+                                          title="#{bundle.CreateInstanciaTitle_estadoFinal}"/>       
                         
                             <h:outputLabel value="#{bundle.CreateInstanciaLabel_vencimiento} "/>
                             <h:outputText value="#{mbInstancia.selected.cantidadVencimiento}" 
                                           title="#{bundle.CreateInstanciaTitle_sinonimos}"/>  
-                            
+                                                                                
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_unidadDeTiempo} "/>
+                            <h:outputText value="#{mbInstancia.selected.unidadDeTiempoVto}" 
+                                          title="#{bundle.CreateInstanciaTitle_unidadDeTiempo}"/> 
+                                                        
                             <h:outputLabel value="#{bundle.ViewInstanciaLabel_alerta} "/>
                             <h:outputText value="#{mbInstancia.selected.cantidadAlerta}" 
                                           title="#{bundle.ViewInstanciaTitle_alerta}"/> 
-                            
-                            <h:outputLabel value="#{bundle.ViewInstanciaLabel_unidadDeTiempo} "/>
-                            <h:outputText value="#{mbInstancia.selected.unidadDeTiempo}" 
-                                          title="#{bundle.ViewInstanciaTitle_unidadDeTiempo}"/>  
+                                                    
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_unidadDeTiempo} "/>
+                            <h:outputText value="#{mbInstancia.selected.unidadDeTiempoAlerta}" 
+                                          title="#{bundle.CreateInstanciaTitle_unidadDeTiempo}"/>  
                             
                             <h:outputLabel value="#{bundle.CreateInstanciaLabel_observaciones} "/>
                             <h:outputText value="#{mbInstancia.selected.observaciones}" 

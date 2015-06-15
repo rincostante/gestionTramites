@@ -36,8 +36,11 @@ public class UnidadDeTiempo implements Serializable {
     
     private String secuencia;
     
-    @OneToMany(mappedBy="unidadDeTiempo")
-    private List<Instancia> instancias;
+    @OneToMany(mappedBy="unidadDeTiempoAlerta")
+    private List<Instancia> instanciasUdTAlerta; 
+    
+    @OneToMany(mappedBy="unidadDeTiempoVto")
+    private List<Instancia> instanciasUdTVto;
     
     public UnidadDeTiempo(){
     }
@@ -66,14 +69,21 @@ public class UnidadDeTiempo implements Serializable {
         this.secuencia = secuencia;
     }
 
-    public List<Instancia> getInstancias() {
-        return instancias;
+    public List<Instancia> getInstanciasUdTAlerta() {
+        return instanciasUdTAlerta;
     }
 
-    public void setInstancias(List<Instancia> instancias) {
-        this.instancias = instancias;
+    public void setInstanciasUdTAlerta(List<Instancia> instanciasUdTAlerta) {
+        this.instanciasUdTAlerta = instanciasUdTAlerta;
     }
 
+    public List<Instancia> getInstanciasUdTVto() {
+        return instanciasUdTVto;
+    }
+
+    public void setInstanciasUdTVto(List<Instancia> instanciasUdTVto) {
+        this.instanciasUdTVto = instanciasUdTVto;
+    }
     
     @Override
     public int hashCode() {

@@ -23,6 +23,33 @@
                     </h:panelGrid>
                     
                 </p:panel>
+                
+                <p:panel id="pnInstancias" 
+                         header="Seleccione las instancias para este Procedimiento" 
+                         toggleable="true" toggleTitle="Ver/Ocultar"
+                         style="width:400px;">
+                    <p:dataTable value="#{mbProcedimiento.instancias}" var="e" id="instanciaList" rows="5" 
+                                 filteredValue="#{mbProcedimiento.instanciasFilter}"
+                                 rowKey="#{e.id}"
+                                 selection="#{mbProcedimiento.selected.instanciasXProcedimiento}"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" style="font-size: 80%">
+                        <f:facet name="header">
+                            Listado de #{bundle.InstanciasAsociadas}
+                            <p:commandButton icon="ui-icon-refresh" value="Listar" update="instanciaList" style="margin-left: 10px"/>
+                        </f:facet>
+                        <p:column selectionMode="multiple" style="width: 35px"  />  
+                        
+                        <p:column headerText="#{bundle.CreateInstanciaLabel_nombre}" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
+                            <p:outputLabel value="#{e.nombre}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+                
+                <br/>
+                
                 <p:toolbar>
                     <f:facet name="left">
                         <p:commandButton icon="ui-icon-check" value="Guardar" action="#{mbProcedimiento.create}" update="pnNew"/>
@@ -31,10 +58,15 @@
                         </p:commandButton>
                     </f:facet>
                     <f:facet name="right">
-                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" action="#{mbProcedimiento.prepareList}" value="Volver" immediate="true"/>
+                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" 
+                                         action="#{mbProcedimiento.prepareList}" 
+                                         value="Volver" 
+                                         immediate="true" 
+                                         ajax="false"/>
                     </f:facet>
                 </p:toolbar>
             </h:form>
         </ui:define>
     </ui:composition>
 </html>
+

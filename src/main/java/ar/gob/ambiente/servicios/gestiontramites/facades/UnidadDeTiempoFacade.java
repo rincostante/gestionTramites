@@ -53,7 +53,8 @@ public class UnidadDeTiempoFacade extends AbstractFacade<UnidadDeTiempo> {
     public boolean noTieneDependencias(Long id){
         em = getEntityManager();       
         String queryString = "SELECT ins FROM Instancia ins " 
-                + "WHERE ins.unidadDeTiempo.id = :id";      
+                + "WHERE ins.unidaddetiempoalerta_id = :id "
+                + "OR ins.unidaddetiempovto_id = :id";      
         Query q = em.createQuery(queryString)
                 .setParameter("id", id);
         return q.getResultList().isEmpty();

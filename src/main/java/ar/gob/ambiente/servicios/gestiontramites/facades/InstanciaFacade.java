@@ -34,46 +34,30 @@ public class InstanciaFacade extends AbstractFacade<Instancia> {
         super(Instancia.class);
     }
     
-    /**
+   /**
      * Metodo que verifica si ya existe la entidad.
-     * @param nombre
-     * @param procedimiento
+     * @param aBuscar: es la cadena que buscara para ver si ya existe en la BDD
+     * @param parametro
      * @return: devuelve True o False
      */
-    public boolean noExiste(String nombre, int procedimiento){
-        em = getEntityManager();       
+    public boolean noExiste(String aBuscar, Object parametro){
+        em = getEntityManager();
         String queryString = "SELECT ins.nombre FROM Instancia ins "
-                + "WHERE ins.nombre = :nombre "
-                + "AND ins.procedimiento = :procedimiento";
+                + "WHERE ins.nombre = :stringParam "
+                + "AND ins.adminentidad.habilitado = true";
+        
         Query q = em.createQuery(queryString)
-                .setParameter("nombre", nombre)
-                .setParameter("procedimiento", procedimiento);
+                .setParameter("stringParam", aBuscar);
         return q.getResultList().isEmpty();
-    }      
-
-
-    /**
-     * Metodo que verifica si ya existe la entidad.
-     * @param nombre
-     * @return: devuelve True o False
-     */
-    public boolean existe(String nombre){
+    }    
+     
+    
+    public Instancia getExistente(String nombre){
         em = getEntityManager();       
         String queryString = "SELECT ins.nombre FROM Instancia ins "
                 + "WHERE ins.nombre = :nombre";
         Query q = em.createQuery(queryString)
                 .setParameter("nombre", nombre);
-        return q.getResultList().isEmpty();
-    }  
-    
-    public Instancia getExistente(String nombre, Procedimiento procedimiento){
-        em = getEntityManager();       
-        String queryString = "SELECT ins.nombre FROM Instancia ins "
-                + "WHERE esp.nombre = :nombre "
-                + "AND esp.procedimiento = :procedimiento";
-        Query q = em.createQuery(queryString)
-                .setParameter("nombre", nombre)
-                .setParameter("procedimiento", procedimiento);
         return (Instancia)q.getSingleResult();
     }
 
@@ -92,10 +76,10 @@ public class InstanciaFacade extends AbstractFacade<Instancia> {
         return q.getResultList();
     }
 
-    public List<Instancia> getUnidadDeTiempo(Long id){
+    public List<Instancia> getUnidadDeTiempoAlerta(Long id){
         em = getEntityManager();        
         String queryString = "SELECT ins FROM Instancia ins "
-                + "WHERE ins.unidaddetiempo.id = :id "
+                + "WHERE ins.unidaddetiempoalerta.id = :id "
                 + "AND ins.adminentidad.habilitado = true";
         Query q = em.createQuery(queryString)
                 .setParameter("id", id);
@@ -103,23 +87,45 @@ public class InstanciaFacade extends AbstractFacade<Instancia> {
     }
 
 
+    public List<Instancia> getUnidadDeTiempoVto(Long id){
+        em = getEntityManager();        
+        String queryString = "SELECT ins FROM Instancia ins "
+                + "WHERE ins.unidaddetiempovto.id = :id "
+                + "AND ins.adminentidad.habilitado = true";
+        Query q = em.createQuery(queryString)
+                .setParameter("id", id);
+        return q.getResultList();
+    }
 
 
     /**
      * Método que devuelve todos los géneros de una familia
-     * @param estado
+     * @param estadoInicial
      * @return 
      */
-    public List<Instancia> getInstanciasXEstado(Estado estado){
+    public List<Instancia> getEstadoInicial(Long id, Object estadoInicial){
         em = getEntityManager();        
         String queryString = "SELECT ins FROM Instancia ins "
-                + "WHERE ins.estado = :estado "
+                + "WHERE ins.estadoinicial_id = :estadoInicial "
                 + "AND ins.adminentidad.habilitado = true";
         Query q = em.createQuery(queryString)
-                .setParameter("estado", estado);
+                .setParameter("estadoInicial", estadoInicial);
         return q.getResultList();
     } 
-        
+    /**
+     * Método que devuelve todos los géneros de una familia
+     * @param estadoFinal
+     * @return 
+     */
+    public List<Instancia> getEstadoFinal(Long id, Object estadoFinal){
+        em = getEntityManager();        
+        String queryString = "SELECT ins FROM Instancia ins "
+                + "WHERE ins.estadofinal_id = :estadoFinal "
+                + "AND ins.adminentidad.habilitado = true";
+        Query q = em.createQuery(queryString)
+                .setParameter("estadoFinal", estadoFinal);
+        return q.getResultList();
+    }     
     /**
      * Método que verifica si la entidad tiene dependencias
      * @param id: ID de la entidad
@@ -133,5 +139,22 @@ public class InstanciaFacade extends AbstractFacade<Instancia> {
                 .setParameter("id", id);
         return q.getResultList().isEmpty();
     }       
+
+    /**
+     * Metodo que verifica si ya existe la entidad.
+     * @param aBuscar: es la cadena que buscara para ver si ya existe en la BDD
+     * @return: devuelve True o False
+     */
+    public boolean existe(String aBuscar){
+        em = getEntityManager();
+        String queryString = "SELECT ins.nombre FROM Instancia ins "
+                + "WHERE ins.nombre = :stringParam "
+                + "AND ins.adminentidad.habilitado = true";
+        
+        Query q = em.createQuery(queryString)
+                .setParameter("stringParam", aBuscar);
+        return q.getResultList().isEmpty();
+    }    
+    
 
 }

@@ -18,9 +18,13 @@ import ar.gob.ambiente.servicios.gestiontramites.facades.InstanciaFacade;
 import ar.gob.ambiente.servicios.gestiontramites.facades.UnidadDeTiempoFacade;
 import ar.gob.ambiente.servicios.gestiontramites.facades.ProcedimientoFacade;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -36,6 +40,7 @@ import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpSession;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -46,15 +51,27 @@ public class MbProcedimiento implements Serializable{
     private Procedimiento current;
     private DataModel items = null;
     private List<Procedimiento> listFilter;
+    private List<Instancia> instVinc;
+    private List<Instancia> instVincFilter;
+    private List<Instancia> instDisp;
+    private List<Instancia> instDispFilter;
+    private List<Instancia> instancias;
+    private List<Instancia> instanciasFilter;
+    private List<Instancia> listInstancias;
+    private boolean asignaInstancia; 
+    private List<Procedimiento> listProcedimiento;
 
     
     @EJB
-    private ProcedimientoFacade ProcedimientoFacade;
+    private ProcedimientoFacade procedimientoFacade;
     private boolean iniciado;
-    private int update; // 0=updateNormal | 1=deshabiliar | 2=habilitar 
+    //private int update; // 0=updateNormal | 1=deshabiliar | 2=habilitar 
     private MbLogin login;
     private Usuario usLogeado;
+    private Procedimiento procedimientoSelected;
     
+    @EJB
+    private InstanciaFacade instFacade;
     /*
      * Creates a new instance of MbProcedimiento
      */
@@ -62,15 +79,6 @@ public class MbProcedimiento implements Serializable{
          
     }   
 
-    @PostConstruct
-    public void init(){
-        iniciado = false;
-        update = 0;
-        ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
-        login = (MbLogin)ctx.getSessionMap().get("mbLogin");
-        usLogeado = login.getUsLogeado();
-    } 
-   
     /********************************
      ** Getters y Setters ***********
      ********************************/     
@@ -82,7 +90,17 @@ public class MbProcedimiento implements Serializable{
     public void setListFilter(List<Procedimiento> listFilter) {
         this.listFilter = listFilter;
     }
-     
+
+    public List<Procedimiento> getListProcedimiento() {
+        if(listProcedimiento == null){
+            listProcedimiento = getFacade().getHabilitadas();
+        }
+        return listProcedimiento;
+    }
+
+    public void setListProcedimiento(List<Procedimiento> listProcedimiento) {
+        this.listProcedimiento = listProcedimiento;
+    }     
     
     public Procedimiento getCurrent() {
         return current;
@@ -90,6 +108,70 @@ public class MbProcedimiento implements Serializable{
 
     public void setCurrent(Procedimiento current) {
         this.current = current;
+    }
+
+    public List<Instancia> getInstVinc() {
+        return instVinc;
+    }
+
+    public void setInstVinc(List<Instancia> instVinc) {
+        this.instVinc = instVinc;
+    }
+
+    public List<Instancia> getInstVincFilter() {
+        return instVincFilter;
+    }
+
+    public void setInstVincFilter(List<Instancia> instVincFilter) {
+        this.instVincFilter = instVincFilter;
+    }
+
+    public List<Instancia> getInstDisp() {
+        return instDisp;
+    }
+
+    public void setInstDisp(List<Instancia> instDisp) {
+        this.instDisp = instDisp;
+    }
+
+    public List<Instancia> getInstDispFilter() {
+        return instDispFilter;
+    }
+
+    public void setInstDispFilter(List<Instancia> instDispFilter) {
+        this.instDispFilter = instDispFilter;
+    }
+
+    public List<Instancia> getInstancias() {
+        return instancias;
+    }
+
+    public void setInstancias(List<Instancia> instancias) {
+        this.instancias = instancias;
+    }
+
+    public List<Instancia> getInstanciasFilter() {
+        return instanciasFilter;
+    }
+
+    public void setInstanciasFilter(List<Instancia> instanciasFilter) {
+        this.instanciasFilter = instanciasFilter;
+    }
+
+    public List<Instancia> getListInstancias() {
+        return listInstancias;
+    }
+
+    public void setListInstancias(List<Instancia> listInstancias) {
+        this.listInstancias = listInstancias;
+    }
+
+    public Procedimiento getProcedimientoSelected() {
+        return procedimientoSelected;
+    }
+
+    public void setProcedimientoSelected(Procedimiento procedimientoSelected) {
+        this.procedimientoSelected = procedimientoSelected;
     }
 
     /**
@@ -112,7 +194,19 @@ public class MbProcedimiento implements Serializable{
         }
         return items;
     }
-    
+    /****************************
+     * Métodos de inicialización
+     ****************************/
+    /**
+     * Método que se ejecuta luego de instanciada la clase e inicializa los datos del usuario
+     */    
+        @PostConstruct
+    public void init(){
+        iniciado = false;
+        ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
+        login = (MbLogin)ctx.getSessionMap().get("mbLogin");
+        usLogeado = login.getUsLogeado();
+    } 
     /**
      * Método que borra de la memoria los MB innecesarios al cargar el listado 
      */
@@ -132,37 +226,102 @@ public class MbProcedimiento implements Serializable{
             }
         }
     }     
-  
-    /*******************************
-     ** Métodos de inicialización **
-     *******************************/
+
+    /**
+     * 
+     * @return 
+     */
+    public String prepareHabilitar(){
+        current = procedimientoSelected;
+        try{
+            // Actualización de datos de administración de la entidad
+            Date date = new Date(System.currentTimeMillis());
+            current.getAdminentidad().setFechaModif(date);
+            current.getAdminentidad().setUsModif(usLogeado);
+            current.getAdminentidad().setHabilitado(true);
+            current.getAdminentidad().setUsBaja(null);
+            current.getAdminentidad().setFechaBaja(null);
+
+            // Actualizo
+            getFacade().edit(current);
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoHabilitado"));
+            instVinc = current.getInstanciasXProcedimiento();
+            return "view";
+        }catch (Exception e) {
+            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoHabilitadoErrorOccured"));
+            return null; 
+        }
+    }     
+
+
     /**
      * @return acción para el listado de entidades
      */
     public String prepareList() {
+        iniciado = true;
+        asignaInstancia = false;
         recreateModel();
+        if(instVinc != null){
+            instVinc.clear();
+        }
+        if(instDisp != null){
+            instDisp.clear();
+        }
         return "list";
-    }
-
+    } 
+     /**
+     * 
+     * @return 
+     */
+    public String prepareListaDes() {
+        recreateModel();
+        asignaInstancia = false;
+        if(instVinc != null){
+            instVinc.clear();
+        }
+        if(instDisp != null){
+            instDisp.clear();
+        }
+        return "listaDes";
+    }  
+    
     /**
      * @return acción para el detalle de la entidad
      */
     public String prepareView() {
+        asignaInstancia = false;
+        current = procedimientoSelected;
+        instVinc = current.getInstanciasXProcedimiento();
         return "view";
+    }
+    
+    /**
+     * @return acción para el detalle de la entidad
+     */
+    public String prepareViewDes() {
+        asignaInstancia = false;
+        current = procedimientoSelected;
+        instVinc = current.getInstanciasXProcedimiento();
+        return "viewDes";
     }
 
     /** (Probablemente haya que embeberlo con el listado para una misma vista)
      * @return acción para el formulario de nuevo
      */
     public String prepareCreate() {
+        // cargo la tabla de Instancias
+        instancias = instFacade.getHabilitadas();
+
         current = new Procedimiento();
         return "new";
     }
 
-    /**
-     * @return acción para la edición de la entidad
-     */
     public String prepareEdit() {
+        //cargo los list para los combos
+        current = procedimientoSelected;
+        asignaInstancia = true;
+        instVinc = current.getInstanciasXProcedimiento();
+        instDisp = cargarInstanciasDisponibles();
         return "edit";
     }
     
@@ -179,34 +338,27 @@ public class MbProcedimiento implements Serializable{
         //items = null;
         return "list";
     }
-
-    /**
-     * 
-     * @return 
-     */
-    public void habilitar() {
-        update = 2;
-        update();        
-        recreateModel();
-    }       
-
-    /**
-     * Método que deshabilita la entidad
-     * @return 
-     */
-    public String deshabilitar() {
-       if (getFacade().noTieneDependencias(current.getId())){
-          update = 1;
-          update();        
-          recreateModel();
-       } 
-        else{
-            //No Deshabilita 
-            JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoNonDeletable"));            
-       }
-       return "view";
-    }     
     
+    /**
+     * Método que verifica que la Actividad Planificada que se quiere eliminar no esté siento utilizada por otra entidad
+     * @return 
+     */
+    public String prepareDestroy(){
+        current = procedimientoSelected;
+        boolean libre = getFacade().getUtilizado(current.getId());
+
+        if (libre){
+            // Elimina
+            performDestroy();
+            recreateModel();
+        }else{
+            //No Elimina 
+            JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoNonDeletable"));
+        }
+        instVinc = current.getInstanciasXProcedimiento();
+        return "view";
+    }  
+   
     
     /**
      * Método para validar que no exista ya una entidad con este nombre al momento de crearla
@@ -240,71 +392,99 @@ public class MbProcedimiento implements Serializable{
     /**
      * Restea la entidad
      */
-   
     private void recreateModel() {
-        items = null;
+        listProcedimiento.clear();
+        listProcedimiento = null;
+        if(instVincFilter != null){
+            instVincFilter = null;
+        }
+        if(instDispFilter != null){
+            instDispFilter = null;
+        }
+        if(instanciasFilter != null){
+            instanciasFilter = null;
+        }
+    }      
+    /**
+     * 
+     */
+    private List<Instancia> cargarInstanciasDisponibles(){
+        List<Instancia> insts = instFacade.getHabilitadas();
+        List<Instancia> instsSelect = new ArrayList();
+        Iterator itInsts = insts.listIterator();
+        while(itInsts.hasNext()){
+            Instancia inst = (Instancia)itInsts.next();
+            if(!instVinc.contains(inst)){
+                instsSelect.add(inst);
+            }
+        }
+        return instsSelect;
     }
- 
     /*************************
     ** Métodos de operación **
     **************************/
     /**
      * @return 
      */
-    public String create() {
+    public String create() {     
         // Creación de la entidad de administración y asignación
         Date date = new Date(System.currentTimeMillis());
         AdminEntidad admEnt = new AdminEntidad();
         admEnt.setFechaAlta(date);
         admEnt.setHabilitado(true);
         admEnt.setUsAlta(usLogeado);
-        current.setAdminentidad(admEnt);        
+        current.setAdminentidad(admEnt); 
         try {
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoCreated"));
-            return "view";
+            if(getFacade().noExiste(current.getNombre(), current.getApp())){
+                getFacade().create(current);
+                JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoCreated"));
+                return "view";
+            }else{
+                JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoExistente"));
+                return null;
+            }
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoCreatedErrorOccured"));
+            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PProcedimientoCreatedErrorOccured"));
             return null;
         }
     }
 
-        /**
+    /**
+     * Método que actualiza una nueva Provincia en la base de datos.
+     * Previamente actualiza los datos de administración
      * @return mensaje que notifica la actualización
      */
-    public String update() {
-        Date date = new Date(System.currentTimeMillis());
-        //Date dateBaja = new Date();
-        
-        // actualizamos según el valor de update
-        if(update == 1){
-            current.getAdminentidad().setFechaBaja(date);
-            current.getAdminentidad().setUsBaja(usLogeado);
-            current.getAdminentidad().setHabilitado(false);
-        }
-        if(update == 2){
-            current.getAdminentidad().setFechaModif(date);
-            current.getAdminentidad().setUsModif(usLogeado);
-            current.getAdminentidad().setHabilitado(true);
-            current.getAdminentidad().setFechaBaja(null);
-            current.getAdminentidad().setUsBaja(usLogeado);
-        }
-        if(update == 0){
-            current.getAdminentidad().setFechaModif(date);
-            current.getAdminentidad().setUsModif(usLogeado);
-        }
-
-        // acualizo
+    public String update() {    
+        boolean edito;
+        Procedimiento sub;
         try {
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoUpdated"));
-            return "view";
+            sub = getFacade().getExistente(current.getNombre(), current.getApp());
+            if(sub == null){
+                edito = true;  
+            }else{
+                edito = sub.getId().equals(current.getId());
+            }
+            if(edito){
+                // Actualización de datos de administración de la entidad
+                Date date = new Date(System.currentTimeMillis());
+                current.getAdminentidad().setFechaModif(date);
+                current.getAdminentidad().setUsModif(usLogeado);
+
+                // Actualizo
+                getFacade().edit(current);
+                JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoUpdated"));
+                asignaInstancia = false;
+                instDisp.clear();
+                return "view";
+            }else{
+                JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("CreateProcedimientoExistente"));
+                return null; 
+            }
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoUpdatedErrorOccured"));
             return null;
         }
     }
-
 
     /**************************
     **    Métodos de selección     **
@@ -315,9 +495,54 @@ public class MbProcedimiento implements Serializable{
      * @return la entidad correspondiente
      */
     public Procedimiento getProcedimiento(java.lang.Long id){
-        return ProcedimientoFacade.find(id);
-    }    
+        return getFacade().find(id);
+    }
     
+    /**
+     * Método para revocar la sesión del MB
+     * @return 
+     */
+    public String cleanUp(){
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+                .getExternalContext().getSession(true);
+        session.removeAttribute("mbProcedimiento");
+
+        return "inicio";
+    } 
+    
+     /**
+     * Método para mostrar las Actividades Implementadas vinculadas a esta Actividad Planificada
+     */
+    public void verInstancias(){
+        instancias = current.getInstanciasXProcedimiento();
+        Map<String,Object> options = new HashMap<>();
+        options.put("contentWidth", 950);
+        RequestContext.getCurrentInstance().openDialog("", options, null);
+    }       
+
+    public void asignarInstancia(Instancia inst){
+        instVinc.add(inst);
+        instDisp.remove(inst);
+        if(instVincFilter != null){
+            instVincFilter = null;
+        }
+        if(instDispFilter != null){
+            instDispFilter = null;
+        }
+    }
+    
+    public void quitarInstancia(Instancia inst){
+        instVinc.remove(inst);
+        instDisp.add(inst);
+        if(instVincFilter != null){
+            instVincFilter = null;
+        }
+        if(instDispFilter != null){
+            instDispFilter = null;
+        }
+    }
+    
+
     /*********************
     ** Métodos privados **
     **********************/
@@ -325,7 +550,11 @@ public class MbProcedimiento implements Serializable{
      * @return el Facade
      */
     private ProcedimientoFacade getFacade() {
-        return ProcedimientoFacade;
+        return procedimientoFacade;
+    }
+
+    private void performDestroy() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     
@@ -335,6 +564,13 @@ public class MbProcedimiento implements Serializable{
     @FacesConverter(forClass = Procedimiento.class)
     public static class ProcedimientoControllerConverter implements Converter {
 
+        /**
+         *
+         * @param facesContext
+         * @param component
+         * @param value
+         * @return
+         */
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
@@ -364,6 +600,13 @@ public class MbProcedimiento implements Serializable{
             return sb.toString();
         }
 
+        /**
+         *
+         * @param facesContext
+         * @param component
+         * @param object
+         * @return
+         */
         @Override
         public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
             if (object == null) {
@@ -377,4 +620,5 @@ public class MbProcedimiento implements Serializable{
             }
         }
     }        
+
 }

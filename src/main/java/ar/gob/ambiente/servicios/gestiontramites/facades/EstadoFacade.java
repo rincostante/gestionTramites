@@ -7,6 +7,7 @@
 package ar.gob.ambiente.servicios.gestiontramites.facades;
 
 import ar.gob.ambiente.servicios.gestiontramites.entidades.Estado;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -53,7 +54,8 @@ public class EstadoFacade extends AbstractFacade<Estado> {
     public boolean noTieneDependencias(Long id){
         em = getEntityManager();       
         String queryString = "SELECT ins FROM Instancia ins " 
-                + "WHERE ins.estado.id = :id";      
+                + "WHERE ins.estadoinicial.id = :id "
+                + "OR ins.estadofinal.id = :id";      
         Query q = em.createQuery(queryString)
                 .setParameter("id", id);
         return q.getResultList().isEmpty();

@@ -36,11 +36,16 @@ public class Estado implements Serializable {
     
     private int app;
     
-    @OneToMany(mappedBy="estado")
-    private List<Instancia> instancias;
+    @OneToMany(mappedBy="estadoInicial")
+    private List<Instancia> instanciasEstInicial;
+     
+    @OneToMany(mappedBy="estadoFinal")
+    private List<Instancia> instanciasEstFinal;   
+    
     
     public Estado(){
-        instancias = new ArrayList<>();
+        instanciasEstInicial = new ArrayList<>();
+        instanciasEstFinal = new ArrayList<>();
     }
 
     public String getNombre() {
@@ -68,14 +73,23 @@ public class Estado implements Serializable {
         this.id = id;
     }
 
-
-    public List<Instancia> getInstancias() {
-        return instancias;
+    public List<Instancia> getInstanciasEstInicial() {
+        return instanciasEstInicial;
     }
 
-    public void setInstancias(List<Instancia> instancias) {
-        this.instancias = instancias;
+    public void setInstanciasEstInicial(List<Instancia> instanciasEstInicial) {
+        this.instanciasEstInicial = instanciasEstInicial;
     }
+
+    public List<Instancia> getInstanciasEstFinal() {
+        return instanciasEstFinal;
+    }
+
+    public void setInstanciasEstFinal(List<Instancia> instanciasEstFinal) {
+        this.instanciasEstFinal = instanciasEstFinal;
+    }
+
+
 
     @Override
     public int hashCode() {

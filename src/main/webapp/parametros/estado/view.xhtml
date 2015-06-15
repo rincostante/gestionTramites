@@ -19,20 +19,31 @@
                     <h:outputLabel value="#{bundle.CreateEstadoLabel_app}"/>
                     <h:outputText value="#{mbEstado.selected.app}" title="#{bundle.CreateEstadoTitle_app}"/>
 
-                    <h:outputLabel value="#{bundle.InstanciasAsociadas}&nbsp;" />
-                    <p:commandButton value="Ver instancias" type="button" onclick="PF('Instancias').show();" actionListener="#{mbEstado.selected.instancias}" />      
+                    <h:outputLabel value="#{bundle.InstanciasAsociadasEstadoInicial}&nbsp;" />
+                    <p:commandButton value="Ver instancias" type="button" onclick="PF('Instancias').show();" actionListener="#{mbEstado.selected.instanciasEstInicial}" />   
+
+                    <h:outputLabel value="#{bundle.InstanciasAsociadasEstadoFinal}&nbsp;" />
+                    <p:commandButton value="Ver instancias" type="button" onclick="PF('Instancias').show();" actionListener="#{mbEstado.selected.instanciasEstFinal}" />      
                 </h:panelGrid>   
-                <p:dialog style="font-size: 80%" header="Listado de Instancias asociadas a este Estado" widgetVar="Instancias" 
+                
+                <p:dialog style="font-size: 80%" header="Listado de Instancias Iniciales asociadas a este Estado" widgetVar="InstanciasIniciales" 
                           showEffect="fade" hideEffect="fade" height="100" width="30%">
-                    <p:dataTable value="#{mbEstado.selected.instancias}" var="i" id="esp" filteredValue="#{mbEstado.listInsFilter}">
-                        <p:column headerText="Instancia" 
-                                  filterMatchMode="contains"
-                                  filterBy="#{i.nombre}"
-                                  sortBy="#{i.nombre}" >
+                    <p:dataTable value="#{mbEstado.selected.instanciasEstInicial}" var="i" id="insEstIni" filteredValue="#{mbEstado.listInsFilter}">
+                        <p:column headerText="Instancia Inicial" filterMatchMode="contains" filterBy="#{i.nombre}" sortBy="#{i.nombre}" >
                             <p:outputLabel value="#{i.nombre}"/> 
                         </p:column>                        
                     </p:dataTable>
                 </p:dialog>
+                
+                <p:dialog style="font-size: 80%" header="Listado de Instancias Finales asociadas a este Estado" widgetVar="InstanciasFinales" 
+                          showEffect="fade" hideEffect="fade" height="100" width="30%">
+                    <p:dataTable value="#{mbEstado.selected.instanciasEstFinal}" var="f" id="insEstFin" filteredValue="#{mbEstado.listInsFilter}">
+                        <p:column headerText="Instancia Final" filterMatchMode="contains" filterBy="#{f.nombre}" sortBy="#{f.nombre}" >
+                            <p:outputLabel value="#{f.nombre}"/> 
+                        </p:column>                        
+                    </p:dataTable>
+                </p:dialog>
+                
             </p:panel>
 
             <p:toolbar>

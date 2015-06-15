@@ -41,13 +41,13 @@ public class ProcedimientoFacade extends AbstractFacade<Procedimiento> {
     public boolean noExiste(String nombre, int app){
         em = getEntityManager();       
         String queryString = "SELECT pro.nombre FROM Procedimiento pro "
-                + "WHERE pro.nombre = :stringParam "
+                + "WHERE pro.nombre = :nombre "
                 + "AND pro.app = :app";
         Query q = em.createQuery(queryString)
                 .setParameter("nombre", nombre)
                 .setParameter("app", app);
         return q.getResultList().isEmpty();
-    }
+    } 
     
     /**
      * Metodo que verifica si ya existe la entidad.
@@ -63,15 +63,26 @@ public class ProcedimientoFacade extends AbstractFacade<Procedimiento> {
         return q.getResultList().isEmpty();
     }    
     
+    /**
+     * Método que obtiene una Procedimiento existente según los datos recibidos como parámetro
+     * @param nombre
+     * @param app
+     * @return 
+     */
     public Procedimiento getExistente(String nombre, int app){
-        em = getEntityManager();       
-        String queryString = "SELECT pro.nombre FROM Procedimiento pro "
-                + "WHERE pro.nombre = :nombre "
-                + "AND pro.app = :app ";
+        List<Procedimiento> lInst;
+        String queryString = "SELECT reg FROM Procedimiento reg "
+                + "WHERE reg.nombre = :nombre "
+                + "AND reg.app = :app";
         Query q = em.createQuery(queryString)
                 .setParameter("nombre", nombre)
                 .setParameter("app", app);
-        return (Procedimiento)q.getSingleResult();
+        lInst = q.getResultList();
+        if(!lInst.isEmpty()){
+            return lInst.get(0);
+        }else{
+            return null;
+        }
     }
 
     public List<String> getNombre(){
@@ -116,4 +127,19 @@ public class ProcedimientoFacade extends AbstractFacade<Procedimiento> {
                 .setParameter("id", id);
         return q.getResultList().isEmpty();
     }          
+   /**
+     * Método que verifica si el procedimiento puede ser eliminado
+     * @param id: Id de la region que se desea verificar
+     * @return
+     */
+    public boolean getUtilizado(Long id){
+        em = getEntityManager();
+        String queryString = "SELECT inst.id FROM Instancia inst "
+                + "INNER JOIN inst.procedimientos pro "
+                + "WHERE pro.id = :id";
+        Query q = em.createQuery(queryString)
+                .setParameter("id", id);
+        return q.getResultList().isEmpty();
+    } 
 }
+

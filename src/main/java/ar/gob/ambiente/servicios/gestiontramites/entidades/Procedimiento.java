@@ -17,6 +17,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
@@ -41,14 +43,14 @@ public class Procedimiento implements Serializable {
     private int app;
     
     @OneToMany(mappedBy="procedimiento")
-    private List<Instancia> instancias;
+    private List<Instancia> instanciasXProcedimiento;
     
     @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name="adminentidad_id")
     private AdminEntidad adminentidad;
     
     public Procedimiento(){
-        instancias = new ArrayList<>();
+        instanciasXProcedimiento = new ArrayList<>();
     }
     
     public Long getId() {
@@ -75,12 +77,12 @@ public class Procedimiento implements Serializable {
         this.app = app;
     }
 
-    public List<Instancia> getInstancias() {
-        return instancias;
+    public List<Instancia> getInstanciasXProcedimiento() {
+        return instanciasXProcedimiento;
     }
 
-    public void setInstancias(List<Instancia> instancias) {
-        this.instancias = instancias;
+    public void setInstanciasXProcedimiento(List<Instancia> instanciasXProcedimiento) {
+        this.instanciasXProcedimiento = instanciasXProcedimiento;
     }
 
     public AdminEntidad getAdminentidad() {

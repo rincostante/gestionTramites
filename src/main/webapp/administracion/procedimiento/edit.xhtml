@@ -5,32 +5,105 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-      <ui:composition template="/WEB-INF/facelets/templates/entidadTemplate.xhtml">
-        <ui:define name="content">
-        <br/>
-            <h:form id="frmEdit">
+     <ui:composition template="/WEB-INF/facelets/templates/entidadTemplate.xhtml">
+     <ui:define name="content">
+     <h:form style="text-align: left">
                 <p:panel id="pnEdit" header="#{bundle.ProcedimientoEditTitle}" style="margin-bottom:10px;">
-                    <p:growl id="messages" />
-                    <h:panelGrid columns="3">
+                    <h:inputHidden id="id" value="#{mbProcedimiento.selected.id}" />
+                    <p:messages id="messages" />
+                    
+                    <p:dialog id="dlg" resizable="false" />
+                    
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="#{bundle.ProcedimientoTitle}" for="nombre"/>
+                        <p:inputText id="nombre" style="width: 500px" value="#{mbProcedimiento.selected.nombre}" requiredMessage="#{bundle.ProcedimientoRequire_nombre}" required="true"/>   
                         
-                        <p:outputLabel value="#{bundle.CreateProcedimientoLabel_nombre}" for="nombre"/>
-                        <p:inputText id="nombre" validator="#{mbProcedimiento.validarUpdate}" value="#{mbProcedimiento.selected.nombre}" requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_nombre}" required="true"/>
-                        <h:inputHidden id="id" value="#{mbProcedimiento.selected.id}" />
+                    <p:outputLabel value="#{bundle.CreateProcedimientoLabel_app}" for="app"/>
+                        <p:inputText id="app" value="#{mbProcedimiento.selected.app}" requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" required="true"/>     
                         
-                        <p:outputLabel value="#{bundle.CreateProcedimientoLabel_app}" for="app"/>
-                        <p:inputText id = "app" value = "#{mbProcedimiento.selected.app}" 
-                                        requiredMessage = "#{bundle.CreateProcedimientoRequiredMessage_app}" required = "true"/>
+                        <h:outputLabel   value="#{bundle.InstanciasAsociadas}" />
+                        <h:panelGrid id="btnVerInst" columns="2">                       
+                            <p:commandButton value="Ver/Quitar Asignados" 
+                                         icon="ui-icon-extlink"
+                                         onclick="PF('instVinc').show();"  /> 
+                            <p:commandButton value="Ver/Agregar Disponibles" 
+                                         icon="ui-icon-extlink" 
+                                         type="button" 
+                                         onclick="PF('instDisp').show();" 
+                                         actionListener="#{mbProcedimiento.instDisp}" />      
+
+                        </h:panelGrid> 
                     </h:panelGrid>
+                    
+                        <p:dialog style="font-size: 80%"
+                                  header="Listado de instancias asociadas"
+                                  widgetVar="instVinc"
+                                  showEffect="fade"
+                                  hideEffect="fade"
+                                  height="200"
+                                  width="50%">
+                            <p:dataTable value="#{mbProcedimiento.instVinc}" filteredValue="#{mbProcedimiento.instVincFilter}"
+                                            rows="5" 
+                                            paginator="true" 
+                                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                            rowsPerPageTemplate="5,10,15"
+                                            var="e" 
+                                            id="instVinc" >
+                                <f:facet name="header">
+                                    <p:commandButton icon="ui-icon-refresh" value="Actualizar" update="instVinc" style="margin-left: 10px"/>
+                                </f:facet>
+                                
+                                <p:column headerText="Nombre" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
+                                    <h:outputText value="#{e.nombre}" />
+                                </p:column>
+
+                                <p:column headerText="Quitar" style="width :70px;" >
+                                    <p:commandButton icon="ui-icon-circle-triangle-n" actionListener="#{mbProcedimiento.quitarInstancia(e)}" update="instVinc" />
+                                </p:column>                        
+                            </p:dataTable>
+                        </p:dialog>  
+                    
+                    
+                    
+                    
+                        <p:dialog style="font-size: 80%"
+                                  header="Listado de instancias disponibles"
+                                  widgetVar="instDisp"
+                                  showEffect="fade"
+                                  hideEffect="fade"
+                                  height="200"
+                                  width="50%">
+                            <p:dataTable value="#{mbProcedimiento.instDisp}" filteredValue="#{mbProcedimiento.instDispFilter}"
+                                            rows="5" 
+                                            paginator="true" 
+                                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                            rowsPerPageTemplate="5,10,15"
+                                            var="e" 
+                                            id="instDisp" >
+                                <f:facet name="header">
+                                    <p:commandButton icon="ui-icon-refresh" value="Actualizar" update="instDisp" style="margin-left: 10px"/>
+                                </f:facet>
+                                
+                                <p:column headerText="Nombre" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
+                                    <h:outputText value="#{e.nombre}" />
+                                </p:column>
+
+                                <p:column headerText="Asignar" style="width :70px;" >
+                                    <p:commandButton icon="ui-icon-circle-triangle-n" actionListener="#{mbProcedimiento.asignarInstancia(e)}" update="instDisp" />
+                                </p:column>                        
+                            </p:dataTable>
+                        </p:dialog>   
+                    
+
                 </p:panel>
+         
                 <p:toolbar>
                     <f:facet name="left">
                         <p:commandButton icon="ui-icon-pencil" action="#{mbProcedimiento.update}" value="Guardar" style="margin-right:10px;" update="pnEdit"/>
-                        <p:commandButton icon="ui-icon-cancel" value="Limpiar" style="float: right">
+                        <p:commandButton icon="ui-icon-cancel" value="Limpiar">
                             <p:ajax update="pnEdit" resetValues="true" />
-                        </p:commandButton>
-                    </f:facet>
-                    <f:facet name="right">
-                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" action="#{mbProcedimiento.prepareList}" value="Volver" immediate="true"/>
+                        </p:commandButton>    
+                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" action="#{mbProcedimiento.prepareList}" value="Volver" style="float: next" immediate="true" ajax="false"/>
                     </f:facet>                    
                 </p:toolbar>
             </h:form>

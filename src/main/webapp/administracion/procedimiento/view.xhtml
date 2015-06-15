@@ -39,7 +39,7 @@
                                         title="#{bundle.FechaBaja}"/>    
                         
                         <h:outputLabel value="#{bundle.InstanciasAsociadas}" />
-                        <p:commandButton value="Ver" type="button" onclick="PF('Instancias').show();" actionListener="#{mbProcedimiento.selected.instancias}" />                           
+                        <p:commandButton value="Ver Instancias" type="button" onclick="PF('Instancias').show();" actionListener="#{mbProcedimiento.selected.instanciasXProcedimiento}" />                           
                     </h:panelGrid>                    
                 </p:panel>
                 <p:toolbar>
@@ -55,13 +55,12 @@
                           hideEffect="fade" 
                           height="100" 
                           width="30%">
-                    <p:dataTable value="#{mbProcedimiento.selected.instancias}" var="p" id="procedimientoList">
+                    <p:dataTable value="#{mbProcedimiento.selected.instanciasXProcedimiento}" var="p" id="procedimientoList" filteredValue="#{mbProcedimiento.listInstancias}">
                         <p:column headerText="Instancia" filterMatchMode="contains" filterBy="#{p.nombre}" sortBy="#{p.nombre}" rendered="#{p.adminentidad.habilitado == 'true'}" >
                             <p:outputLabel value="#{p.nombre}"/> 
                         </p:column>                        
                     </p:dataTable>
                 </p:dialog>
-
             </h:form>
         </ui:define>
     </ui:composition>

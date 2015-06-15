@@ -17,15 +17,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+
 
 /**
  *
  * @author carmendariz
  */
-
+@XmlRootElement(name = "instancia")
 @Entity
+@Table(name = "instancia")
 public class Instancia implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -33,18 +35,18 @@ public class Instancia implements Serializable {
     private Long id;
     
     @Column (nullable=false, length=100, unique=true)
-    @NotNull(message = "El campo nombre no puede quedar nulo")
-    @Size(message = "El campo nombre debe tener entre 1 y 100 caracteres", min = 1, max = 100)
+   // @NotNull(message = "El campo nombre no puede quedar nulo")
+   // @Size(message = "El campo nombre debe tener entre 1 y 100 caracteres", min = 1, max = 100)
     private String nombre;
     
     @Column (nullable=false, length=100, unique=true)
-    @NotNull(message = "El campo ruta no puede quedar nulo")
-    @Size(message = "El campo nombre debe tener entre 1 y 100 caracteres", min = 1, max = 100)
+   // @NotNull(message = "El campo ruta no puede quedar nulo")
+   // @Size(message = "El campo nombre debe tener entre 1 y 100 caracteres", min = 1, max = 100)
     private String ruta;
     
     @Column (nullable=false, length=50, unique=true)
-    @NotNull(message = "El campo código no puede quedar nulo")
-    @Size(message = "El campo nombre debe tener entre 1 y 50 caracteres", min = 1, max = 50)
+   // @NotNull(message = "El campo código no puede quedar nulo")
+   // @Size(message = "El campo nombre debe tener entre 1 y 50 caracteres", min = 1, max = 50)
     private String codigo;
         
     @ManyToOne /*(fetch=FetchType.LAZY)*/
@@ -54,28 +56,40 @@ public class Instancia implements Serializable {
     private int app;
     
     @ManyToOne /*(fetch=FetchType.LAZY)*/
-    @JoinColumn(name="estado_id")
-    private Estado estado;    
+    @JoinColumn(name="estadoInicial_id")
+   // @NotNull(message = "El campo estado Inicial no puede quedar nulo")
+    private Estado estadoInicial; 
     
     @ManyToOne /*(fetch=FetchType.LAZY)*/
-    @JoinColumn(name="unidadDeTiempo_id")
-    private UnidadDeTiempo unidadDeTiempo;
+    @JoinColumn(name="estadoFinal_id")
+   // @NotNull(message = "El campo estado Final no puede quedar nulo")
+    private Estado estadoFinal;
+       
+    @ManyToOne /*(fetch=FetchType.LAZY)*/
+    @JoinColumn(name="unidadDeTiempoAlerta_id")
+   // @NotNull(message = "El campo unidad de Tiempo para el alerta no puede quedar nulo")    
+    private UnidadDeTiempo unidadDeTiempoAlerta;
+           
+    @ManyToOne /*(fetch=FetchType.LAZY)*/
+    @JoinColumn(name="unidadDeTiempoVto_id")
+   // @NotNull(message = "El campo unidad de Tiempo para el vencimiento no puede quedar nulo")       
+    private UnidadDeTiempo unidadDeTiempoVto;
     
     @Column (nullable=false, length=10, unique=true)
-    @NotNull(message = "El campo vencimiento no puede quedar nulo")
-    @Size(message = "El campo nombre debe tener entre 1 y 10 caracteres", min = 1, max = 10)
+   // @NotNull(message = "El campo vencimiento no puede quedar nulo")
+   // @Size(message = "El campo nombre debe tener entre 1 y 10 caracteres", min = 1, max = 10)
     private int cantidadVencimiento;
 
     @Column (nullable=false, length=10, unique=true)
-    @NotNull(message = "El campo alerta no puede quedar nulo")
-    @Size(message = "El campo nombre debe tener entre 1 y 10 caracteres", min = 1, max = 10)
+   // @NotNull(message = "El campo alerta no puede quedar nulo")
+   // @Size(message = "El campo nombre debe tener entre 1 y 10 caracteres", min = 1, max = 10)
     private int cantidadAlerta;
     
     private String observaciones;
     
     @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name="adminentidad_id")
-    private AdminEntidad adminentidad;    
+    private AdminEntidad adminentidad;
 
     public Long getId() {
         return id;
@@ -125,14 +139,6 @@ public class Instancia implements Serializable {
         this.app = app;
     }
 
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
-    }
-
     public String getObservaciones() {
         return observaciones;
     }
@@ -168,15 +174,37 @@ public class Instancia implements Serializable {
         this.cantidadAlerta = cantidadAlerta;
     }
 
-    public UnidadDeTiempo getUnidadDeTiempo() {
-        return unidadDeTiempo;
+    public UnidadDeTiempo getUnidadDeTiempoAlerta() {
+        return unidadDeTiempoAlerta;
     }
 
-    public void setUnidadDeTiempo(UnidadDeTiempo unidadDeTiempo) {
-        this.unidadDeTiempo = unidadDeTiempo;
+    public void setUnidadDeTiempoAlerta(UnidadDeTiempo unidadDeTiempoAlerta) {
+        this.unidadDeTiempoAlerta = unidadDeTiempoAlerta;
     }
 
+    public UnidadDeTiempo getUnidadDeTiempoVto() {
+        return unidadDeTiempoVto;
+    }
 
+    public void setUnidadDeTiempoVto(UnidadDeTiempo unidadDeTiempoVto) {
+        this.unidadDeTiempoVto = unidadDeTiempoVto;
+    }
+
+    public Estado getEstadoInicial() {
+        return estadoInicial;
+    }
+
+    public void setEstadoInicial(Estado estadoInicial) {
+        this.estadoInicial = estadoInicial;
+    }
+
+    public Estado getEstadoFinal() {
+        return estadoFinal;
+    }
+
+    public void setEstadoFinal(Estado estadoFinal) {
+        this.estadoFinal = estadoFinal;
+    }
 
     
 /***************************** para ver con Rubén *******************************/
