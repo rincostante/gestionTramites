@@ -54,8 +54,8 @@ public class EstadoFacade extends AbstractFacade<Estado> {
     public boolean noTieneDependencias(Long id){
         em = getEntityManager();       
         String queryString = "SELECT ins FROM Instancia ins " 
-                + "WHERE ins.estadoinicial.id = :id "
-                + "OR ins.estadofinal.id = :id";      
+                + "WHERE ins.estadoinicial = :id "
+                + "OR ins.estadofinal = :id";      
         Query q = em.createQuery(queryString)
                 .setParameter("id", id);
         return q.getResultList().isEmpty();

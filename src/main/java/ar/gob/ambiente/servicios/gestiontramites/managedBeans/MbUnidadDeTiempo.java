@@ -6,8 +6,9 @@
 
 package ar.gob.ambiente.servicios.gestiontramites.managedBeans;
 
-import ar.gob.ambiente.servicios.gestiontramites.entidades.Instancia;
+
 import ar.gob.ambiente.servicios.gestiontramites.entidades.UnidadDeTiempo;
+import ar.gob.ambiente.servicios.gestiontramites.entidades.Instancia;
 import ar.gob.ambiente.servicios.gestiontramites.entidades.util.JsfUtil;
 import ar.gob.ambiente.servicios.gestiontramites.facades.UnidadDeTiempoFacade;
 import java.io.Serializable;
@@ -171,7 +172,7 @@ public class MbUnidadDeTiempo implements Serializable{
      * @param arg2: contenido del campo de texto a validar 
      */
     public void validarInsert(FacesContext arg0, UIComponent arg1, Object arg2){
-        validarExistente(arg2);
+        validarExistente();
     }
     
     /**
@@ -183,7 +184,8 @@ public class MbUnidadDeTiempo implements Serializable{
      */
     public void validarUpdate(FacesContext arg0, UIComponent arg1, Object arg2){
         if(!current.getNombre().equals((String)arg2)){
-            validarExistente(arg2);
+            if(!current.getSecuencia().equals((String)arg2))
+            validarExistente();
         }
     }    
 
@@ -224,10 +226,6 @@ public class MbUnidadDeTiempo implements Serializable{
         listado.clear();
     }    
     
-    
-    /*******************************
-    ** Métodos para la navegación **
-    ********************************/   
     /**
      * @return La entidad gestionada
      */
@@ -258,8 +256,8 @@ public class MbUnidadDeTiempo implements Serializable{
         return unidadDeTiempoFacade;
     }    
     
-    private void validarExistente(Object arg2) throws ValidatorException{
-        if(!getFacade().noExiste((String)arg2)){
+    private void validarExistente() throws ValidatorException{
+        if(!getFacade().noExiste(current.getNombre(),current.getSecuencia())){
             throw new ValidatorException(new FacesMessage(ResourceBundle.getBundle("/Bundle").getString("CreateUnidadDeTiempoExistente")));
         }
     }    

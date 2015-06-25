@@ -14,7 +14,7 @@
                 <p:growl id="messages" />
                 <h:panelGrid columns="2">
                     <p:outputLabel value="#{bundle.CreateUnidadDeTiempoLabel_nombre}" for="nombre"/>
-                    <p:inputText id="nombre" validator="#{mbUnidadDeTiempo.validarInsert}" value="#{mbUnidadDeTiempo.selected.nombre}" 
+                    <p:inputText id="nombre" value="#{mbUnidadDeTiempo.selected.nombre}" 
                                  requiredMessage="#{bundle.CreateUnidadDeTiempoRequiredMessage_nombre}" required="true"/>
                     
                     <p:outputLabel value="#{bundle.CreateUnidadDeTiempoLabel_secuencia}" for="secuencia"/>

@@ -22,6 +22,7 @@ import javax.validation.constraints.Size;
  *
  * @author carmendariz
  */
+
 @Entity
 public class UnidadDeTiempo implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -29,7 +30,7 @@ public class UnidadDeTiempo implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column (nullable=false, length=50, unique=true)
+    @Column (nullable=false, length=50, unique=false)
     @NotNull(message = "El campo nombre no puede quedar nulo")
     @Size(message = "El campo nombre debe tener entre 1 y 50 caracteres", min = 1, max = 50)
     private String nombre;
@@ -37,14 +38,16 @@ public class UnidadDeTiempo implements Serializable {
     private String secuencia;
     
     @OneToMany(mappedBy="unidadDeTiempoAlerta")
-    private List<Instancia> instanciasUdTAlerta; 
-    
+    private List<Instancia> instanciasUdTAlerta;
+     
     @OneToMany(mappedBy="unidadDeTiempoVto")
-    private List<Instancia> instanciasUdTVto;
+    private List<Instancia> instanciasUdTVto;   
     
     public UnidadDeTiempo(){
+        instanciasUdTAlerta = new ArrayList<>();
+        instanciasUdTVto = new ArrayList<>();
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -84,7 +87,9 @@ public class UnidadDeTiempo implements Serializable {
     public void setInstanciasUdTVto(List<Instancia> instanciasUdTVto) {
         this.instanciasUdTVto = instanciasUdTVto;
     }
-    
+
+
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -109,5 +114,6 @@ public class UnidadDeTiempo implements Serializable {
     public String toString() {
         return "ar.gob.ambiente.servicios.gestiontramites.entidades.UnidadDeTiempo[ id=" + id + " ]";
     }
-
+    
 }
+

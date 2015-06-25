@@ -6,7 +6,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
     <ui:composition template="/WEB-INF/facelets/templates/entidadTemplate.xhtml">
+        <ui:define name="title">
+        <h:outputText value="#{bundle.ProcedimientoTitle}" />
+        </ui:define>
         <ui:define name="content">
+        <br/>
         <h:form id="frmProcedimientoView">
                 <p:panel id="pnView" header="#{bundle.ProcedimientoViewTitle}" style="margin-bottom:10px;">
                     <p:messages id="messages" />
@@ -39,7 +43,7 @@
                                         title="#{bundle.FechaBaja}"/>    
                         
                         <h:outputLabel value="#{bundle.InstanciasAsociadas}" />
-                        <p:commandButton value="Ver Instancias" type="button" onclick="PF('Instancias').show();" actionListener="#{mbProcedimiento.selected.instanciasXProcedimiento}" />                           
+                        <p:commandButton value="Ver Instancias" type="button" onclick="PF('Instancias').show();" actionListener="#{mbProcedimiento.verInstancias()}" />                           
                     </h:panelGrid>                    
                 </p:panel>
                 <p:toolbar>
@@ -55,9 +59,9 @@
                           hideEffect="fade" 
                           height="100" 
                           width="30%">
-                    <p:dataTable value="#{mbProcedimiento.selected.instanciasXProcedimiento}" var="p" id="procedimientoList" filteredValue="#{mbProcedimiento.listInstancias}">
-                        <p:column headerText="Instancia" filterMatchMode="contains" filterBy="#{p.nombre}" sortBy="#{p.nombre}" rendered="#{p.adminentidad.habilitado == 'true'}" >
-                            <p:outputLabel value="#{p.nombre}"/> 
+                    <p:dataTable value="#{mbProcedimiento.instVinc}" filteredValue="#{mbProcedimiento.instVincFilter}" var="e" id="instVinc" >
+                        <p:column headerText="Nombre" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
+                            <h:outputText value="#{e.nombre}" />
                         </p:column>                        
                     </p:dataTable>
                 </p:dialog>

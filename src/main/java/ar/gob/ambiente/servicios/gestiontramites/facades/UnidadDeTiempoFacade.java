@@ -7,6 +7,7 @@
 package ar.gob.ambiente.servicios.gestiontramites.facades;
 
 import ar.gob.ambiente.servicios.gestiontramites.entidades.UnidadDeTiempo;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,15 +34,18 @@ public class UnidadDeTiempoFacade extends AbstractFacade<UnidadDeTiempo> {
     /**
      * Metodo que verifica si ya existe la entidad.
      * @param aBuscar: es la cadena que buscara para ver si ya existe en la BDD
+     * @param secuencia
      * @return: devuelve True o False
      */
-    public boolean noExiste(String aBuscar){
+    public boolean noExiste(String aBuscar, String secuencia){
         em = getEntityManager();       
         String queryString = "SELECT udt.nombre FROM UnidadDeTiempo udt "
-                + "WHERE udt.nombre = :stringParam ";
+                + "WHERE udt.nombre = :stringParam "
+                + "AND udt.secuencia = :secuencia";
         
         Query q = em.createQuery(queryString)
-                .setParameter("stringParam", aBuscar);
+                .setParameter("stringParam", aBuscar)
+                .setParameter("secuencia", secuencia);
         return q.getResultList().isEmpty();
     }  
     
@@ -53,12 +57,11 @@ public class UnidadDeTiempoFacade extends AbstractFacade<UnidadDeTiempo> {
     public boolean noTieneDependencias(Long id){
         em = getEntityManager();       
         String queryString = "SELECT ins FROM Instancia ins " 
-                + "WHERE ins.unidaddetiempoalerta_id = :id "
-                + "OR ins.unidaddetiempovto_id = :id";      
+                + "WHERE ins.unidaddetiempoalerta.id = :id "
+                + "OR ins.unidaddetiempovto.id = :id";      
         Query q = em.createQuery(queryString)
                 .setParameter("id", id);
         return q.getResultList().isEmpty();
     }          
     
 }
-

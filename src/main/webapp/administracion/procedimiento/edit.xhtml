@@ -23,13 +23,13 @@
                         
                         <h:outputLabel   value="#{bundle.InstanciasAsociadas}" />
                         <h:panelGrid id="btnVerInst" columns="2">                       
-                            <p:commandButton value="Ver/Quitar Asignados" 
+                            <p:commandButton value="Ver/Quitar Asignadas" 
                                          icon="ui-icon-extlink"
-                                         onclick="PF('instVinc').show();"  /> 
+                                         onclick="PF('InstVinc').show();"  /> 
                             <p:commandButton value="Ver/Agregar Disponibles" 
                                          icon="ui-icon-extlink" 
                                          type="button" 
-                                         onclick="PF('instDisp').show();" 
+                                         onclick="PF('InstDisp').show();" 
                                          actionListener="#{mbProcedimiento.instDisp}" />      
 
                         </h:panelGrid> 
@@ -37,7 +37,7 @@
                     
                         <p:dialog style="font-size: 80%"
                                   header="Listado de instancias asociadas"
-                                  widgetVar="instVinc"
+                                  widgetVar="InstVinc"
                                   showEffect="fade"
                                   hideEffect="fade"
                                   height="200"
@@ -68,7 +68,7 @@
                     
                         <p:dialog style="font-size: 80%"
                                   header="Listado de instancias disponibles"
-                                  widgetVar="instDisp"
+                                  widgetVar="InstDisp"
                                   showEffect="fade"
                                   hideEffect="fade"
                                   height="200"

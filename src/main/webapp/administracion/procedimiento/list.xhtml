@@ -9,38 +9,38 @@
         <ui:define name="content">
             <f:metadata>  
                 <f:event listener="#{mbProcedimiento.iniciar}" type="preRenderView"></f:event>  
-            </f:metadata>      
-            <h:form>
-                <p:panel id="procedimientoForm" header="#{bundle.ProcedimientoListTitle}" style="margin-bottom:10px;" toggleable="true" toggleTitle="Ver/Ocultar">
-                    <h:panelGrid columns="6">
-                        <p:commandButton icon="ui-icon-newwin" value="Agregar Nuevo" action="#{mbProcedimiento.prepareCreate}"/>
-                        <p:commandButton icon="ui-icon-refresh" value="Refrescar Listado" action="#{mbProcedimiento.prepareList}" update="procedimientoList"/>                      
-                    </h:panelGrid>   
-                </p:panel>   
+            </f:metadata>         
+            <br/> 
+            <h:form style="text-align: left">
+                <p:panel id="procedimientoForm" header="#{bundle.ProcedimientoListTitle}" style="margin-bottom:10px;" toggleable="true" toggleTitle="Ver/Ocultar"  >
+                    <h:panelGroup>
+                        <h:panelGrid columns="4" id="pnBotones">
+                            <p:commandButton icon="ui-icon-newwin" value="Agregar Nuevo" action="#{mbProcedimiento.prepareCreate}"/>
+                            <p:commandButton icon="ui-icon-refresh" value="Refrescar Listado" action="#{mbProcedimiento.prepareList}" update="procedimientoList"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </p:panel>      
                 
-                <p:dataTable value="#{mbProcedimiento.listProcedimiento}" 
-                             var="e" 
-                             id="procedimientoList" 
-                             rows="5" filteredValue="#{mbProcedimiento.listProcedimiento}"
-                             paginator="true"  
+                <p:dataTable value="#{mbProcedimiento.listProcedimiento}" var="e" id="procedimientoList" rows="5" 
+                             filteredValue="#{mbProcedimiento.listProcedimiento}"
+                             paginator="true" 
                              widgetVar="proTable"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="5,10,15">
-                    
-                    <f:facet name="header">#{bundle.ProcedimientoListTitle}
-                        <p:commandButton id="toggler" type="button" value="Columnas" icon="ui-icon-calculator" style="margin-left: 10px"/>
-                        <p:commandButton icon="ui-icon-refresh" value="Listar" action="#{mbProcedimiento.prepareList}" update="procedimientoList" style="margin-left: 10px"/>                        
-                        <p:columnToggler datasource="procedimientoList" trigger="toggler" />                        
+                    <f:facet name="header">
+                        Listado de #{bundle.ProcedimientoListTitle}
+                        <p:commandButton id="toggler" type="button" value="Columnas" icon="ui-icon-calculator" style="margin-left: 10px" />
+                        <p:commandButton icon="ui-icon-refresh" value="Listar" action="#{mbProcedimiento.prepareList}" update="procedimientoList" style="margin-left: 10px"/>
+                        <p:columnToggler datasource="procedimientoList" trigger="toggler" />
                     </f:facet>
-                    
-                    <p:column headerText="#{bundle.ProcedimientoTitle}" filterMatchMode="contains" sortBy="#{e.nombre}" filterBy="#{e.nombre}" > 
+                    <p:column headerText="#{bundle.ProcedimientoTitle}" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
                         <p:outputLabel value="#{e.nombre}"/>
-                    </p:column>      
+                    </p:column>
                     
-                    <p:column headerText="App" filterMatchMode="contains" sortBy="#{e.app}" filterBy="#{e.app}" > 
+                    <p:column headerText="#{bundle.CreateProcedimientoLabel_app}" sortBy="#{e.app}" filterBy="#{e.app}" filterMatchMode="contains"  >
                         <p:outputLabel value="#{e.app}"/>
-                    </p:column>                     
-
+                    </p:column>   
+                    
                     <p:column filterBy="#{e.adminentidad.habilitado}" headerText="Estado" filterMatchMode="equals">
                         <f:facet name="filter">
                             <p:selectOneMenu onchange="PF('proTable').filter()" style="font-size: 80%">
@@ -51,34 +51,32 @@
                             </p:selectOneMenu>
                         </f:facet>
                         <h:outputText value="#{e.adminentidad.habilitado ? 'Habilitado': 'Deshabilitado'}" />
-                    </p:column>
-                    
+                    </p:column>                    
+
                     <p:column headerText="Acciones" style="width:140px">
-                        <p:growl id="messages" showDetail="true" />    
-                        <p:commandButton icon="ui-icon-zoomin" action="#{mbProcedimiento.prepareView}" title="Ver Detalle">
-                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.procedimientoSelected}" />
+                        <p:growl id="messages" showDetail="true" />
+                        <p:commandButton icon="ui-icon-zoomin" action="#{mbProcedimiento.prepareView}" title="Ver detalle">
+                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
                         </p:commandButton>
-                        
                         <p:commandButton icon="ui-icon-pencil" action="#{mbProcedimiento.prepareEdit}" title="Editar">
-                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.procedimientoSelected}" />
+                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
                         </p:commandButton>
 
-                        <p:commandButton icon="ui-icon-close" action="#{mbProcedimiento.prepareDestroy}" rendered="#{e.adminentidad.habilitado == 'true'}" 
-                                         title="Deshabilitar" update="messages">
-                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.procedimientoSelected}" />
-                                <p:confirm header="Confirmar"  message="¿Desea deshabilitar el Procedimiento?" icon="ui-icon-alert" />
-                        </p:commandButton>                
-
-                        <p:commandButton icon="ui-icon-check" action="#{mbProcedimiento.habilitar}" rendered="#{e.adminentidad.habilitado == 'false'}" 
-                                         title="Habilitar" update="messages">
-                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.procedimientoSelected}" />
+                        <p:commandButton icon="ui-icon-trash" action="#{mbProcedimiento.prepareDestroy}" update="messages" title="Deshabilitar">
+                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
+                            <p:confirm header="Confirmar" message="¿Desea deshabilitar el Procedimiento?" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-check" action="#{mbProcedimiento.prepareHabilitar}" rendered="#{e.adminentidad.habilitado == 'false'}" 
+                                             title="Habilitar" update="procedimientoList">
+                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
                                 <p:confirm header="Confirmar" message="¿Desea habilitar el Procedimiento?" icon="ui-icon-alert" />
-                            </p:commandButton>  
-                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                           </p:confirmDialog>      
-                    </p:column> 
+                        </p:commandButton>                          
+                        
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                           <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                           <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                       </p:confirmDialog>                       
+                    </p:column>                
                 </p:dataTable>
             </h:form>
         </ui:define>

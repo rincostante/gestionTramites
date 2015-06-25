@@ -21,20 +21,28 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author carmendariz
  */
+@XmlRootElement(name = "procedimiento")
 @Entity
+@Table(name = "procedimiento")
 public class Procedimiento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    /**
+     * Campo de texto que indica el nombre de la REgion. 
+     */      
     @Column (nullable=false, length=50, unique=true)
     @NotNull(message = "El campo nombre no puede quedar nulo")
     @Size(message = "El campo nombre debe tener entre 1 y 50 caracteres", min = 1, max = 50)
@@ -42,15 +50,20 @@ public class Procedimiento implements Serializable {
     
     private int app;
     
-    @OneToMany(mappedBy="procedimiento")
-    private List<Instancia> instanciasXProcedimiento;
-    
     @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name="adminentidad_id")
     private AdminEntidad adminentidad;
     
+    /**
+     * Campo de tipo Array que contiene el conjunto de las instancias que contiene este procedimiento
+     */    
+    @OneToMany(mappedBy="procedimiento")
+    private List<Instancia> instancias;     
+    /**
+     * Constructor
+     */
     public Procedimiento(){
-        instanciasXProcedimiento = new ArrayList<>();
+        instancias = new ArrayList();
     }
     
     public Long getId() {
@@ -77,12 +90,13 @@ public class Procedimiento implements Serializable {
         this.app = app;
     }
 
-    public List<Instancia> getInstanciasXProcedimiento() {
-        return instanciasXProcedimiento;
+    @XmlTransient
+    public List<Instancia> getInstancias() {
+        return instancias;
     }
 
-    public void setInstanciasXProcedimiento(List<Instancia> instanciasXProcedimiento) {
-        this.instanciasXProcedimiento = instanciasXProcedimiento;
+    public void setInstancias(List<Instancia> instancias) {
+        this.instancias = instancias;
     }
 
     public AdminEntidad getAdminentidad() {
@@ -118,7 +132,7 @@ public class Procedimiento implements Serializable {
         return "ar.gob.ambiente.servicios.gestiontramites.entidades.Procedimiento[ id=" + id + " ]";
     }
 
-    public boolean isEmpty() {
+    public void setInstancias(Instancia inst) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

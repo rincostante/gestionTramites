@@ -17,42 +17,46 @@
                             
                             <h:outputLabel value="#{bundle.CreateInstanciaLabel_ruta} "/>
                             <h:outputText value="#{mbInstancia.selected.ruta}" 
-                                          title="#{bundle.CreateInstanciaTitle_ruta}"/>                            
+                                          title="#{bundle.CreateInstanciaTitle_ruta}"/>     
+                                                        
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_app} "/>
+                            <h:outputText value="#{mbInstancia.selected.app}" 
+                                          title="#{bundle.CreateInstanciaTitle_app}"/>  
 
                             <h:outputLabel value="#{bundle.CreateInstanciaLabel_codigo} "/>
                             <h:outputText value="#{mbInstancia.selected.codigo}" 
                                           title="#{bundle.CreateInstanciaTitle_codigo}"/>
 
-                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_estadoInicia} "/>
-                            <h:outputText value="#{mbInstancia.selected.estadoInicial}" 
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_estadoInicial} "/>
+                            <h:outputText value="#{mbInstancia.selected.estadoInicial.nombre}" 
                                           title="#{bundle.CreateInstanciaTitle_estadoInicial}"/>  
                             
                             <h:outputLabel value="#{bundle.CreateInstanciaLabel_estadoFinal} "/>
-                            <h:outputText value="#{mbInstancia.selected.estadoFinal}" 
+                            <h:outputText value="#{mbInstancia.selected.estadoFinal.nombre}" 
                                           title="#{bundle.CreateInstanciaTitle_estadoFinal}"/>       
                         
-                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_vencimiento} "/>
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_vto} "/>
                             <h:outputText value="#{mbInstancia.selected.cantidadVencimiento}" 
-                                          title="#{bundle.CreateInstanciaTitle_sinonimos}"/>  
+                                          title="#{bundle.CreateInstanciaLabel_vto}"/>  
                                                                                 
-                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_unidadDeTiempo} "/>
-                            <h:outputText value="#{mbInstancia.selected.unidadDeTiempoVto}" 
-                                          title="#{bundle.CreateInstanciaTitle_unidadDeTiempo}"/> 
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto} "/>
+                            <h:outputText value="#{mbInstancia.selected.unidadDeTiempoVto.nombre}" 
+                                          title="#{bundle.CreateInstanciaTitle_UdTVto}"/> 
                                                         
-                            <h:outputLabel value="#{bundle.ViewInstanciaLabel_alerta} "/>
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_alerta} "/>
                             <h:outputText value="#{mbInstancia.selected.cantidadAlerta}" 
-                                          title="#{bundle.ViewInstanciaTitle_alerta}"/> 
+                                          title="#{bundle.CreateInstanciaTitle_alerta}"/> 
                                                     
-                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_unidadDeTiempo} "/>
-                            <h:outputText value="#{mbInstancia.selected.unidadDeTiempoAlerta}" 
-                                          title="#{bundle.CreateInstanciaTitle_unidadDeTiempo}"/>  
+                            <h:outputLabel value="#{bundle.CreateInstanciaLabel_UdTAlerta} "/>
+                            <h:outputText value="#{mbInstancia.selected.unidadDeTiempoAlerta.nombre}" 
+                                          title="#{bundle.CreateInstanciaTitle_UdTAlerta}"/>  
                             
                             <h:outputLabel value="#{bundle.CreateInstanciaLabel_observaciones} "/>
                             <h:outputText value="#{mbInstancia.selected.observaciones}" 
                                           title="#{bundle.CreateInstanciaTitle_observaciones}"/> 
                             
                             <h:outputLabel value="#{bundle.UsuarioAlta}"/>
-                            <h:outputText value="#{mbInstancia.selected.adminentidad.usAlta}"
+                            <h:outputText value="#{mbInstancia.selected.adminentidad.usAlta.nombre}"
                                           title="#{bundle.UsuarioAlta}"/>                        
 
                             <h:outputLabel value="#{bundle.FechaAlta}"/>
@@ -60,7 +64,7 @@
                                           title="#{bundle.FechaAlta}"/>                         
 
                             <h:outputLabel value="#{bundle.UsuarioModifica}"/>
-                            <h:outputText value="#{mbInstancia.selected.adminentidad.usModif}"
+                            <h:outputText value="#{mbInstancia.selected.adminentidad.usModif.nombre}"
                                           title="#{bundle.UsuarioModifica}"/>                        
 
                             <h:outputLabel value="#{bundle.FechaModifica}"/>
@@ -68,7 +72,7 @@
                                           title="#{bundle.FechaModifica}"/>                          
 
                             <h:outputLabel value="#{bundle.UsuarioBaja}" rendered="#{not mbInstancia.selected.adminentidad.habilitado}"/>
-                            <h:outputText value="#{mbInstancia.selected.adminentidad.usBaja}"
+                            <h:outputText value="#{mbInstancia.selected.adminentidad.usBaja.nombre}"
                                           title="#{bundle.UsuarioBaja}" rendered="#{not mbInstancia.selected.adminentidad.habilitado}"/>                        
 
                             <h:outputLabel value="#{bundle.FechaBaja}" rendered="#{not mbInstancia.selected.adminentidad.habilitado}"/>

@@ -7,6 +7,8 @@
 package ar.gob.ambiente.servicios.gestiontramites.entidades;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,10 +17,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 /**
@@ -35,62 +41,63 @@ public class Instancia implements Serializable {
     private Long id;
     
     @Column (nullable=false, length=100, unique=true)
-   // @NotNull(message = "El campo nombre no puede quedar nulo")
-   // @Size(message = "El campo nombre debe tener entre 1 y 100 caracteres", min = 1, max = 100)
+    @NotNull(message = "{entidades.fieldNotNullError}")
+    @Size(message = "{endidades.stringSizeError}", min = 1, max = 100)
     private String nombre;
     
-    @Column (nullable=false, length=100, unique=true)
-   // @NotNull(message = "El campo ruta no puede quedar nulo")
-   // @Size(message = "El campo nombre debe tener entre 1 y 100 caracteres", min = 1, max = 100)
+    @Column (nullable=false, length=100, unique=false)
+    @NotNull(message = "{entidades.fieldNotNullError}")
+    @Size(message = "{endidades.stringSizeError}", min = 1, max = 100)
     private String ruta;
     
     @Column (nullable=false, length=50, unique=true)
-   // @NotNull(message = "El campo código no puede quedar nulo")
-   // @Size(message = "El campo nombre debe tener entre 1 y 50 caracteres", min = 1, max = 50)
+    @NotNull(message = "{entidades.fieldNotNullError}")
+    @Size(message = "{endidades.stringSizeError}", min = 1, max = 50)
     private String codigo;
-        
-    @ManyToOne /*(fetch=FetchType.LAZY)*/
-    @JoinColumn(name="procedimiento_id")
-    private Procedimiento procedimiento;
     
     private int app;
     
+    
+    @ManyToOne 
+    @JoinColumn(name="procedimiento_id")
+    private Procedimiento procedimiento;
+    
     @ManyToOne /*(fetch=FetchType.LAZY)*/
     @JoinColumn(name="estadoInicial_id")
-   // @NotNull(message = "El campo estado Inicial no puede quedar nulo")
     private Estado estadoInicial; 
     
     @ManyToOne /*(fetch=FetchType.LAZY)*/
     @JoinColumn(name="estadoFinal_id")
-   // @NotNull(message = "El campo estado Final no puede quedar nulo")
     private Estado estadoFinal;
-       
+    
+    @Column (nullable=true, length=5)
+    @NotNull(message = "{entidades.fieldNotNullError}")
+    @Size(message = "{endidades.stringSizeError}", min = 1, max = 5)
+    private String cantidadVencimiento;
+               
     @ManyToOne /*(fetch=FetchType.LAZY)*/
-    @JoinColumn(name="unidadDeTiempoAlerta_id")
-   // @NotNull(message = "El campo unidad de Tiempo para el alerta no puede quedar nulo")    
-    private UnidadDeTiempo unidadDeTiempoAlerta;
-           
-    @ManyToOne /*(fetch=FetchType.LAZY)*/
-    @JoinColumn(name="unidadDeTiempoVto_id")
-   // @NotNull(message = "El campo unidad de Tiempo para el vencimiento no puede quedar nulo")       
+    @JoinColumn(name="unidadDeTiempoVto_id")    
     private UnidadDeTiempo unidadDeTiempoVto;
     
-    @Column (nullable=false, length=10, unique=true)
-   // @NotNull(message = "El campo vencimiento no puede quedar nulo")
-   // @Size(message = "El campo nombre debe tener entre 1 y 10 caracteres", min = 1, max = 10)
-    private int cantidadVencimiento;
-
-    @Column (nullable=false, length=10, unique=true)
-   // @NotNull(message = "El campo alerta no puede quedar nulo")
-   // @Size(message = "El campo nombre debe tener entre 1 y 10 caracteres", min = 1, max = 10)
-    private int cantidadAlerta;
+    @Column (nullable=true, length=5)
+    @NotNull(message = "{entidades.fieldNotNullError}")
+    @Size(message = "{endidades.stringSizeError}", min = 1, max = 5)
+    private String cantidadAlerta;
+           
+    @ManyToOne /*(fetch=FetchType.LAZY)*/
+    @JoinColumn(name="unidadDeTiempoAlerta_id")
+    private UnidadDeTiempo unidadDeTiempoAlerta;
     
     private String observaciones;
     
     @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name="adminentidad_id")
     private AdminEntidad adminentidad;
-
+   
+    
+    public Instancia(){
+    }  
+    
     public Long getId() {
         return id;
     }
@@ -123,13 +130,6 @@ public class Instancia implements Serializable {
         this.codigo = codigo;
     }
 
-    public Procedimiento getProcedimiento() {
-        return procedimiento;
-    }
-
-    public void setProcedimiento(Procedimiento procedimiento) {
-        this.procedimiento = procedimiento;
-    }
 
     public int getApp() {
         return app;
@@ -147,6 +147,7 @@ public class Instancia implements Serializable {
         this.observaciones = observaciones;
     }
 
+    @XmlTransient    
     public AdminEntidad getAdminentidad() {
         return adminentidad;
     }
@@ -154,41 +155,15 @@ public class Instancia implements Serializable {
     public void setAdminentidad(AdminEntidad adminentidad) {
         this.adminentidad = adminentidad;
     }
-    
-    
-    
-/***************************** para ver con Rubén *******************************/
-     public int getCantidadVencimiento() {
-        return cantidadVencimiento;
+
+    public Procedimiento getProcedimiento() {
+        return procedimiento;
     }
 
-    public void setCantidadVencimiento(int cantidadVencimiento) {
-        this.cantidadVencimiento = cantidadVencimiento;
+    public void setProcedimiento(Procedimiento procedimiento) {
+        this.procedimiento = procedimiento;
     }
 
-    public int getCantidadAlerta() {
-        return cantidadAlerta;
-    }
-
-    public void setCantidadAlerta(int cantidadAlerta) {
-        this.cantidadAlerta = cantidadAlerta;
-    }
-
-    public UnidadDeTiempo getUnidadDeTiempoAlerta() {
-        return unidadDeTiempoAlerta;
-    }
-
-    public void setUnidadDeTiempoAlerta(UnidadDeTiempo unidadDeTiempoAlerta) {
-        this.unidadDeTiempoAlerta = unidadDeTiempoAlerta;
-    }
-
-    public UnidadDeTiempo getUnidadDeTiempoVto() {
-        return unidadDeTiempoVto;
-    }
-
-    public void setUnidadDeTiempoVto(UnidadDeTiempo unidadDeTiempoVto) {
-        this.unidadDeTiempoVto = unidadDeTiempoVto;
-    }
 
     public Estado getEstadoInicial() {
         return estadoInicial;
@@ -206,12 +181,38 @@ public class Instancia implements Serializable {
         this.estadoFinal = estadoFinal;
     }
 
-    
-/***************************** para ver con Rubén *******************************/
-    
-    
-    
-    
+    public String getCantidadVencimiento() {
+        return cantidadVencimiento;
+    }
+
+    public void setCantidadVencimiento(String cantidadVencimiento) {
+        this.cantidadVencimiento = cantidadVencimiento;
+    }
+
+    public UnidadDeTiempo getUnidadDeTiempoVto() {
+        return unidadDeTiempoVto;
+    }
+
+    public void setUnidadDeTiempoVto(UnidadDeTiempo unidadDeTiempoVto) {
+        this.unidadDeTiempoVto = unidadDeTiempoVto;
+    }
+
+    public String getCantidadAlerta() {
+        return cantidadAlerta;
+    }
+
+    public void setCantidadAlerta(String cantidadAlerta) {
+        this.cantidadAlerta = cantidadAlerta;
+    }
+
+    public UnidadDeTiempo getUnidadDeTiempoAlerta() {
+        return unidadDeTiempoAlerta;
+    }
+
+    public void setUnidadDeTiempoAlerta(UnidadDeTiempo unidadDeTiempoAlerta) {
+        this.unidadDeTiempoAlerta = unidadDeTiempoAlerta;
+    }
+ 
     @Override
     public int hashCode() {
         int hash = 0;

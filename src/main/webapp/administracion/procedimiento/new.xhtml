@@ -6,15 +6,18 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
         <ui:composition template="/WEB-INF/facelets/templates/entidadTemplate.xhtml">
+        <ui:define name="title">
+        <h:outputText value="#{bundle.ProcedimientoTitle}" />
+        </ui:define>
         <ui:define name="content">
-            <br/>
+        <br/>
             <h:form id="frmNew">
                 <p:panel id="pnNew" header="#{bundle.ProcedimientoNewTitle}" style="margin-bottom:10px;">
                     <p:growl id="messages" />
                     
                     <h:panelGrid columns="2">
                         <p:outputLabel value="#{bundle.CreateProcedimientoLabel_nombre}" for="nombre"/>
-                        <p:inputText id="nombre" validator="#{mbProcedimiento.validarInsert}" value="#{mbProcedimiento.selected.nombre}" 
+                        <p:inputText id="nombre" value="#{mbProcedimiento.selected.nombre}" 
                                      requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_nombre}" required="true"/>
 
                     <p:outputLabel value="#{bundle.CreateProcedimientoLabel_app}" for="app"/>
@@ -25,29 +28,28 @@
                 </p:panel>
                 
                 <p:panel id="pnInstancias" 
-                         header="Seleccione las instancias para este Procedimiento" 
+                         header="Seleccione las Instancias para este Procedimiento" 
                          toggleable="true" toggleTitle="Ver/Ocultar"
                          style="width:400px;">
-                    <p:dataTable value="#{mbProcedimiento.instancias}" var="e" id="instanciaList" rows="5" 
+                    <p:dataTable value="#{mbProcedimiento.instancias}" var="e" id="instList" rows="5" 
                                  filteredValue="#{mbProcedimiento.instanciasFilter}"
                                  rowKey="#{e.id}"
-                                 selection="#{mbProcedimiento.selected.instanciasXProcedimiento}"
+                                 selection="#{mbProcedimiento.selected.instancias}"
                                  paginator="true"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  rowsPerPageTemplate="5,10,15" style="font-size: 80%">
                         <f:facet name="header">
                             Listado de #{bundle.InstanciasAsociadas}
-                            <p:commandButton icon="ui-icon-refresh" value="Listar" update="instanciaList" style="margin-left: 10px"/>
+                            <p:commandButton icon="ui-icon-refresh" value="Listar" update="instList" style="margin-left: 10px"/>
                         </f:facet>
                         <p:column selectionMode="multiple" style="width: 35px"  />  
                         
-                        <p:column headerText="#{bundle.CreateInstanciaLabel_nombre}" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
+                        <p:column headerText="#{bundle.CreateProcedimientoLabel_nombre}" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
                             <p:outputLabel value="#{e.nombre}"/>
                         </p:column>
 
                     </p:dataTable>
                 </p:panel>
-                
                 <br/>
                 
                 <p:toolbar>

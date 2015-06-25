@@ -26,6 +26,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
@@ -42,14 +43,15 @@ public class MbInstancia implements Serializable{
     
     private Instancia current;
     private DataModel items =null;
-    private List<Instancia> listaFilter;
-    private List<Procedimiento> listProFilter;
+    private List<Instancia> listFilter;
     private List<Instancia> listado = null;    
-    private List<Procedimiento> listaProcedimientos;
+
     private List<Estado> listaEstados;
+    private List<UnidadDeTiempo> listaUnidadDeTiempos;
+    private List<Procedimiento> listaProcedimientos;
     
     @EJB
-    private ProcedimientoFacade procedimientoFacade;
+    private ProcedimientoFacade procFacade;
     
     @EJB
     private UnidadDeTiempoFacade unidadDeTiempoFacade;
@@ -61,13 +63,14 @@ public class MbInstancia implements Serializable{
     private InstanciaFacade instanciaFacade;
     
     private Estado selectedEstado;
-    private UnidadDeTiempo selectedUnidadDeAlerta;
-    private UnidadDeTiempo selectedUnidadDeVto;
-    private Procedimiento selectedProcedimiento;
+    private UnidadDeTiempo selectedUnidadDeTiempo;
+    private Procedimiento selectedProcedimiento;    
     private List<UnidadDeTiempo> listaUnidadDeTiemposAlerta;
     private List<UnidadDeTiempo> listaUnidadDeTiemposVto;
     private List<Estado> listaEstadosIniciales;
     private List<Estado> listaEstadosFinales;
+
+    private List<Procedimiento> listProFilter;
 
    
     private Usuario usLogeado;
@@ -105,30 +108,22 @@ public class MbInstancia implements Serializable{
         this.selectedEstado = selectedEstado;
     }
 
-    public UnidadDeTiempo getSelectedUnidadDeAlerta() {
-        return selectedUnidadDeAlerta;
+    public UnidadDeTiempo getSelectedUnidadDeTiempo() {
+        return selectedUnidadDeTiempo;
     }
 
-    public void setSelectedUnidadDeAlerta(UnidadDeTiempo selectedUnidadDeAlerta) {
-        this.selectedUnidadDeAlerta = selectedUnidadDeAlerta;
+    public void setSelectedUnidadDeTiempo(UnidadDeTiempo selectedUnidadDeTiempo) {
+        this.selectedUnidadDeTiempo = selectedUnidadDeTiempo;
     }
 
-    public UnidadDeTiempo getSelectedUnidadDeVto() {
-        return selectedUnidadDeVto;
+    public List<Instancia> getListFilter() {
+        return listFilter;
     }
 
-    public void setSelectedUnidadDeVto(UnidadDeTiempo selectedUnidadDeVto) {
-        this.selectedUnidadDeVto = selectedUnidadDeVto;
+    public void setListFilter(List<Instancia> listFilter) {
+        this.listFilter = listFilter;
     }
 
-
-    public List<Instancia> getListaFilter() {
-        return listaFilter;
-    }
-
-    public void setListaFilter(List<Instancia> listaFilter) {
-        this.listaFilter = listaFilter;
-    }
 
     public List<UnidadDeTiempo> getListaUnidadDeTiemposAlerta() {
         return listaUnidadDeTiemposAlerta;
@@ -144,6 +139,14 @@ public class MbInstancia implements Serializable{
 
     public void setListaUnidadDeTiemposVto(List<UnidadDeTiempo> listaUnidadDeTiemposVto) {
         this.listaUnidadDeTiemposVto = listaUnidadDeTiemposVto;
+    }
+
+    public List<UnidadDeTiempo> getListaUnidadDeTiempos() {
+        return listaUnidadDeTiempos;
+    }
+
+    public void setListaUnidadDeTiempos(List<UnidadDeTiempo> listaUnidadDeTiempos) {
+        this.listaUnidadDeTiempos = listaUnidadDeTiempos;
     }
 
     public List<Estado> getListaEstadosIniciales() {
@@ -204,6 +207,9 @@ public class MbInstancia implements Serializable{
     @PostConstruct
     public void init(){
         iniciado = false;
+        ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
+        login = (MbLogin)ctx.getSessionMap().get("mbLogin");
+        usLogeado = login.getUsLogeado();        
     }
     /**
      * Método que borra de la memoria los MB innecesarios al cargar el listado 
@@ -248,6 +254,7 @@ public class MbInstancia implements Serializable{
         listaEstadosFinales = estadoFacade.findAll();
         listaUnidadDeTiemposAlerta = unidadDeTiempoFacade.findAll();
         listaUnidadDeTiemposVto = unidadDeTiempoFacade.findAll();   
+
         
         current = new Instancia();
         return "new";
@@ -260,7 +267,8 @@ public class MbInstancia implements Serializable{
         listaEstadosIniciales = estadoFacade.findAll();
         listaEstadosFinales = estadoFacade.findAll();
         listaUnidadDeTiemposAlerta = unidadDeTiempoFacade.findAll();
-        listaUnidadDeTiemposVto = unidadDeTiempoFacade.findAll();                
+        listaUnidadDeTiemposVto = unidadDeTiempoFacade.findAll();    
+        listaProcedimientos = procFacade.findAll();
         return "edit";
     }
            
@@ -282,7 +290,7 @@ public class MbInstancia implements Serializable{
      * @return 
      */
     public String prepareDestroy(){
-        boolean libre = getFacade().noTieneDependencias(current.getId());
+        boolean libre = getFacade().tieneDependencias(current.getId());
 
         if (libre){
             // Elimina
@@ -322,7 +330,7 @@ public class MbInstancia implements Serializable{
             validarExistente(arg2);
         }
     }    
-   
+ 
  
 
    
@@ -347,12 +355,11 @@ public class MbInstancia implements Serializable{
      * @return la entidad correspondiente
      */
     public Instancia getInstancia(java.lang.Long id) {
-       return getFacade().find(id);
+       return instanciaFacade.find(id);
     }      
     
     public DataModel getItems() {
         if (items == null) {
-            //items = getPagination().createPageDataModel();
             items = new ListDataModel(getFacade().findAll());
         }
         return items;
@@ -370,7 +377,7 @@ public class MbInstancia implements Serializable{
 
     
     private void validarExistente(Object arg2) throws ValidatorException{
-        if(!getFacade().existe((String)arg2)){
+        if(!getFacade().noExiste((String)arg2)){
             throw new ValidatorException(new FacesMessage(ResourceBundle.getBundle("/Bundle").getString("CreateInstanciaExistente")));
         }
     }       
@@ -387,24 +394,34 @@ public class MbInstancia implements Serializable{
         }
     }      
 
-    
-    /**
+     /**
      * @return mensaje que notifica la actualizacion de estado
-     */      
-    public void habilitar() {
+     */     
+   public void habilitar() {
         update = 2;
         update();        
         recreateModel();
-    }  
-    
-     /**
+    } 
+
+    /**
      * @return mensaje que notifica la actualizacion de estado
      */    
     public void deshabilitar() {
+       if (getFacade().tieneDependencias(current.getId())){
           update = 1;
           update();        
-          recreateModel();     
+          recreateModel();
+       } 
+        else{
+            //No Deshabilita 
+            JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaNonDeletable"));            
+        }
+    } 
+
+    private void recreateModel() {
+        items = null;
     }
+
 
 
     /*************************
@@ -436,44 +453,39 @@ public class MbInstancia implements Serializable{
      * Previamente actualiza los datos de administración
      * @return mensaje que notifica la actualización
      */
-    public String update() {  
-        boolean edito;
-        Instancia ins;
-        try {
-            ins = getFacade().getExistente(current.getNombre());
-            if(ins == null){
-                edito = true;  
-            }else{
-                edito = ins.getId().equals(current.getId());
-            }
-            if(edito){
-                // Actualización de datos de administración de la entidad
-                Date date = new Date(System.currentTimeMillis());
-                current.getAdminentidad().setFechaModif(date);
-                current.getAdminentidad().setUsModif(usLogeado);
+    public String update() {
+        Date date = new Date(System.currentTimeMillis());
+        //Date dateBaja = new Date();
+        
+        // actualizamos según el valor de update
+        if(update == 1){
+            current.getAdminentidad().setFechaBaja(date);
+            current.getAdminentidad().setUsBaja(usLogeado);
+            current.getAdminentidad().setHabilitado(false);
+        }
+        if(update == 2){
+            current.getAdminentidad().setFechaModif(date);
+            current.getAdminentidad().setUsModif(usLogeado);
+            current.getAdminentidad().setHabilitado(true);
+            current.getAdminentidad().setFechaBaja(null);
+            current.getAdminentidad().setUsBaja(usLogeado);
+        }
+        if(update == 0){
+            current.getAdminentidad().setFechaModif(date);
+            current.getAdminentidad().setUsModif(usLogeado);
+        }
 
-                // Actualizo
-                getFacade().edit(current);
-                JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaUpdated"));
-                listaProcedimientos.clear(); 
-                return "view";
-            }else{
-                JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaExistente"));
-                return null; 
-            }
+        // acualizo
+        try {
+            getFacade().edit(current);
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaUpdated"));
+            return "view";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("InstanciaUpdatedErrorOccured"));
             return null;
         }
     } 
-
     
-    /**
-     * Restea la entidad
-     */
-    private void recreateModel() {
-        items = null;
-    }
     
     /********************************************************************
     ** Converter. Se debe actualizar la entidad y el facade respectivo **

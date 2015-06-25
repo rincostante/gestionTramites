@@ -6,10 +6,11 @@
      xmlns:ui="http://java.sun.com/jsf/facelets"
      xmlns:p="http://primefaces.org/ui"
      xmlns:h="http://xmlns.jcp.org/jsf/html">
+        <ui:define name="title">
+        <h:outputText value="#{bundle.InstanciaTitle}" />
+        </ui:define>
         <ui:define name="content">
-            
-            <h:form id="pnNew">
-                
+        <h:form id="frmNew">
                 <p:panel id="pnNew" header="#{bundle.InstanciaNewTitle}" style="margin-bottom:10px;">
                     <p:growl id="messages" />
                     
@@ -17,7 +18,7 @@
 
                         <p:outputLabel value=""/>
                         <p:outputLabel value="#{bundle.CreateInstanciaLabel_nombre}" for="nombre"/>
-                        <p:inputText id="nombre" value="#{mbInstancia.selected.nombre}" 
+                        <p:inputText id="nombre" validator="#{mbInstancia.validarInsert}" value="#{mbInstancia.selected.nombre}" 
                                      requiredMessage="#{bundle.CreateInstanciaRequiredMessage_nombre}" required="true"/>
                         <p:message for="nombre" />   
 
@@ -25,6 +26,11 @@
                         <p:inputText id="ruta" value="#{mbInstancia.selected.ruta}" requiredMessage="#{bundle.CreateInstanciaRequiredMessage_ruta}" 
                                      required="true"/>
                         <p:message for="ruta" />  
+                        
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_app}" for="app"/>
+                        <p:inputText id="app" value="#{mbInstancia.selected.app}" requiredMessage="#{bundle.CreateInstanciaRequiredMessage_app}" 
+                                     required="true"/>
+                        <p:message for="app" />                          
 
                         <p:outputLabel value="#{bundle.CreateInstanciaLabel_codigo}" for="codigo"/>
                         <p:inputText id="codigo" value="#{mbInstancia.selected.codigo}" requiredMessage="#{bundle.CreateInstanciaRequiredMessage_codigo}" required="true"/>
@@ -51,12 +57,12 @@
                                      requiredMessage="#{bundle.CreateInstanciaRequiredMessage_cantidadAlerta}" required="false"/>
                         <p:message for="alerta" /> 
                         
-                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTAlerta}" for="unidadDeTiempoAlerta"/>      
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTAlerta}" for="unidadDeTiempoAlerta"/>                             
                         <p:selectOneMenu id="unidadDeTiempoAlerta" value="#{mbInstancia.selected.unidadDeTiempoAlerta}" 
-                                         requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTAlerta}" required="true">
-                            <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para alerta" itemValue="" noSelectionOption="true"/>
+                                         requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTAlerta}" required="true">                                         >
+                            <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el alerta" itemValue="" noSelectionOption="true" />                           
                             <f:selectItems value="#{mbInstancia.listaUnidadDeTiemposAlerta}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoAlerta}"/>
-                        </p:selectOneMenu>                        
+                        </p:selectOneMenu>                          
 
                         <p:outputLabel value=""/>
                         <p:outputLabel value="#{bundle.CreateInstanciaLabel_vto}" for="cantidadVencimiento"/>
@@ -64,12 +70,12 @@
                                      requiredMessage="#{bundle.CreateInstanciaRequiredMessage_vto}" required="false"/>
                         <p:message for="cantidadVencimiento" /> 
                         
-                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>      
+                        <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>                             
                         <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbInstancia.selected.unidadDeTiempoVto}" 
-                                         requiredMessage="#{bundle.CreateInstanciaProcedimientoRequiredMessage_UdTVto}" required="true">
-                            <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el Vto." itemValue="" noSelectionOption="true"/>
+                                         requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTVto}" required="true">                                         >
+                            <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el vencimiento" itemValue="" noSelectionOption="true" />                           
                             <f:selectItems value="#{mbInstancia.listaUnidadDeTiemposVto}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoVto}"/>
-                        </p:selectOneMenu>                        
+                        </p:selectOneMenu>                           
 
                         <p:outputLabel value=""/>
                         <p:outputLabel value="#{bundle.CreateInstanciaLabel_observaciones}" for="observaciones"/>
