@@ -58,10 +58,15 @@ public class MbProcedimiento implements Serializable{
     private InstanciaFacade instFacade;
     
     private Procedimiento procedimientoSelected;
+    private Instancia instanciaSelected;
     private Usuario usLogeado;
     private MbLogin login;   
     private boolean iniciado;
     //private int update; // 0=updateNormal | 1=deshabiliar | 2=habilitar
+    private String R01;
+    private String I01;
+    private String Inst01;
+    private int index;
 
 
 
@@ -210,6 +215,14 @@ public class MbProcedimiento implements Serializable{
 
     public void setCurrent(Procedimiento current) {
         this.current = current;
+    }
+
+    public Instancia getInstanciaSelected() {
+        return instanciaSelected;
+    }
+
+    public void setInstanciaSelected(Instancia instanciaSelected) {
+        this.instanciaSelected = instanciaSelected;
     }
 
    
@@ -368,8 +381,8 @@ public class MbProcedimiento implements Serializable{
      * @return mensaje que notifica la inserción
      */
     public String create() {
-        if(current.getInstancias().isEmpty()){
-            JsfUtil.addSuccessMessage("El procedimiento que está guardando debe estar vinculado, al menos, a una Instancia.");
+        if(current.getNombre().isEmpty()){
+            JsfUtil.addSuccessMessage("El procedimiento que está guardando debe tener un nombre.");
             return null;
         }else{
             try {
@@ -381,13 +394,18 @@ public class MbProcedimiento implements Serializable{
                     admEnt.setHabilitado(true);
                     admEnt.setUsAlta(usLogeado);
                     current.setAdminentidad(admEnt);
+                    Instancia instancia = new Instancia();
+                    instancia.setNombre(Inst01);
+                    instancia.setRuta(R01);
+                    instancia.setCodigo(I01);
+                    current.setInstancias(instancias);
 
 
                     // Inserción
                     getFacade().create(current);
                     JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoCreated"));
-                    instancias.clear();
-                    instVinc = current.getInstancias();
+                 //   instancias.clear();
+                 //   instVinc = current.getInstancias();
                     return "view";
                 }else{
                     JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoExistente"));
@@ -420,12 +438,13 @@ public class MbProcedimiento implements Serializable{
                 Date date = new Date(System.currentTimeMillis());
                 current.getAdminentidad().setFechaModif(date);
                 current.getAdminentidad().setUsModif(usLogeado);
+                current.getInstancias();
 
                 // Actualizo
                 getFacade().edit(current);
                 JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoUpdated"));
-                asignaInstancia = false;
-                instDisp.clear();
+          //      asignaInstancia = false;
+            //    instDisp.clear();
                 return "view";
             }else{
                 JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoExistente"));

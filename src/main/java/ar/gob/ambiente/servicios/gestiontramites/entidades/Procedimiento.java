@@ -131,9 +131,5 @@ public class Procedimiento implements Serializable {
     public String toString() {
         return "ar.gob.ambiente.servicios.gestiontramites.entidades.Procedimiento[ id=" + id + " ]";
     }
-
-    public void setInstancias(Instancia inst) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+   
 }
