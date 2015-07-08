@@ -146,20 +146,7 @@ public class InstanciaFacade extends AbstractFacade<Instancia> {
                 .setParameter("estadoFinal", estadoFinal);
         return q.getResultList();
     }     
-     /**
-     * Método que devuelve todos las instancias de una app
-     * @param app
-     * @return 
-     */
-    public List<Instancia> getApp(Long id, Object app){
-        em = getEntityManager();        
-        String queryString = "SELECT ins FROM Instancia ins "
-                + "WHERE ins.app = :app "
-                + "AND ins.adminentidad.habilitado = true";
-        Query q = em.createQuery(queryString)
-                .setParameter("app", app);
-        return q.getResultList();
-    }  
+ 
     /**
      * Método que verifica si la entidad tiene dependencias
      * @param id: ID de la entidad

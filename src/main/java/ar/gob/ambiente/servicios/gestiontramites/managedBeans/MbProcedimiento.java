@@ -7,12 +7,16 @@
 package ar.gob.ambiente.servicios.gestiontramites.managedBeans;
 
 import ar.gob.ambiente.servicios.gestiontramites.entidades.AdminEntidad;
+import ar.gob.ambiente.servicios.gestiontramites.entidades.Estado;
 import ar.gob.ambiente.servicios.gestiontramites.entidades.Instancia;
 import ar.gob.ambiente.servicios.gestiontramites.entidades.Procedimiento;
+import ar.gob.ambiente.servicios.gestiontramites.entidades.UnidadDeTiempo;
 import ar.gob.ambiente.servicios.gestiontramites.entidades.Usuario;
 import ar.gob.ambiente.servicios.gestiontramites.entidades.util.JsfUtil;
+import ar.gob.ambiente.servicios.gestiontramites.facades.EstadoFacade;
 import ar.gob.ambiente.servicios.gestiontramites.facades.InstanciaFacade;
 import ar.gob.ambiente.servicios.gestiontramites.facades.ProcedimientoFacade;
+import ar.gob.ambiente.servicios.gestiontramites.facades.UnidadDeTiempoFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,11 +28,13 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
@@ -39,35 +45,36 @@ import org.primefaces.context.RequestContext;
 public class MbProcedimiento implements Serializable{
 
     private Procedimiento current;
-    private List<Instancia> instVinc;
-    private List<Instancia> instVincFilter;
-    private List<Instancia> instDisp;
-    private List<Instancia> instDispFilter;
+    private Instancia instancia;
+
     private List<Instancia> instancias;
     private List<Instancia> instanciasFilter;
     private List<Instancia> listInstancias;
-    private List<Instancia> instSelected;
-    private boolean asignaInstancia; 
     private List<Procedimiento> listProcedimiento;  
 
 
     @EJB
     private ProcedimientoFacade procedimientoFacade;
-    
+    @EJB
+    private EstadoFacade estadoFacade;
+    @EJB
+    private UnidadDeTiempoFacade unidadDeTiempoFacade;
     @EJB
     private InstanciaFacade instFacade;
     
     private Procedimiento procedimientoSelected;
-    private Instancia instanciaSelected;
     private Usuario usLogeado;
     private MbLogin login;   
+
     private boolean iniciado;
     //private int update; // 0=updateNormal | 1=deshabiliar | 2=habilitar
-    private String R01;
-    private String I01;
-    private String Inst01;
-    private int index;
-
+    private List<UnidadDeTiempo> listaUnidadDeTiempos;
+    private List<UnidadDeTiempo> listaUnidadDeTiemposAlerta;
+    private List<UnidadDeTiempo> listaUnidadDeTiemposVto;
+    private List<Estado> listaEstadosIniciales;
+    private List<Estado> listaEstadosFinales;
+    private Procedimiento instanciaSelected;
+    
 
 
 
@@ -110,30 +117,14 @@ public class MbProcedimiento implements Serializable{
      ****** Getters y Setters *******
      ********************************/
     
-    public List<Instancia> getInstSelected() {
-        return instSelected;
+    public Instancia getInstancia() {
+        return instancia;
     }
 
-    public void setInstSelected(List<Instancia> instSelected) {
-        this.instSelected = instSelected;
-    }
-    
-    public List<Instancia> getInstVincFilter() {
-        return instVincFilter;
+    public void setInstancia(Instancia instancia) {
+        this.instancia = instancia;
     }
 
-    public void setInstVincFilter(List<Instancia> instVincFilter) {
-        this.instVincFilter = instVincFilter;
-    }
-
-    public List<Instancia> getInstDispFilter() {
-        return instDispFilter;
-    }
-
-    public void setInstDispFilter(List<Instancia> instDispFilter) {
-        this.instDispFilter = instDispFilter;
-    }
-    
     public List<Instancia> getInstanciasFilter() {
         return instanciasFilter;
     }
@@ -168,31 +159,6 @@ public class MbProcedimiento implements Serializable{
     public void setListInstancias(List<Instancia> listInstancias) {
         this.listInstancias = listInstancias;
     }
-
-    public boolean isAsignaInstancia() {
-        return asignaInstancia;
-    }
-
-    public void setAsignaInstancia(boolean asignaInstancia) {
-        this.asignaInstancia = asignaInstancia;
-    }
-
-    public List<Instancia> getInstVinc() {
-        return instVinc;
-    }
-
-    public void setInstVinc(List<Instancia> instVinc) {
-        this.instVinc = instVinc;
-    }
-
-    public List<Instancia> getInstDisp() {
-        return instDisp;
-    }
-
-    public void setInstDisp(List<Instancia> instDisp) {
-        this.instDisp = instDisp;
-    }
-
     public Procedimiento getProcedimientoSelected() {
         return procedimientoSelected;
     }
@@ -216,13 +182,44 @@ public class MbProcedimiento implements Serializable{
     public void setCurrent(Procedimiento current) {
         this.current = current;
     }
-
-    public Instancia getInstanciaSelected() {
-        return instanciaSelected;
+    public List<UnidadDeTiempo> getListaUnidadDeTiempos() {
+        return listaUnidadDeTiempos;
     }
 
-    public void setInstanciaSelected(Instancia instanciaSelected) {
-        this.instanciaSelected = instanciaSelected;
+    public void setListaUnidadDeTiempos(List<UnidadDeTiempo> listaUnidadDeTiempos) {
+        this.listaUnidadDeTiempos = listaUnidadDeTiempos;
+    }
+
+    public List<UnidadDeTiempo> getListaUnidadDeTiemposAlerta() {
+        return listaUnidadDeTiemposAlerta;
+    }
+
+    public void setListaUnidadDeTiemposAlerta(List<UnidadDeTiempo> listaUnidadDeTiemposAlerta) {
+        this.listaUnidadDeTiemposAlerta = listaUnidadDeTiemposAlerta;
+    }
+
+    public List<UnidadDeTiempo> getListaUnidadDeTiemposVto() {
+        return listaUnidadDeTiemposVto;
+    }
+
+    public void setListaUnidadDeTiemposVto(List<UnidadDeTiempo> listaUnidadDeTiemposVto) {
+        this.listaUnidadDeTiemposVto = listaUnidadDeTiemposVto;
+    }
+
+    public List<Estado> getListaEstadosIniciales() {
+        return listaEstadosIniciales;
+    }
+
+    public void setListaEstadosIniciales(List<Estado> listaEstadosIniciales) {
+        this.listaEstadosIniciales = listaEstadosIniciales;
+    }
+
+    public List<Estado> getListaEstadosFinales() {
+        return listaEstadosFinales;
+    }
+
+    public void setListaEstadosFinales(List<Estado> listaEstadosFinales) {
+        this.listaEstadosFinales = listaEstadosFinales;
     }
 
    
@@ -249,71 +246,42 @@ public class MbProcedimiento implements Serializable{
      */
     public String prepareList() {
         iniciado = true;
-        asignaInstancia = false;
         recreateModel();
-        if(instVinc != null){
-            instVinc.clear();
-        }
-        if(instDisp != null){
-            instDisp.clear();
-        }
         return "list";
     } 
     
-     /**
-     * 
-     * @return 
-     */
-    public String prepareListaDes() {
-        recreateModel();
-        asignaInstancia = false;
-        if(instVinc != null){
-            instVinc.clear();
-        }
-        if(instDisp != null){
-            instDisp.clear();
-        }
-        return "listaDes";
-    }     
-    
+   
     /**
      * @return acción para el detalle de la entidad
      */
     public String prepareView() {
-        asignaInstancia = false;
-        instVinc = current.getInstancias();
         return "view";
     }
-    
-    /**
-     * @return acción para el detalle de la entidad
-     */
-    public String prepareViewDes() {
-        asignaInstancia = false;
-        instVinc = current.getInstancias();
-        return "viewDes";
-    }
+
 
      /** (Probablemente haya que embeberlo con el listado para una misma vista)
      * @return acción para el formulario de nuevo
      */
     public String prepareCreate() {
-        // current = procedimientoSelected;
-        instancias =instFacade.getHabilitadas();
+        // instanciamos el current
         current = new Procedimiento();
+
+        // inicializamos la creación de instancias
+        listInstancias = new ArrayList();
+        instancia = new Instancia();
+        listaEstadosIniciales = estadoFacade.findAll();
+        listaEstadosFinales = estadoFacade.findAll();
+        listaUnidadDeTiemposAlerta = unidadDeTiempoFacade.findAll();
+        listaUnidadDeTiemposVto = unidadDeTiempoFacade.findAll();  
+        
         return "new";
+
     }
-    
 
     /**
      * @return acción para la edición de la entidad
      */
     public String prepareEdit() {
-        //cargo los list para los combos
-       // current = procedimientoSelected;
-        asignaInstancia = true;
-        instVinc = current.getInstancias();
-        instDisp = cargarInstanciasDisponibles();
         return "edit";
     }
     
@@ -342,7 +310,7 @@ public class MbProcedimiento implements Serializable{
             //No Elimina 
             JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoNonDeletable"));
         }
-        instVinc = current.getInstancias();
+        instancias = current.getInstancias();
         return "view";
     }  
     
@@ -364,17 +332,42 @@ public class MbProcedimiento implements Serializable{
             // Actualizo
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoHabilitada"));
-            instVinc = current.getInstancias();
+            instancias = current.getInstancias();
             return "view";
         }catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoHabilitadaErrorOccured"));
             return null; 
         }
-    }     
+    }  
 
     /*************************
     ** Métodos de operación **
     **************************/
+    
+    /**
+     * Método para guardar las instancias creadas en el listInstancias que irán en el nuevo procedimiento
+     */
+    public void createInstancia(){
+        if(!compararInstancia(instancia)){
+            // se agregan los datos del AdminEntidad
+            Date date = new Date(System.currentTimeMillis());
+            AdminEntidad admEnt = new AdminEntidad();
+            admEnt.setFechaAlta(date);
+            admEnt.setHabilitado(true);
+            admEnt.setUsAlta(usLogeado);
+            current.setAdminentidad(admEnt);
+            // agrego la instancia al list
+            listInstancias.add(instancia);     
+            
+            // reseteo la instancia
+            instancia = null;
+            instancia = new Instancia();
+        } else{
+            JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaExistente"));
+        }
+
+    }
+    
     /**
      * Método que inserta una nueva instancia en la base de datos, previamente genera una entidad de administración
      * con los datos necesarios y luego se la asigna al procedimiento
@@ -394,18 +387,14 @@ public class MbProcedimiento implements Serializable{
                     admEnt.setHabilitado(true);
                     admEnt.setUsAlta(usLogeado);
                     current.setAdminentidad(admEnt);
-                    Instancia instancia = new Instancia();
-                    instancia.setNombre(Inst01);
-                    instancia.setRuta(R01);
-                    instancia.setCodigo(I01);
+                    
+                    // asigno las instancias al procedimiento
                     current.setInstancias(instancias);
-
 
                     // Inserción
                     getFacade().create(current);
                     JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoCreated"));
-                 //   instancias.clear();
-                 //   instVinc = current.getInstancias();
+                    recreateModel();
                     return "view";
                 }else{
                     JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoExistente"));
@@ -417,6 +406,7 @@ public class MbProcedimiento implements Serializable{
             }
         }
     }
+
 
     /**
      * Método que actualiza una nueva Instancia en la base de datos.
@@ -443,8 +433,7 @@ public class MbProcedimiento implements Serializable{
                 // Actualizo
                 getFacade().edit(current);
                 JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoUpdated"));
-          //      asignaInstancia = false;
-            //    instDisp.clear();
+
                 return "view";
             }else{
                 JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoExistente"));
@@ -456,6 +445,15 @@ public class MbProcedimiento implements Serializable{
         }
     }
     
+    /**
+     * @return mensaje que notifica el borrado
+     */    
+    public String destroyInstancia() {
+        current = instanciaSelected;
+        performDestroy();
+        recreateModel();
+        return "view";
+    }     
     /**
      * @return mensaje que notifica el borrado
      */    
@@ -499,31 +497,9 @@ public class MbProcedimiento implements Serializable{
         Map<String,Object> options = new HashMap<>();
         options.put("contentWidth", 950);
         RequestContext.getCurrentInstance().openDialog("", options, null);
-    }       
+    }         
+ 
 
-    public void asignarInstancia(Instancia inst){
-        instVinc.add(inst);
-        instDisp.remove(inst);
-        if(instVincFilter != null){
-            instVincFilter = null;
-        }
-        if(instDispFilter != null){
-            instDispFilter = null;
-        }
-    }
-    
-    public void quitarInstancia(Instancia inst){
-        instVinc.remove(inst);
-        instDisp.add(inst);
-        if(instVincFilter != null){
-            instVincFilter = null;
-        }
-        if(instDispFilter != null){
-            instDispFilter = null;
-        }
-    }
-    
-    
     /*********************
     ** Métodos privados **
     **********************/
@@ -533,23 +509,46 @@ public class MbProcedimiento implements Serializable{
     private ProcedimientoFacade getFacade() {
         return procedimientoFacade;
     }    
+      
+    private void validarInstanciaExistente(Object arg2) throws ValidatorException{
+        if(!getFacade().noExisteInstancia((String)arg2)){
+            throw new ValidatorException(new FacesMessage(ResourceBundle.getBundle("/Bundle").getString("CreateInstanciaExistente")));
+        }
+    } 
     
+    private void validarExistente(Object arg2) throws ValidatorException{
+        if(!getFacade().noExiste((String)arg2)){
+            throw new ValidatorException(new FacesMessage(ResourceBundle.getBundle("/Bundle").getString("CreateProcedimientoExistente")));
+        }
+    }     
     /**
      * Restea la entidad
      */
     private void recreateModel() {
         listProcedimiento.clear();
         listProcedimiento = null;
-        if(instVincFilter != null){
-            instVincFilter = null;
-        }
-        if(instDispFilter != null){
-            instDispFilter = null;
-        }
-        if(instanciasFilter != null){
-            instanciasFilter = null;
+        if(listInstancias != null){
+            listInstancias.clear();
+            listInstancias =null;
         }
     }      
+    
+    /**
+     * Método para validar si una instacia ya existe en el list que las guarda en memoria
+     */
+    private boolean compararInstancia(Instancia inst){
+        boolean retorno = false;
+        Iterator instIt = listInstancias.iterator();
+        while(instIt.hasNext()){
+            Instancia instancia = (Instancia)instIt.next();
+            if(instancia.getNombre().equals(inst.getNombre())
+                    && instancia.getEstadoInicial().equals(inst.getEstadoInicial())
+                    && instancia.getEstadoFinal().equals(inst.getEstadoFinal())){
+                retorno = true;
+            }
+        }
+        return retorno;
+    }
     
     
     /**
@@ -571,21 +570,7 @@ public class MbProcedimiento implements Serializable{
         }
     }             
     
-     /**
-     * 
-     */
-    private List<Instancia> cargarInstanciasDisponibles(){
-        List<Instancia> insts = instFacade.getHabilitadas();
-        List<Instancia> instsSelect = new ArrayList();
-        Iterator itInsts = insts.listIterator();
-        while(itInsts.hasNext()){
-            Instancia inst = (Instancia)itInsts.next();
-            if(!instVinc.contains(inst)){
-                instsSelect.add(inst);
-            }
-        }
-        return instsSelect;
-    }
+
     
     /********************************************************************
     ** Converter. Se debe actualizar la entidad y el facade respectivo **
@@ -649,5 +634,7 @@ public class MbProcedimiento implements Serializable{
             }
         }
     }                 
+
+
 }
  

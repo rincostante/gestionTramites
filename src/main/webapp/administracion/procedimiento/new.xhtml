@@ -10,48 +10,91 @@
         <h:outputText value="#{bundle.ProcedimientoTitle}" />
         </ui:define>
         <ui:define name="content">
-        <br/>
             <h:form id="frmNew">
                 <p:panel id="pnNew" header="#{bundle.ProcedimientoNewTitle}" style="margin-bottom:10px;">
                     <p:growl id="messages" />
                     
                     <h:panelGrid columns="2">
-                        <p:outputLabel value="#{bundle.CreateProcedimientoLabel_nombre}" for="nombre"/>
-                        <p:inputText id="nombre" value="#{mbProcedimiento.selected.nombre}" 
+                        <p:outputLabel value="#{bundle.CreateProcedimientoLabel_nombre}" for="procNombre"/>
+                        <p:inputText id="procNombre" value="#{mbProcedimiento.selected.nombre}" 
                                      requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_nombre}" required="true"/>
 
-                    <p:outputLabel value="#{bundle.CreateProcedimientoLabel_app}" for="app"/>
-                    <p:inputText id="app" value="#{mbProcedimiento.selected.app}" 
-                                     requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" required="true"/>                        
+                        <p:outputLabel value="#{bundle.CreateProcedimientoLabel_app}" for="app"/>
+                        <p:inputText id="app" value="#{mbProcedimiento.selected.app}" 
+                                     requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" required="true"/>   
+                        
+                        <p:outputLabel value="Instancias " for="instanciaForm"/>
+                        <p:commandButton id="instanciaForm" value="Crear Nuevas" onclick="PF('dlg1').show();" />
+
                     </h:panelGrid>
                     
-                </p:panel>
-                
-                <p:panel id="pnInstancias" 
-                         header="Seleccione las Instancias para este Procedimiento" 
-                         toggleable="true" toggleTitle="Ver/Ocultar"
-                         style="width:400px;">
-                    <p:dataTable value="#{mbProcedimiento.instancias}" var="e" id="instList" rows="5" 
-                                 filteredValue="#{mbProcedimiento.instanciasFilter}"
-                                 rowKey="#{e.id}"
-                                 selection="#{mbProcedimiento.selected.instancias}"
-                                 paginator="true"
-                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 rowsPerPageTemplate="5,10,15" style="font-size: 80%">
-                        <f:facet name="header">
-                            Listado de #{bundle.InstanciasAsociadas}
-                            <p:commandButton icon="ui-icon-refresh" value="Listar" update="instList" style="margin-left: 10px"/>
-                        </f:facet>
-                        <p:column selectionMode="multiple" style="width: 35px"  />  
-                        
-                        <p:column headerText="#{bundle.CreateProcedimientoLabel_nombre}" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
-                            <p:outputLabel value="#{e.nombre}"/>
-                        </p:column>
+                    
+                    <p:dialog header="Nuevas Instancias" widgetVar="dlg1" minHeight="40">
+                        <h:form id="frmNew">
+                            <p:panel id="inNew" style="margin-bottom:10px;">
+                                <p:growl id="messages" />
+                                <h:panelGrid columns="3">
+                                    <p:outputLabel value=""/>
+                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_nombre}" for="nombre"/>
+                                    <p:inputText id="nombre" value="#{mbProcedimiento.instancia.nombre}" 
+                                                 requiredMessage="#{bundle.CreateInstanciaRequiredMessage_nombre}" required="true"/>
+                                    <p:message for="nombre" />   
+                          
+                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_ruta}" for="ruta"/>
+                                    <p:inputText id="ruta" value="#{mbProcedimiento.instancia.ruta}" requiredMessage="#{bundle.CreateInstanciaRequiredMessage_ruta}" 
+                                                 required="true"/>
+                                    <p:message for="ruta" />   
 
-                    </p:dataTable>
-                </p:panel>
-                <br/>
-                
+                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_codigo}" for="codigo"/>
+                                    <p:inputText id="codigo" value="#{mbProcedimiento.instancia.codigo}" requiredMessage="#{bundle.CreateInstanciaRequiredMessage_codigo}" required="true"/>
+                                    <p:message for="codigo" />  
+                                        
+                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_estadoInicial}" for="estadoInicial"/>                             
+                                    <p:selectOneMenu id="estadoInicial" value="#{mbProcedimiento.instancia.estadoInicial}" 
+                                                     requiredMessage="#{bundle.CreateInstanciaProcedimientoRequiredMessage_estadoInicial}" required="true">                                         >
+                                        <f:selectItem itemLabel="Seleccione el Estado Inicial" itemValue="" noSelectionOption="true" />                           
+                                        <f:selectItems value="#{mbProcedimiento.listaEstadosIniciales}" var="estado" itemLabel="#{estado.nombre}" itemValue="#{estadoInicial}"/>
+                                    </p:selectOneMenu>  
+                                    
+                                    <p:outputLabel value=""/>
+                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_estadoFinal}" for="estadoFinal"/>      
+                                    <p:selectOneMenu id="estadoFinal" value="#{mbProcedimiento.instancia.estadoFinal}" 
+                                                     requiredMessage="#{bundle.CreateInstanciaProcedimientoRequiredMessage_estadoFinal}" required="true">
+                                        <f:selectItem itemLabel="Seleccione el Estado Final" itemValue="" noSelectionOption="true"/>
+                                        <f:selectItems value="#{mbProcedimiento.listaEstadosFinales}" var="estado" itemLabel="#{estado.nombre}" itemValue="#{estadoFinal}"/>
+                                    </p:selectOneMenu> 
+                                    
+                                    <p:outputLabel value=""/>
+                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_alerta}" for="alerta"/>
+                                    <p:inputText id="alerta" value="#{mbProcedimiento.instancia.cantidadAlerta}" converter="#{Integer}"
+                                                 requiredMessage="#{bundle.CreateInstanciaRequiredMessage_cantidadAlerta}" required="false"/>
+                                    <p:message for="alerta" /> 
+
+                                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTAlerta}" for="unidadDeTiempoAlerta"/>                             
+                                    <p:selectOneMenu id="unidadDeTiempoAlerta" value="#{mbProcedimiento.instancia.unidadDeTiempoAlerta}" 
+                                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTAlerta}" required="false">
+                                        <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el alerta" itemValue="" noSelectionOption="true" />                           
+                                        <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposAlerta}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoAlerta}"/>
+                                    </p:selectOneMenu>                          
+
+
+                                    
+                                </h:panelGrid>
+                            </p:panel>
+                              <p:toolbar>
+                                    <f:facet name="left">
+                                        <p:commandButton icon="ui-icon-check" value="Guardar" action="#{mbProcedimiento.createInstancia}" update="inNew" />
+                                        <p:commandButton icon="ui-icon-cancel" value="Limpiar" style="float: next">
+                                            <p:ajax update="inNew" resetValues="true" />
+                                        </p:commandButton>
+                                    </f:facet>
+                                </p:toolbar>
+                        </h:form>
+
+                </p:dialog>
+                    
+                    
+                </p:panel>             
                 <p:toolbar>
                     <f:facet name="left">
                         <p:commandButton icon="ui-icon-check" value="Guardar" action="#{mbProcedimiento.create}" update="pnNew"/>
@@ -60,11 +103,7 @@
                         </p:commandButton>
                     </f:facet>
                     <f:facet name="right">
-                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" 
-                                         action="#{mbProcedimiento.prepareList}" 
-                                         value="Volver" 
-                                         immediate="true" 
-                                         ajax="false"/>
+                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" action="#{mbInstancia.prepareList()}" value="Volver" immediate="true"/>        
                     </f:facet>
                 </p:toolbar>
             </h:form>

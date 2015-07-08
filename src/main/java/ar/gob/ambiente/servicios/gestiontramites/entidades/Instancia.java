@@ -55,13 +55,10 @@ public class Instancia implements Serializable {
     @Size(message = "{endidades.stringSizeError}", min = 1, max = 50)
     private String codigo;
     
-    private int app;
     
-    
-    @ManyToOne 
-    @JoinColumn(name="procedimiento_id")
+    @ManyToOne(cascade=CascadeType.ALL)
     private Procedimiento procedimiento;
-    
+
     @ManyToOne /*(fetch=FetchType.LAZY)*/
     @JoinColumn(name="estadoInicial_id")
     private Estado estadoInicial; 
@@ -70,19 +67,17 @@ public class Instancia implements Serializable {
     @JoinColumn(name="estadoFinal_id")
     private Estado estadoFinal;
     
-    @Column (nullable=true, length=5)
+    @Column (nullable=true)
     @NotNull(message = "{entidades.fieldNotNullError}")
-    @Size(message = "{endidades.stringSizeError}", min = 1, max = 5)
-    private String cantidadVencimiento;
-               
+    private int cantidadVencimiento;
+
     @ManyToOne /*(fetch=FetchType.LAZY)*/
     @JoinColumn(name="unidadDeTiempoVto_id")    
     private UnidadDeTiempo unidadDeTiempoVto;
     
-    @Column (nullable=true, length=5)
+    @Column (nullable=true)
     @NotNull(message = "{entidades.fieldNotNullError}")
-    @Size(message = "{endidades.stringSizeError}", min = 1, max = 5)
-    private String cantidadAlerta;
+    private int cantidadAlerta;
            
     @ManyToOne /*(fetch=FetchType.LAZY)*/
     @JoinColumn(name="unidadDeTiempoAlerta_id")
@@ -94,10 +89,10 @@ public class Instancia implements Serializable {
     @JoinColumn(name="adminentidad_id")
     private AdminEntidad adminentidad;
    
-    
-    public Instancia(){
-    }  
-    
+
+    public Instancia() {
+    }
+
     public Long getId() {
         return id;
     }
@@ -128,15 +123,6 @@ public class Instancia implements Serializable {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
-    }
-
-
-    public int getApp() {
-        return app;
-    }
-
-    public void setApp(int app) {
-        this.app = app;
     }
 
     public String getObservaciones() {
@@ -181,13 +167,22 @@ public class Instancia implements Serializable {
         this.estadoFinal = estadoFinal;
     }
 
-    public String getCantidadVencimiento() {
+    public int getCantidadVencimiento() {
         return cantidadVencimiento;
     }
 
-    public void setCantidadVencimiento(String cantidadVencimiento) {
+    public void setCantidadVencimiento(int cantidadVencimiento) {
         this.cantidadVencimiento = cantidadVencimiento;
     }
+
+    public int getCantidadAlerta() {
+        return cantidadAlerta;
+    }
+
+    public void setCantidadAlerta(int cantidadAlerta) {
+        this.cantidadAlerta = cantidadAlerta;
+    }
+
 
     public UnidadDeTiempo getUnidadDeTiempoVto() {
         return unidadDeTiempoVto;
@@ -195,14 +190,6 @@ public class Instancia implements Serializable {
 
     public void setUnidadDeTiempoVto(UnidadDeTiempo unidadDeTiempoVto) {
         this.unidadDeTiempoVto = unidadDeTiempoVto;
-    }
-
-    public String getCantidadAlerta() {
-        return cantidadAlerta;
-    }
-
-    public void setCantidadAlerta(String cantidadAlerta) {
-        this.cantidadAlerta = cantidadAlerta;
     }
 
     public UnidadDeTiempo getUnidadDeTiempoAlerta() {
@@ -237,5 +224,6 @@ public class Instancia implements Serializable {
     public String toString() {
         return "ar.gob.ambiente.servicios.gestiontramites.entidades.Instancia[ id=" + id + " ]";
     }
+
     
 }

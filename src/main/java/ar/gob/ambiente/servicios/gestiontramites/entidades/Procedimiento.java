@@ -57,8 +57,10 @@ public class Procedimiento implements Serializable {
     /**
      * Campo de tipo Array que contiene el conjunto de las instancias que contiene este procedimiento
      */    
-    @OneToMany(mappedBy="procedimiento")
-    private List<Instancia> instancias;     
+    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name="procedimiento_id")
+    private List<Instancia> instancias;
+
     /**
      * Constructor
      */
@@ -106,6 +108,7 @@ public class Procedimiento implements Serializable {
     public void setAdminentidad(AdminEntidad adminentidad) {
         this.adminentidad = adminentidad;
     }
+    
 
     @Override
     public int hashCode() {

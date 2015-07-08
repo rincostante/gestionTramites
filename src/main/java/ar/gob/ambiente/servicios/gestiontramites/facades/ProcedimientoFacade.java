@@ -59,7 +59,28 @@ public class ProcedimientoFacade extends AbstractFacade<Procedimiento> {
                 .setParameter("nombre", nombre)
                 .setParameter("app", app);
         return q.getResultList().isEmpty();
-    }    
+    }  
+ 
+    /**
+     * Método para validad que no exista una Actividad Planificada con este nombre ya ingresado
+     * @param nombre
+     * @param procedimiento
+     * @return 
+     */
+    public boolean noExisteInstancia(String nombre, Procedimiento procedimiento){
+        em = getEntityManager();
+        String queryString = "SELECT inst FROM Instancia inst "
+                + "WHERE inst.nombre = :nombre "
+                + "AND inst.procedimiento = :procedimiento";
+        Query q = em.createQuery(queryString)
+                .setParameter("nombre", nombre)
+                .setParameter("procedimiento", procedimiento);
+         
+        return q.getResultList().isEmpty();
+    }
+ 
+    
+    
     /**
      * Método que obtiene una Procedimiento existente según los datos recibidos como parámetro
      * @param nombre
@@ -132,5 +153,15 @@ public class ProcedimientoFacade extends AbstractFacade<Procedimiento> {
         return q.getResultList().isEmpty();
  
     }  
+
+    public boolean noExisteInstancia(String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean noExiste(String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
 }      
      

@@ -7,12 +7,12 @@
       xmlns:p="http://primefaces.org/ui">
     <ui:composition template="/WEB-INF/facelets/templates/entidadTemplate.xhtml">
         <ui:define name="content">
-            <f:metadata>  
+            <f:metadata>   
                 <f:event listener="#{mbProcedimiento.iniciar}" type="preRenderView"></f:event>  
             </f:metadata>         
             <br/> 
             <h:form style="text-align: left">
-                <p:panel id="procedimientoForm" header="#{bundle.ProcedimientoListTitle}" style="margin-bottom:10px;" toggleable="true" toggleTitle="Ver/Ocultar"  >
+                <p:panel id="procedimientoForm" header="#{bundle.ProcedimientoListTitle}" style="margin-bottom:10px;">
                     <h:panelGroup>
                         <h:panelGrid columns="4" id="pnBotones">
                             <p:commandButton icon="ui-icon-newwin" value="Agregar Nuevo" action="#{mbProcedimiento.prepareCreate}"/>

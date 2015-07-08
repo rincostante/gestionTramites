@@ -43,7 +43,7 @@
                                         title="#{bundle.FechaBaja}"/>    
                         
                         <h:outputLabel value="#{bundle.InstanciasAsociadas}" />
-                        <p:commandButton value="Ver Instancias" type="button" onclick="PF('Instancias').show();" actionListener="#{mbProcedimiento.verInstancias()}" />                           
+                        <p:commandButton value="Ver Instancias" type="button" onclick="PF('Instancias').show();" actionListener="#{mbProcedimiento.listInstancias}" />                           
                     </h:panelGrid>                    
                 </p:panel>
                 <p:toolbar>
@@ -52,14 +52,9 @@
                     </f:facet>
                 </p:toolbar>
             
-                <p:dialog style="font-size: 80%" 
-                          header="Listado de Instancias asociadas" 
-                          widgetVar="Instancias" 
-                          showEffect="fade" 
-                          hideEffect="fade" 
-                          height="100" 
-                          width="30%">
-                    <p:dataTable value="#{mbProcedimiento.instVinc}" filteredValue="#{mbProcedimiento.instVincFilter}" var="e" id="instVinc" >
+                <p:dialog style="font-size: 80%" header="Listado de Instancias asociadas" widgetVar="Instancias" showEffect="fade" 
+                          hideEffect="fade" height="100" width="30%">
+                    <p:dataTable value="#{mbProcedimiento.instancias}" filteredValue="#{mbProcedimiento.instanciasFilter}" var="e" id="instanciaList" >
                         <p:column headerText="Nombre" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
                             <h:outputText value="#{e.nombre}" />
                         </p:column>                        
