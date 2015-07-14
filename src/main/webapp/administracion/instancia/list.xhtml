@@ -43,46 +43,8 @@
                     <p:column headerText="Procedimiento" sortBy="#{e.procedimiento}" filterBy="#{e.procedimiento}" filterMatchMode="contains">
                         <p:outputLabel value="#{e.procedimiento}"/>
                     </p:column>
-
  
-                <p:column filterBy="#{e.adminentidad.habilitado}" headerText="Estado" filterMatchMode="equals">
-                    <f:facet name="filter">
-                        <p:selectOneMenu onchange="PF('instanciaTable').filter()" style="font-size: 80%;">
-                            <f:converter converterId="javax.faces.Boolean" />
-                            <f:selectItem itemLabel="Todos" itemValue="" />
-                            <f:selectItem itemLabel="Activos" itemValue="true" />
-                            <f:selectItem itemLabel="Inactivos" itemValue="false" />
-                        </p:selectOneMenu>
-                    </f:facet>
-                    <h:outputText value="#{e.adminentidad.habilitado ? 'Habilitado': 'Deshabilitado'}" />
-                </p:column>
-
-                    
-                    <p:column headerText="Acciones" style="width:140px">
-                        <p:growl id="messages" showDetail="true" />    
-                        <p:commandButton icon="ui-icon-zoomin" action="#{mbInstancia.prepareView}">
-                                <f:setPropertyActionListener value="#{e}" target="#{mbInstancia.current}" />
-                            </p:commandButton>
-                            <p:commandButton icon="ui-icon-pencil" action="#{mbInstancia.prepareEdit}">
-                                <f:setPropertyActionListener value="#{e}" target="#{mbInstancia.current}" />
-                            </p:commandButton>
-                        <p:commandButton icon="ui-icon-close"  action="#{mbInstancia.deshabilitar}" rendered="#{e.adminentidad.habilitado == 'true'}"
-                                     title="Deshabilitar" update="instanciaList">
-                        <f:setPropertyActionListener value="#{e}"  target="#{mbInstancia.current}" />
-                        <p:confirm header="Confirmar" message="¿Desea deshabilitar la instancia?" icon="ui-icon-alert" />
-                    </p:commandButton>                
-
-                    <p:commandButton icon="ui-icon-check" action="#{mbInstancia.habilitar}" rendered="#{e.adminentidad.habilitado == 'false'}" 
-                                     title="Habilitar" update="instanciaList">
-                        <f:setPropertyActionListener value="#{e}" target="#{mbInstancia.current}" />
-                        <p:confirm header="Confirmar" message="¿Desea habilitar la instancia?" icon="ui-icon-alert" />
-                    </p:commandButton> 
- 
-                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                           </p:confirmDialog>      
-                    </p:column> 
+              
                 </p:dataTable>
             </h:form>
         </ui:define>

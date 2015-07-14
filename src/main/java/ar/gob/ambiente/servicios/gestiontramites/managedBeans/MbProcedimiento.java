@@ -51,7 +51,8 @@ public class MbProcedimiento implements Serializable{
     private List<Instancia> instanciasFilter;
     private List<Instancia> listInstancias;
     private List<Procedimiento> listProcedimiento;  
-
+    private List<Instancia> instVinc;
+   
 
     @EJB
     private ProcedimientoFacade procedimientoFacade;
@@ -131,6 +132,14 @@ public class MbProcedimiento implements Serializable{
 
     public void setInstanciasFilter(List<Instancia> instanciasFilter) {
         this.instanciasFilter = instanciasFilter;
+    }
+
+    public List<Instancia> getInstVinc() {
+        return instVinc;
+    }
+
+    public void setInstVinc(List<Instancia> instVinc) {
+        this.instVinc = instVinc;
     }
 
     public List<Procedimiento> getListProcedimiento() {
@@ -246,6 +255,7 @@ public class MbProcedimiento implements Serializable{
      */
     public String prepareList() {
         iniciado = true;
+        
         recreateModel();
         return "list";
     } 
@@ -255,6 +265,7 @@ public class MbProcedimiento implements Serializable{
      * @return acción para el detalle de la entidad
      */
     public String prepareView() {
+        instVinc = current.getInstancias();
         return "view";
     }
 
@@ -282,6 +293,7 @@ public class MbProcedimiento implements Serializable{
      * @return acción para la edición de la entidad
      */
     public String prepareEdit() {
+        instVinc = current.getInstancias();
         return "edit";
     }
     
@@ -304,13 +316,14 @@ public class MbProcedimiento implements Serializable{
 
         if (libre){
             // Elimina
+            performDestroyInstancia();
             performDestroy();
             recreateModel();
         }else{
             //No Elimina 
             JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoNonDeletable"));
         }
-        instancias = current.getInstancias();
+        instVinc = current.getInstancias();
         return "view";
     }  
     
@@ -332,7 +345,7 @@ public class MbProcedimiento implements Serializable{
             // Actualizo
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoHabilitada"));
-            instancias = current.getInstancias();
+            instVinc = current.getInstancias();
             return "view";
         }catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoHabilitadaErrorOccured"));
@@ -357,6 +370,7 @@ public class MbProcedimiento implements Serializable{
             admEnt.setUsAlta(usLogeado);
             current.setAdminentidad(admEnt);
             // agrego la instancia al list
+            
             listInstancias.add(instancia);     
             
             // reseteo la instancia
@@ -374,46 +388,54 @@ public class MbProcedimiento implements Serializable{
      * @return mensaje que notifica la inserción
      */
     public String create() {
+        // Creación de la entidad de administración y asignación
+        Date date = new Date(System.currentTimeMillis());
+        AdminEntidad admEnt = new AdminEntidad();
+        admEnt.setFechaAlta(date);
+        admEnt.setHabilitado(true);
+        admEnt.setUsAlta(usLogeado);
+        current.setAdminentidad(admEnt);
+
+        // asigno las instancias al procedimiento
+ //       Instancia inst = new Instancia();
+ //       inst.setNombre("pipo");
+ //       inst.setCodigo("codPipo");
+ //       inst.setRuta("rutaPipo");
+ //       listInstancias.add(inst);
+        current.setInstancias(listInstancias);
+        
         if(current.getNombre().isEmpty()){
             JsfUtil.addSuccessMessage("El procedimiento que está guardando debe tener un nombre.");
             return null;
         }else{
             try {
                 if(getFacade().noExiste(current.getNombre(), current.getApp())){
-                    // Creación de la entidad de administración y asignación
-                    Date date = new Date(System.currentTimeMillis());
-                    AdminEntidad admEnt = new AdminEntidad();
-                    admEnt.setFechaAlta(date);
-                    admEnt.setHabilitado(true);
-                    admEnt.setUsAlta(usLogeado);
-                    current.setAdminentidad(admEnt);
-                    
-                    // asigno las instancias al procedimiento
-                    current.setInstancias(instancias);
 
                     // Inserción
                     getFacade().create(current);
+
                     JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoCreated"));
-                    recreateModel();
+                   // recreateModel();
                     return "view";
+
                 }else{
-                    JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoExistente"));
+                    JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("CreateProcedimientoExistente"));
                     return null;
                 }
-            } catch (Exception e) {
+            } 
+            catch (Exception e) {
                 JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoCreatedErrorOccured"));
                 return null;
             }
         }
     }
 
-
     /**
      * Método que actualiza una nueva Instancia en la base de datos.
      * Previamente actualiza los datos de administración
      * @return mensaje que notifica la actualización
      */
-    public String update() {    
+    public String update(int Instancia) {    
         boolean edito;
         Procedimiento pro;
         try {
@@ -428,7 +450,7 @@ public class MbProcedimiento implements Serializable{
                 Date date = new Date(System.currentTimeMillis());
                 current.getAdminentidad().setFechaModif(date);
                 current.getAdminentidad().setUsModif(usLogeado);
-                current.getInstancias();
+                current.getInstancias().set(Instancia, instancia);
 
                 // Actualizo
                 getFacade().edit(current);
@@ -450,7 +472,7 @@ public class MbProcedimiento implements Serializable{
      */    
     public String destroyInstancia() {
         current = instanciaSelected;
-        performDestroy();
+        performDestroyInstancia();
         recreateModel();
         return "view";
     }     
@@ -458,7 +480,6 @@ public class MbProcedimiento implements Serializable{
      * @return mensaje que notifica el borrado
      */    
     public String destroy() {
-        current = procedimientoSelected;
         performDestroy();
         recreateModel();
         return "view";
@@ -549,7 +570,17 @@ public class MbProcedimiento implements Serializable{
         }
         return retorno;
     }
-    
+      /**
+     * Opera el borrado de la instancia
+     */
+    private void performDestroyInstancia() {
+        try {
+            getFacade().remove(current);
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaDeleted"));
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("InstanciaDeletedErrorOccured"));
+        }
+    }  
     
     /**
      * Método que deshabilita la entidad
@@ -563,13 +594,14 @@ public class MbProcedimiento implements Serializable{
             current.getAdminentidad().setHabilitado(false);
             
             // Deshabilito la entidad
-            getFacade().edit(current);
+            getFacade().remove(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoDeleted"));
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoDeletedErrorOccured"));
         }
     }             
-    
+
+   
 
     
     /********************************************************************
@@ -637,4 +669,4 @@ public class MbProcedimiento implements Serializable{
 
 
 }
- 
+

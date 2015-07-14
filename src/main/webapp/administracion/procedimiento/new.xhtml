@@ -67,16 +67,35 @@
                                     <p:outputLabel value=""/>
                                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_alerta}" for="alerta"/>
                                     <p:inputText id="alerta" value="#{mbProcedimiento.instancia.cantidadAlerta}" converter="#{Integer}"
-                                                 requiredMessage="#{bundle.CreateInstanciaRequiredMessage_cantidadAlerta}" required="false"/>
+                                                 requiredMessage="#{bundle.CreateInstanciaRequiredMessage_cantidadAlerta}" required="true"/>
                                     <p:message for="alerta" /> 
 
                                      <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTAlerta}" for="unidadDeTiempoAlerta"/>                             
                                     <p:selectOneMenu id="unidadDeTiempoAlerta" value="#{mbProcedimiento.instancia.unidadDeTiempoAlerta}" 
-                                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTAlerta}" required="false">
+                                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTAlerta}" required="true">
                                         <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el alerta" itemValue="" noSelectionOption="true" />                           
                                         <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposAlerta}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoAlerta}"/>
                                     </p:selectOneMenu>                          
 
+                                    <p:outputLabel value=""/>
+                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_vto}" for="cantidadVencimiento"/>
+                                    <p:inputText id="cantidadVencimiento" value="#{mbProcedimiento.instancia.cantidadVencimiento}" 
+                                                 requiredMessage="#{bundle.CreateInstanciaRequiredMessage_vto}" required="true"/>
+                                    <p:message for="cantidadVencimiento" /> 
+
+                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>                             
+                                    <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbProcedimiento.instancia.cantidadVencimiento}" 
+                                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTVto}" required="true">                                         >
+                                        <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el vencimiento" itemValue="" noSelectionOption="true" />                           
+                                        <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposVto}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoVto}"/>
+                                    </p:selectOneMenu>                           
+
+                                    <p:outputLabel value=""/>
+                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_observaciones}" for="observaciones"/>
+                                    <p:inputText id="observaciones" value="#{mbProcedimiento.instancia.observaciones}" 
+                                                 requiredMessage="#{bundle.CreateInstanciaRequiredMessage_observaciones}" required="false"/>
+                                    <p:message for="observaciones" />          
+                        
 
                                     
                                 </h:panelGrid>
@@ -103,7 +122,7 @@
                         </p:commandButton>
                     </f:facet>
                     <f:facet name="right">
-                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" action="#{mbInstancia.prepareList()}" value="Volver" immediate="true"/>        
+                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" action="#{mbInstancia.prepareList}" value="Volver" immediate="true"/>        
                     </f:facet>
                 </p:toolbar>
             </h:form>
