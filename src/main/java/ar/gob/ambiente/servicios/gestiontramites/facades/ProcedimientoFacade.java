@@ -6,6 +6,7 @@
 
 package ar.gob.ambiente.servicios.gestiontramites.facades;
 
+import ar.gob.ambiente.servicios.gestiontramites.entidades.Instancia;
 import ar.gob.ambiente.servicios.gestiontramites.entidades.Procedimiento;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -155,7 +156,11 @@ public class ProcedimientoFacade extends AbstractFacade<Procedimiento> {
     }  
 
     public boolean noExisteInstancia(String string) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void remove(Instancia instancia) {
+
     }
 
     public boolean noExiste(String string) {

@@ -83,12 +83,12 @@
                                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_vto}" required="true"/>
                                     <p:message for="cantidadVencimiento" /> 
 
-                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>                             
-                                    <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbProcedimiento.instancia.cantidadVencimiento}" 
-                                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTVto}" required="true">                                         >
+                                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>                             
+                                     <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbProcedimiento.instancia.unidadDeTiempoVto}" 
+                                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTVto}" required="true">
                                         <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el vencimiento" itemValue="" noSelectionOption="true" />                           
                                         <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposVto}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoVto}"/>
-                                    </p:selectOneMenu>                           
+                                    </p:selectOneMenu>                          
 
                                     <p:outputLabel value=""/>
                                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_observaciones}" for="observaciones"/>

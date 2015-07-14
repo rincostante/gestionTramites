@@ -471,7 +471,7 @@ public class MbProcedimiento implements Serializable{
      * @return mensaje que notifica el borrado
      */    
     public String destroyInstancia() {
-        current = instanciaSelected;
+//        current = instanciaSelected;
         performDestroyInstancia();
         recreateModel();
         return "view";
@@ -575,7 +575,14 @@ public class MbProcedimiento implements Serializable{
      */
     private void performDestroyInstancia() {
         try {
-            getFacade().remove(current);
+            // Actualización de datos de administración de la instancia
+            Date date = new Date(System.currentTimeMillis());
+            current.getAdminentidad().setFechaBaja(date);
+            current.getAdminentidad().setUsBaja(usLogeado);
+            current.getAdminentidad().setHabilitado(false);
+            
+            // elimino la instancia
+            getFacade().remove(instancia);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaDeleted"));
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("InstanciaDeletedErrorOccured"));
