@@ -22,10 +22,10 @@
                             <p:inputText id="app" value="#{mbProcedimiento.selected.app}" requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" required="true"/>     
 
                             <p:outputLabel value="#{bundle.InstanciasAsociadas}" for="instanciaForm"/>
-                        <p:commandButton id="instanciaForm" value=" Adicionar " onclick="PF('dlg1').show();"/>   
+                        <p:commandButton id="instanciaForm" value=" Actualizar Instancias " onclick="PF('dlg1').show();"/>   
                     </h:panelGrid>
                     
-                    <p:dialog header="Nuevas Instancias" widgetVar="dlg1" minHeight="40" style="max-width:75%">
+                    <p:dialog style="font-size: 80%; max-width:75%" header="Nuevas Instancias" widgetVar="dlg1" minHeight="40" showEffect="fade" hideEffect="fade">
                         <h:form id="frmNew">
                             <p:panel id="inNew" style="margin-bottom:10px">
                                 <p:growl id="messages" />
@@ -113,6 +113,13 @@
                                         <p:outputLabel value="#{e.codigo}"/>
                                     </p:column>
                                     
+                                    <p:column headerText="Estado Inicial" sortBy="#{e.estadoInicial}" filterBy="#{e.estadoInicial}" filterMatchMode="contains">
+                                        <p:outputLabel value="#{e.estadoInicial}"/>
+                                    </p:column>
+                                                                        
+                                    <p:column headerText="Estado Final" sortBy="#{e.estadoFinal}" filterBy="#{e.estadoFinal}" filterMatchMode="contains">
+                                        <p:outputLabel value="#{e.estadoFinal}"/>
+                                    </p:column>
 
                                     <p:column headerText="Acciones" style="width:140px">
                                         <p:growl id="messages" showDetail="true" />

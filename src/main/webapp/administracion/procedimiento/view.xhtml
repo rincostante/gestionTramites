@@ -53,12 +53,31 @@
                     </f:facet>
                 </p:toolbar>
             
-                <p:dialog style="font-size: 80%" header="Listado de Instancias asociadas" widgetVar="Instancias" showEffect="fade" 
-                          hideEffect="fade" height="200" width="30%">
-                    <p:dataTable value="#{mbProcedimiento.instVinc}" filteredValue="#{mbProcedimiento.listInstancias}" var="e" id="instVinc" >
+                <p:dialog style="font-size: 80%; max-width:75%" header="Listado de Instancias asociadas" widgetVar="Instancias"  minHeight="40" showEffect="fade" 
+                          hideEffect="fade">
+                    <p:dataTable value="#{mbProcedimiento.selected.instancias}" filteredValue="#{mbProcedimiento.instanciasFilter}" rows="5" paginator="true" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                 rowsPerPageTemplate="5,10,15" var="e" id="instVinc" >
                         <p:column headerText="Nombre" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
                             <h:outputText value="#{e.nombre}" />
-                        </p:column>                        
+                        </p:column>    
+
+                        <p:column headerText="Ruta" sortBy="#{e.ruta}" filterBy="#{e.ruta}" filterMatchMode="contains">
+                            <p:outputLabel value="#{e.ruta}"/>
+                        </p:column>      
+
+                        <p:column headerText="Código" sortBy="#{e.codigo}" filterBy="#{e.codigo}" filterMatchMode="contains">
+                            <p:outputLabel value="#{e.codigo}"/>
+                        </p:column>
+                                                            
+                        <p:column headerText="Estado Inicial" sortBy="#{e.estadoInicial}" filterBy="#{e.estadoInicial.nombre}" filterMatchMode="contains">
+                            <p:outputLabel value="#{e.estadoInicial.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Estado Final" sortBy="#{e.estadoFinal}" filterBy="#{e.estadoFinal.nombre}" filterMatchMode="contains">
+                            <p:outputLabel value="#{e.estadoFinal.nombre}"/>
+                        </p:column>
+                                    
                     </p:dataTable>
                 </p:dialog>
             </h:form>

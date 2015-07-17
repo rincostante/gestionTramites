@@ -29,7 +29,7 @@
                     </h:panelGrid>
                     
                     
-                    <p:dialog header="Nuevas Instancias" widgetVar="dlg1" minHeight="40">
+                    <p:dialog style="font-size: 80%; max-width:75%" header="Nuevas Instancias" widgetVar="dlg1" minHeight="40">
                         <h:form id="frmNew">
                             <p:panel id="inNew" style="margin-bottom:10px;">
                                 <p:growl id="messages" />
@@ -96,9 +96,57 @@
                                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_observaciones}" required="false"/>
                                     <p:message for="observaciones" />          
                         
-
-                                    
                                 </h:panelGrid>
+                                
+                                <p:dataTable value="#{mbProcedimiento.listInstancias}" filteredValue="#{mbProcedimiento.listInstancias}" rows="5" paginator="true" 
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                             rowsPerPageTemplate="5,10,15" var="e" id="listInstancias" >
+                                    <f:facet name="header">
+                                        <p:commandButton icon="ui-icon-refresh" value="Actualizar" update="listInstancias" style="margin-left: 10px"/>
+                                    </f:facet>
+
+                                    <p:column headerText="Nombre" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
+                                        <h:outputText value="#{e.nombre}" />
+                                    </p:column>
+                                    
+                                    <p:column headerText="Ruta" sortBy="#{e.ruta}" filterBy="#{e.ruta}" filterMatchMode="contains">
+                                        <p:outputLabel value="#{e.ruta}"/>
+                                    </p:column>      
+
+                                    <p:column headerText="Código" sortBy="#{e.codigo}" filterBy="#{e.codigo}" filterMatchMode="contains">
+                                        <p:outputLabel value="#{e.codigo}"/>
+                                    </p:column>
+                                    
+                                    <p:column headerText="Estado Inicial" sortBy="#{e.estadoInicial}" filterBy="#{e.estadoInicial}" filterMatchMode="contains">
+                                        <p:outputLabel value="#{e.estadoInicial.nombre}"/>
+                                    </p:column>
+                                                                        
+                                    <p:column headerText="Estado Final" sortBy="#{e.estadoFinal}" filterBy="#{e.estadoFinal}" filterMatchMode="contains">
+                                        <p:outputLabel value="#{e.estadoFinal.nombre}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Acciones" style="width:140px">
+                                        <p:growl id="messages" showDetail="true" />
+                                        <p:commandButton icon="ui-icon-zoomin" action="#{mbProcedimiento.prepareView}" title="Ver detalle">
+                                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.instancia}" />
+                                        </p:commandButton>
+                                        <p:commandButton icon="ui-icon-pencil" action="#{mbProcedimiento.prepareEdit}" title="Editar">
+                                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.instancia}" />
+                                        </p:commandButton>
+
+                                        <p:commandButton icon="ui-icon-trash" action="#{mbProcedimiento.prepareDestroy}" update="messages" title="Borrar">
+                                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.instancia}" />
+                                            <p:confirm header="Confirmar" message="¿Desea borrar la instancia" />
+                                        </p:commandButton>
+
+                                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                           <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                           <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                       </p:confirmDialog>      
+                                        
+                                    </p:column>                         
+                                </p:dataTable>
+                                
                             </p:panel>
                               <p:toolbar>
                                     <f:facet name="left">
