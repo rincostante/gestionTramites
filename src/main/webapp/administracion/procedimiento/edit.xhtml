@@ -5,13 +5,9 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-        <ui:composition template="/WEB-INF/facelets/templates/entidadTemplate.xhtml">
-        <ui:define name="title">
-        <h:outputText value="#{bundle.ProcedimientoTitle}" />
-        </ui:define>
-        <ui:define name="content">
-     
-            <h:form id="frmEdit" style="text-align: left">
+     <ui:composition template="/WEB-INF/facelets/templates/entidadTemplate.xhtml">
+     <ui:define name="content">
+     <h:form style="text-align: left">
                 <p:panel id="pnEdit" header="#{bundle.ProcedimientoEditTitle}" style="margin-bottom:10px;">
                     <h:inputHidden id="id" value="#{mbProcedimiento.selected.id}" />
                     <p:messages id="messages" />
@@ -25,35 +21,13 @@
                         <p:outputLabel value="#{bundle.CreateProcedimientoLabel_app}" for="app"/>
                             <p:inputText id="app" value="#{mbProcedimiento.selected.app}" requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" required="true"/>     
 
-                        <h:outputLabel   value="#{bundle.InstanciasAsociadas}: " />
-                            <h:panelGrid id="btnVerInst" columns="2">                       
-                                <p:commandButton value="Ver/Quitar Asignadas" icon="ui-icon-extlink" onclick="PF('instVinc').show();" actionListener="#{mbProcedimiento.verInstancias()}" /> 
-                                <p:commandButton id="instanciaForm" value="Agregar Nueva" onclick="PF('dlg1').show();" />      
-                            </h:panelGrid> 
+                            <p:outputLabel value="#{bundle.InstanciasAsociadas}" for="instanciaForm"/>
+                        <p:commandButton id="instanciaForm" value=" Adicionar " onclick="PF('dlg1').show();"/>   
                     </h:panelGrid>
                     
-                        <p:dialog style="font-size: 80%" header="Listado de instancias asociadas" widgetVar="instVinc" showEffect="fade" hideEffect="fade"
-                                  height="200" width="30%">
-                            <p:dataTable value="#{mbProcedimiento.instVinc}" filteredValue="#{mbProcedimiento.listInstancias}" rows="5" paginator="true" 
-                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
-                                         rowsPerPageTemplate="5,10,15" var="e" id="instVinc" >
-                                <f:facet name="header">
-                                    <p:commandButton icon="ui-icon-refresh" value="Actualizar" update="instVinc" style="margin-left: 10px"/>
-                                </f:facet>
-                                
-                                <p:column headerText="Nombre" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
-                                    <h:outputText value="#{e.nombre}" />
-                                </p:column>
-
-                                <p:column headerText="Quitar" style="width :70px;" >
-                                    <p:commandButton icon="ui-icon-circle-triangle-n" actionListener="#{mbProcedimiento.destroyInstancia}" update="instVinc" />
-                                </p:column>                        
-                            </p:dataTable>
-                        </p:dialog>  
-                    
-                    <p:dialog header="Nuevas Instancias" widgetVar="dlg1" minHeight="40">
-                        <h:form id="frmEdit">
-                            <p:panel id="inNew" style="margin-bottom:10px;">
+                    <p:dialog header="Nuevas Instancias" widgetVar="dlg1" minHeight="40" style="max-width:75%">
+                        <h:form id="frmNew">
+                            <p:panel id="inNew" style="margin-bottom:10px">
                                 <p:growl id="messages" />
                                 <h:panelGrid columns="3">
                                     <p:outputLabel value=""/>
@@ -105,12 +79,12 @@
                                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_vto}" required="true"/>
                                     <p:message for="cantidadVencimiento" /> 
 
-                                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>                             
-                                    <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbProcedimiento.instancia.cantidadVencimiento}" 
-                                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTVto}" required="true">                                         >
+                                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>                             
+                                     <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbProcedimiento.instancia.unidadDeTiempoVto}" 
+                                                     requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTVto}" required="true">
                                         <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el vencimiento" itemValue="" noSelectionOption="true" />                           
                                         <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposVto}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoVto}"/>
-                                    </p:selectOneMenu>                           
+                                    </p:selectOneMenu>                          
 
                                     <p:outputLabel value=""/>
                                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_observaciones}" for="observaciones"/>
@@ -118,21 +92,63 @@
                                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_observaciones}" required="false"/>
                                     <p:message for="observaciones" />          
                         
-
-                                    
                                 </h:panelGrid>
-                            </p:panel>
-                              <p:toolbar>
-                                    <f:facet name="left">
-                                        <p:commandButton icon="ui-icon-check" value="Guardar" action="#{mbProcedimiento.createInstancia}" update="inNew" />
-                                        <p:commandButton icon="ui-icon-cancel" value="Limpiar" style="float: next">
-                                            <p:ajax update="inNew" resetValues="true" />
-                                        </p:commandButton>
+                                
+                                <p:dataTable value="#{mbProcedimiento.selected.instancias}" filteredValue="#{mbProcedimiento.instanciasFilter}" rows="5" paginator="true" 
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                             rowsPerPageTemplate="5,10,15" var="e" id="instVinc" >
+                                    <f:facet name="header">
+                                        <p:commandButton icon="ui-icon-refresh" value="Actualizar" update="instVinc" style="margin-left: 10px"/>
                                     </f:facet>
-                                </p:toolbar>
+
+                                    <p:column headerText="Nombre" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
+                                        <h:outputText value="#{e.nombre}" />
+                                    </p:column>
+                                    
+                                    <p:column headerText="Ruta" sortBy="#{e.ruta}" filterBy="#{e.ruta}" filterMatchMode="contains">
+                                        <p:outputLabel value="#{e.ruta}"/>
+                                    </p:column>      
+
+                                    <p:column headerText="Código" sortBy="#{e.codigo}" filterBy="#{e.codigo}" filterMatchMode="contains">
+                                        <p:outputLabel value="#{e.codigo}"/>
+                                    </p:column>
+                                    
+
+                                    <p:column headerText="Acciones" style="width:140px">
+                                        <p:growl id="messages" showDetail="true" />
+                                        <p:commandButton icon="ui-icon-zoomin" action="#{mbProcedimiento.prepareViewInstancias}" title="Ver detalle">
+                                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.instancia}" />
+                                        </p:commandButton>
+                                        <p:commandButton icon="ui-icon-pencil" action="#{mbProcedimiento.prepareEdit}" title="Editar">
+                                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.instancia}" />
+                                        </p:commandButton>
+
+                                        <p:commandButton icon="ui-icon-trash" action="#{mbProcedimiento.prepareDestroy}" update="messages" title="Borrar">
+                                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.instancia}" />
+                                            <p:confirm header="Confirmar" message="¿Desea borrar la instancia" />
+                                        </p:commandButton>
+
+                                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                           <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                           <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                       </p:confirmDialog>      
+                                        
+                                    </p:column>                         
+                                </p:dataTable>
+                            </p:panel>
+                            <p:toolbar>
+                                  <f:facet name="left">
+                                      <p:commandButton icon="ui-icon-check" value="Guardar" action="#{mbProcedimiento.createInstancia}" update="inNew" />
+                                      <p:commandButton icon="ui-icon-cancel" value="Limpiar" style="float: next">
+                                          <p:ajax update="inNew" resetValues="true" />
+                                      </p:commandButton>
+                                  </f:facet>
+                            </p:toolbar>
                         </h:form>
 
                 </p:dialog>
+                    
+                    
                 </p:panel>
          
                 <p:toolbar>

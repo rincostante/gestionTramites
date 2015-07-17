@@ -74,7 +74,8 @@ public class MbProcedimiento implements Serializable{
     private List<UnidadDeTiempo> listaUnidadDeTiemposVto;
     private List<Estado> listaEstadosIniciales;
     private List<Estado> listaEstadosFinales;
-    private Procedimiento instanciaSelected;
+
+
     
 
 
@@ -293,7 +294,15 @@ public class MbProcedimiento implements Serializable{
      * @return acción para la edición de la entidad
      */
     public String prepareEdit() {
-        instVinc = current.getInstancias();
+        // inicializamos el objeto instancia para asignar nuevas al procedimiento que se está editando
+        instancia = new Instancia();
+        
+        // pueblo los combos
+        listaEstadosIniciales = estadoFacade.findAll();
+        listaEstadosFinales = estadoFacade.findAll();
+        listaUnidadDeTiemposAlerta = unidadDeTiempoFacade.findAll();
+        listaUnidadDeTiemposVto = unidadDeTiempoFacade.findAll();  
+        
         return "edit";
     }
     
@@ -369,9 +378,14 @@ public class MbProcedimiento implements Serializable{
             admEnt.setHabilitado(true);
             admEnt.setUsAlta(usLogeado);
             current.setAdminentidad(admEnt);
-            // agrego la instancia al list
             
-            listInstancias.add(instancia);     
+            // Si estoy creanto un procedimiento nuevo, agrego la instancia al list
+            // Si no se la agrego a la propiedad instancias del procidimiento
+            if(current.getId() != null){
+                current.getInstancias().add(instancia);
+            }else{
+                listInstancias.add(instancia);    
+            }
             
             // reseteo la instancia
             instancia = null;
@@ -435,7 +449,7 @@ public class MbProcedimiento implements Serializable{
      * Previamente actualiza los datos de administración
      * @return mensaje que notifica la actualización
      */
-    public String update(int Instancia) {    
+    public String update() {    
         boolean edito;
         Procedimiento pro;
         try {
@@ -450,7 +464,7 @@ public class MbProcedimiento implements Serializable{
                 Date date = new Date(System.currentTimeMillis());
                 current.getAdminentidad().setFechaModif(date);
                 current.getAdminentidad().setUsModif(usLogeado);
-                current.getInstancias().set(Instancia, instancia);
+               // current.getInstancias().set(Instancia, instancia);
 
                 // Actualizo
                 getFacade().edit(current);
@@ -470,12 +484,15 @@ public class MbProcedimiento implements Serializable{
     /**
      * @return mensaje que notifica el borrado
      */    
-    public String destroyInstancia() {
+//    public String destroyInstancia(Instancia inst) {
 //        current = instanciaSelected;
-        performDestroyInstancia();
-        recreateModel();
-        return "view";
-    }     
+//        performDestroyInstancia();
+//        recreateModel();
+//        return "view";
+//    }     
+    public void destroyInstancia(Instancia inst){
+        instVinc.remove(inst);
+    }
     /**
      * @return mensaje que notifica el borrado
      */    
@@ -575,13 +592,6 @@ public class MbProcedimiento implements Serializable{
      */
     private void performDestroyInstancia() {
         try {
-            // Actualización de datos de administración de la instancia
-            Date date = new Date(System.currentTimeMillis());
-            current.getAdminentidad().setFechaBaja(date);
-            current.getAdminentidad().setUsBaja(usLogeado);
-            current.getAdminentidad().setHabilitado(false);
-            
-            // elimino la instancia
             getFacade().remove(instancia);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaDeleted"));
         } catch (Exception e) {
@@ -608,9 +618,7 @@ public class MbProcedimiento implements Serializable{
         }
     }             
 
-   
-
-    
+  
     /********************************************************************
     ** Converter. Se debe actualizar la entidad y el facade respectivo **
     *********************************************************************/
