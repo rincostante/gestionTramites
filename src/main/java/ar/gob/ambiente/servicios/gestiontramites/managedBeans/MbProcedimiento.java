@@ -576,7 +576,16 @@ public class MbProcedimiento implements Serializable{
      */
     private boolean compararInstancia(Instancia inst){
         boolean retorno = false;
-        Iterator instIt = listInstancias.iterator();
+        Iterator instIt;
+        
+        // Si estoy creando un procedimiento nuevo, uso el iterator del listInstancias
+        // Si no, lo uso del current.getInstancias
+        if(current.getId() != null){
+            instIt = current.getInstancias().iterator();
+        }else{
+            instIt = listInstancias.iterator(); 
+        }
+        
         while(instIt.hasNext()){
             Instancia instancia = (Instancia)instIt.next();
             if(instancia.getNombre().equals(inst.getNombre())
