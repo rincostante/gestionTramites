@@ -37,6 +37,8 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
+import org.primefaces.event.TabCloseEvent;
 
 /**
  *
@@ -64,6 +66,7 @@ public class MbProcedimiento implements Serializable{
     private InstanciaFacade instFacade;
     
     private Procedimiento procedimientoSelected;
+    private Instancia instSelected;
     private Usuario usLogeado;
     private MbLogin login;   
 
@@ -114,7 +117,15 @@ public class MbProcedimiento implements Serializable{
         }
     }    
 
-    
+    public void onTabChange(TabChangeEvent event) {
+        FacesMessage msg = new FacesMessage("Tab Changed", "Active Tab: " + event.getTab().getTitle());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+         
+    public void onTabClose(TabCloseEvent event) {
+        FacesMessage msg = new FacesMessage("Tab Closed", "Closed tab: " + event.getTab().getTitle());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
     /********************************
      ****** Getters y Setters *******
      ********************************/
@@ -232,6 +243,14 @@ public class MbProcedimiento implements Serializable{
         this.listaEstadosFinales = listaEstadosFinales;
     }
 
+    public Instancia getInstSelected() {
+        return instSelected;
+    }
+
+    public void setInstSelected(Instancia instSelected) {
+        this.instSelected = instSelected;
+    }
+
    
  
     /********************************
@@ -260,7 +279,7 @@ public class MbProcedimiento implements Serializable{
         recreateModel();
         return "list";
     } 
-    
+     
    
     /**
      * @return acción para el detalle de la entidad
@@ -269,7 +288,13 @@ public class MbProcedimiento implements Serializable{
         instVinc = current.getInstancias();
         return "view";
     }
-
+   
+    /**
+     * @return acción para el detalle de la entidad
+     */
+    public String prepareViewInstancia() {
+        return "viewInst";
+    }
 
      /** (Probablemente haya que embeberlo con el listado para una misma vista)
      * @return acción para el formulario de nuevo
@@ -547,7 +572,7 @@ public class MbProcedimiento implements Serializable{
     private ProcedimientoFacade getFacade() {
         return procedimientoFacade;
     }    
-      
+/*      
     private void validarInstanciaExistente(Object arg2) throws ValidatorException{
         if(!getFacade().noExisteInstancia((String)arg2)){
             throw new ValidatorException(new FacesMessage(ResourceBundle.getBundle("/Bundle").getString("CreateInstanciaExistente")));
@@ -559,6 +584,7 @@ public class MbProcedimiento implements Serializable{
             throw new ValidatorException(new FacesMessage(ResourceBundle.getBundle("/Bundle").getString("CreateProcedimientoExistente")));
         }
     }     
+    */
     /**
      * Restea la entidad
      */

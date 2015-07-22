@@ -30,6 +30,7 @@
                         <p:commandButton icon="ui-icon-refresh" value="Listar" action="#{mbProcedimiento.prepareList}" update="procedimientoList" style="margin-left: 10px"/>
                         <p:columnToggler datasource="procedimientoList" trigger="toggler" />
                     </f:facet>
+                    
                     <p:column headerText="#{bundle.ProcedimientoTitle}" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
                         <p:outputLabel value="#{e.nombre}"/>
                     </p:column>

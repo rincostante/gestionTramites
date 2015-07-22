@@ -41,9 +41,67 @@
                         <h:outputLabel  value="#{bundle.FechaBaja}" rendered="#{not mbProcedimiento.selected.adminentidad.habilitado}"/>
                         <h:outputText   value="#{mbProcedimiento.selected.adminentidad.strFechaBaja}" rendered="#{not mbProcedimiento.selected.adminentidad.habilitado}"
                                         title="#{bundle.FechaBaja}"/>    
-                        
-                        <h:outputLabel value="#{bundle.InstanciasAsociadas}" />
-                        <p:commandButton value="Ver Instancias" type="button" onclick="PF('Instancias').show();" actionListener="#{mbProcedimiento.verInstancias()}" />     
+                    </h:panelGrid>  
+                    
+                    <h:panelGrid>
+                        <h:form id="form">    
+                            <p:panel id="pnNew" header="#{bundle.InstanciasAsociadas}" style="margin-bottom: 10px">
+                            <p:growl id="msgs" showDetail="true" />
+                                 <p:accordionPanel value="#{mbProcedimiento.selected.instancias}" var="ins"  style="font-weight: normal; font-size: 80%">
+                                     <p:tab title="#{ins.nombre}">
+                                        <h:panelGrid columns="2" cellpadding="5">
+                                            <h:outputLabel  value="#{bundle.CreateInstanciaLabel_codigo}"/>
+                                            <h:outputText   value="#{ins.codigo}"/>
+
+                                            <h:outputLabel  value="#{bundle.CreateInstanciaLabel_ruta}"/>
+                                            <h:outputText   value="#{ins.ruta}" title="#{bundle.CreateInstanciaLabel_ruta}"/>
+
+                                            <h:outputLabel  value="#{bundle.CreateInstanciaLabel_estadoInicial}"/>
+                                            <h:outputText   value="#{ins.estadoInicial.nombre}"/>   
+
+                                            <h:outputLabel  value="#{bundle.CreateInstanciaLabel_estadoFinal}"/>
+                                            <h:outputText   value="#{ins.estadoFinal.nombre}"/> 
+
+                                            <h:outputLabel  value="#{bundle.CreateInstanciaLabel_alerta}"/>
+                                            <h:outputText   value="#{ins.cantidadAlerta}"/>     
+
+                                            <h:outputLabel  value="#{bundle.CreateInstanciaLabel_UdTAlerta}"/>
+                                            <h:outputText   value="#{ins.unidadDeTiempoAlerta.nombre}"/>
+
+                                            <h:outputLabel  value="#{bundle.CreateInstanciaLabel_vto}"/>
+                                            <h:outputText   value="#{ins.cantidadVencimiento}"/>
+
+                                            <h:outputLabel  value="#{bundle.CreateInstanciaLabel_UdTVto}"/>
+                                            <h:outputText   value="#{ins.unidadDeTiempoVto.nombre}"/> 
+
+                                            <h:outputLabel  value="#{bundle.CreateInstanciaLabel_observaciones}"/>
+                                            <h:outputText   value="#{ins.observaciones}"/>
+
+                                            <h:outputLabel  value="#{bundle.UsuarioAlta}"/>
+                                            <h:outputText   value="#{ins.adminentidad.usAlta.nombre}" title="#{bundle.UsuarioAlta}"/>                        
+
+                                            <h:outputLabel  value="#{bundle.FechaAlta}"/>
+                                            <h:outputText   value="#{ins.adminentidad.strFechaAlta}" title="#{bundle.FechaAlta}"/>                         
+
+                                            <h:outputLabel  value="#{bundle.UsuarioModifica}"/>
+                                            <h:outputText   value="#{ins.adminentidad.usModif.nombre}" title="#{bundle.UsuarioModifica}"/>                        
+
+                                            <h:outputLabel  value="#{bundle.FechaModifica}"/>
+                                            <h:outputText   value="#{ins.adminentidad.strFechaModif}" title="#{bundle.FechaModifica}"/>                          
+
+                                            <h:outputLabel  value="#{bundle.UsuarioBaja}" rendered="#{not ins.adminentidad.habilitado}"/>
+                                            <h:outputText   value="#{ins.adminentidad.usBaja.nombre}" rendered="#{not ins.adminentidad.habilitado}"
+                                                            title="#{bundle.UsuarioBaja}"/>                        
+
+                                            <h:outputLabel  value="#{bundle.FechaBaja}" rendered="#{not ins.adminentidad.habilitado}"/>
+                                            <h:outputText   value="#{ins.adminentidad.strFechaBaja}" rendered="#{not ins.adminentidad.habilitado}"
+                                                            title="#{bundle.FechaBaja}"/>    
+                                        </h:panelGrid>    
+                                    </p:tab>
+                                </p:accordionPanel>
+                            </p:panel>
+                        </h:form>
+
                         
                     </h:panelGrid>                    
                 </p:panel>
@@ -55,30 +113,8 @@
             
                 <p:dialog style="font-size: 80%; max-width:75%" header="Listado de Instancias asociadas" widgetVar="Instancias"  minHeight="40" showEffect="fade" 
                           hideEffect="fade">
-                    <p:dataTable value="#{mbProcedimiento.selected.instancias}" filteredValue="#{mbProcedimiento.instanciasFilter}" rows="5" paginator="true" 
-                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
-                                 rowsPerPageTemplate="5,10,15" var="e" id="instVinc" >
-                        <p:column headerText="Nombre" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
-                            <h:outputText value="#{e.nombre}" />
-                        </p:column>    
 
-                        <p:column headerText="Ruta" sortBy="#{e.ruta}" filterBy="#{e.ruta}" filterMatchMode="contains">
-                            <p:outputLabel value="#{e.ruta}"/>
-                        </p:column>      
 
-                        <p:column headerText="Código" sortBy="#{e.codigo}" filterBy="#{e.codigo}" filterMatchMode="contains">
-                            <p:outputLabel value="#{e.codigo}"/>
-                        </p:column>
-                                                            
-                        <p:column headerText="Estado Inicial" sortBy="#{e.estadoInicial}" filterBy="#{e.estadoInicial.nombre}" filterMatchMode="contains">
-                            <p:outputLabel value="#{e.estadoInicial.nombre}"/>
-                        </p:column>
-
-                        <p:column headerText="Estado Final" sortBy="#{e.estadoFinal}" filterBy="#{e.estadoFinal.nombre}" filterMatchMode="contains">
-                            <p:outputLabel value="#{e.estadoFinal.nombre}"/>
-                        </p:column>
-                                    
-                    </p:dataTable>
                 </p:dialog>
             </h:form>
         </ui:define>
