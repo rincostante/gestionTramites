@@ -289,12 +289,6 @@ public class MbProcedimiento implements Serializable{
         return "view";
     }
    
-    /**
-     * @return acción para el detalle de la entidad
-     */
-    public String prepareViewInstancia() {
-        return "viewInst";
-    }
 
      /** (Probablemente haya que embeberlo con el listado para una misma vista)
      * @return acción para el formulario de nuevo
