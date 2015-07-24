@@ -34,11 +34,13 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
+
 
 /**
  *
@@ -71,15 +73,13 @@ public class MbProcedimiento implements Serializable{
     private MbLogin login;   
 
     private boolean iniciado;
-    //private int update; // 0=updateNormal | 1=deshabiliar | 2=habilitar
+    private int update; // 0=updateNormal | 1=deshabiliar | 2=habilitar
     private List<UnidadDeTiempo> listaUnidadDeTiempos;
     private List<UnidadDeTiempo> listaUnidadDeTiemposAlerta;
     private List<UnidadDeTiempo> listaUnidadDeTiemposVto;
     private List<Estado> listaEstadosIniciales;
     private List<Estado> listaEstadosFinales;
-
-
-    
+   
 
 
 
@@ -156,7 +156,7 @@ public class MbProcedimiento implements Serializable{
 
     public List<Procedimiento> getListProcedimiento() {
         if(listProcedimiento == null){
-            listProcedimiento = getFacade().getHabilitadas();
+            listProcedimiento = getFacade().findAll();
         }
         return listProcedimiento;
     }
@@ -250,8 +250,7 @@ public class MbProcedimiento implements Serializable{
     public void setInstSelected(Instancia instSelected) {
         this.instSelected = instSelected;
     }
-
-   
+  
  
     /********************************
      ** Métodos para el datamodel **
@@ -275,7 +274,6 @@ public class MbProcedimiento implements Serializable{
      */
     public String prepareList() {
         iniciado = true;
-        
         recreateModel();
         return "list";
     } 
@@ -285,7 +283,7 @@ public class MbProcedimiento implements Serializable{
      * @return acción para el detalle de la entidad
      */
     public String prepareView() {
-        instVinc = current.getInstancias();
+        listInstancias = current.getInstancias();
         return "view";
     }
    
@@ -338,49 +336,25 @@ public class MbProcedimiento implements Serializable{
      * Método que verifica que la Actividad Planificada que se quiere eliminar no esté siento utilizada por otra entidad
      * @return 
      */
-    public String prepareDestroy(){
-       // current = procedimientoSelected;
-        boolean libre = getFacade().getUtilizado(current.getId());
-
-        if (libre){
-            // Elimina
-            performDestroyInstancia();
-            performDestroy();
-            recreateModel();
-        }else{
-            //No Elimina 
-            JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoNonDeletable"));
-        }
-        instVinc = current.getInstancias();
-        return "view";
-    }  
+        /**
+     * 
+     */
+    public void habilitar(){
+        update = 2;
+        update(); 
+        recreateModel();
+    }
     
     /**
      * 
-     * @return 
      */
-    public String prepareHabilitar(){
-       // current = procedimientoSelected;
-        try{
-            // Actualización de datos de administración de la entidad
-            Date date = new Date(System.currentTimeMillis());
-            current.getAdminentidad().setFechaModif(date);
-            current.getAdminentidad().setUsModif(usLogeado);
-            current.getAdminentidad().setHabilitado(true);
-            current.getAdminentidad().setUsBaja(null);
-            current.getAdminentidad().setFechaBaja(null);
-
-            // Actualizo
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoHabilitada"));
-            instVinc = current.getInstancias();
-            return "view";
-        }catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoHabilitadaErrorOccured"));
-            return null; 
-        }
+    public void deshabilitar(){
+        update = 1;
+        update();   
+        recreateModel();
     }  
-
+    
+  
     /*************************
     ** Métodos de operación **
     **************************/
@@ -448,7 +422,6 @@ public class MbProcedimiento implements Serializable{
                     getFacade().create(current);
 
                     JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoCreated"));
-                   // recreateModel();
                     return "view";
 
                 }else{
@@ -468,31 +441,63 @@ public class MbProcedimiento implements Serializable{
      * Previamente actualiza los datos de administración
      * @return mensaje que notifica la actualización
      */
-    public String update() {    
+   public String update() {    
         boolean edito;
         Procedimiento pro;
+        Date date = new Date(System.currentTimeMillis());
+        
+
+        // actualizamos según el valor de update
+        if(update == 1){
+            current.getAdminentidad().setFechaBaja(date);
+            current.getAdminentidad().setUsBaja(usLogeado);
+            current.getAdminentidad().setHabilitado(false);
+        }
+        if(update == 2){
+            current.getAdminentidad().setFechaModif(date);
+            current.getAdminentidad().setUsModif(usLogeado);
+            current.getAdminentidad().setHabilitado(true);
+            current.getAdminentidad().setFechaBaja(null);
+            current.getAdminentidad().setUsBaja(usLogeado);
+        }
+        if(update == 0){
+            current.getAdminentidad().setFechaModif(date);
+            current.getAdminentidad().setUsModif(usLogeado);
+        }
+        
+        // acualizo según la operación seleccionada
         try {
-            pro = getFacade().getExistente(current.getNombre(), current.getApp());
-            if(pro == null){
-                edito = true;  
-            }else{
-                edito = pro.getId().equals(current.getId());
-            }
-            if(edito){
-                // Actualización de datos de administración de la entidad
-                Date date = new Date(System.currentTimeMillis());
-                current.getAdminentidad().setFechaModif(date);
-                current.getAdminentidad().setUsModif(usLogeado);
-               // current.getInstancias().set(Instancia, instancia);
+            if(update == 0){
+                pro = getFacade().getExistente(current.getNombre(), current.getApp());
+                if(pro == null){
+                    edito = true;  
+                }else{
+                    edito = pro.getId().equals(current.getId());
+                }
+                if(edito){
+                    // Actualización de datos de administración de la entidad
+                    current.getAdminentidad().setFechaModif(date);
+                    current.getAdminentidad().setUsModif(usLogeado);
+                   // current.getInstancias().set(Instancia, instancia);
 
-                // Actualizo
+                    // Actualizo
+                    getFacade().edit(current);
+                    JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoUpdated"));
+
+                    return "view";
+                }else{
+                    JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoExistente"));
+                    return null; 
+                    }
+                
+            }else if(update == 1){
                 getFacade().edit(current);
-                JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoUpdated"));
-
+                JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoDeshabilitado"));
                 return "view";
             }else{
-                JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoExistente"));
-                return null; 
+                getFacade().edit(current);
+                JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoHabilitado"));
+                return "view";
             }
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoUpdatedErrorOccured"));
@@ -566,19 +571,27 @@ public class MbProcedimiento implements Serializable{
     private ProcedimientoFacade getFacade() {
         return procedimientoFacade;
     }    
-/*      
-    private void validarInstanciaExistente(Object arg2) throws ValidatorException{
-        if(!getFacade().noExisteInstancia((String)arg2)){
-            throw new ValidatorException(new FacesMessage(ResourceBundle.getBundle("/Bundle").getString("CreateInstanciaExistente")));
+
+    public void onRowEdit(RowEditEvent event) {
+        FacesMessage msg = new FacesMessage("Ins Edited", ((Instancia) event.getObject()).getNombre());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+     
+    public void onRowCancel(RowEditEvent event) {
+        FacesMessage msg = new FacesMessage("Edit Cancelled", ((Instancia) event.getObject()).getNombre());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+     
+    public void onCellEdit(CellEditEvent event) {
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+         
+        if(newValue != null && !newValue.equals(oldValue)) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
-    } 
-    
-    private void validarExistente(Object arg2) throws ValidatorException{
-        if(!getFacade().noExiste((String)arg2)){
-            throw new ValidatorException(new FacesMessage(ResourceBundle.getBundle("/Bundle").getString("CreateProcedimientoExistente")));
-        }
-    }     
-    */
+    }
+  
     /**
      * Restea la entidad
      */

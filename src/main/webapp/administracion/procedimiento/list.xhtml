@@ -39,17 +39,23 @@
                         <p:outputLabel value="#{e.app}"/>
                     </p:column>   
                     
-                    <p:column filterBy="#{e.adminentidad.habilitado}" headerText="Estado" filterMatchMode="equals">
+                    <p:column filterBy="#{e.adminentidad.habilitado}" 
+                              headerText="Estado"                            
+                              filterMatchMode="equals">
                         <f:facet name="filter">
-                            <p:selectOneMenu onchange="PF('proTable').filter()" style="font-size: 80%">
+                            <p:selectOneMenu onchange="PF('proTable').filter()" style="font-size: 80%;">
                                 <f:converter converterId="javax.faces.Boolean" />
-                                <f:selectItem itemLabel="Todos" itemValue="" />
-                                <f:selectItem itemLabel="Activos" itemValue="true" />
-                                <f:selectItem itemLabel="Inactivos" itemValue="false" />
+                                <f:selectItem itemLabel="Todos" 
+                                              itemValue="" />
+                                <f:selectItem itemLabel="Activos" 
+                                              itemValue="true" />
+                                <f:selectItem itemLabel="Inactivos" 
+                                              itemValue="false" />
                             </p:selectOneMenu>
                         </f:facet>
                         <h:outputText value="#{e.adminentidad.habilitado ? 'Habilitado': 'Deshabilitado'}" />
-                    </p:column>                    
+                    </p:column>
+                               
 
                     <p:column headerText="Acciones" style="width:140px">
                         <p:growl id="messages" showDetail="true" />
@@ -60,20 +66,21 @@
                             <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
                         </p:commandButton>
 
-                        <p:commandButton icon="ui-icon-trash" action="#{mbProcedimiento.prepareDestroy}" update="messages" title="Deshabilitar">
+                        <p:commandButton icon="ui-icon-close" action="#{mbProcedimiento.deshabilitar}" rendered="#{e.adminentidad.habilitado == 'true'}" title="Deshabilitar" update="procedimientoList">
                             <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
-                            <p:confirm header="Confirmar" message="¿Desea deshabilitar el Procedimiento?" />
+                            <p:confirm header="Confirmar" message="¿Desea deshabilitar el procedimiento?" icon="ui-icon-alert" />
+                        </p:commandButton>                
+
+                        <p:commandButton icon="ui-icon-check" action="#{mbProcedimiento.habilitar}" rendered="#{e.adminentidad.habilitado == 'false'}" title="Habilitar" update="procedimientoList">
+                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
+                            <p:confirm header="Confirmar" message="¿Desea habilitar el procedimiento?" icon="ui-icon-alert" />
                         </p:commandButton>
-                        <p:commandButton icon="ui-icon-check" action="#{mbProcedimiento.prepareHabilitar}" rendered="#{e.adminentidad.habilitado == 'false'}" 
-                                             title="Habilitar" update="procedimientoList">
-                            <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
-                                <p:confirm header="Confirmar" message="¿Desea habilitar el Procedimiento?" icon="ui-icon-alert" />
-                        </p:commandButton>                          
-                        
+
                         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                           <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                           <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                       </p:confirmDialog>                       
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>    
+                        
                     </p:column>                
                 </p:dataTable>
             </h:form>

@@ -16,13 +16,13 @@
                     
                     <h:panelGrid columns="2">
                         <p:outputLabel value="#{bundle.ProcedimientoTitle}" for="nombre"/>
-                            <p:inputText id="nombre" style="width: 500px" value="#{mbProcedimiento.selected.nombre}" requiredMessage="#{bundle.ProcedimientoRequire_nombre}" required="true"/>   
+                            <p:inputText id="nombre" value="#{mbProcedimiento.selected.nombre}" requiredMessage="#{bundle.ProcedimientoRequire_nombre}" required="true"/>   
                         
                         <p:outputLabel value="#{bundle.CreateProcedimientoLabel_app}" for="app"/>
                             <p:inputText id="app" value="#{mbProcedimiento.selected.app}" requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" required="true"/>     
 
                             <p:outputLabel value="#{bundle.InstanciasAsociadas}" for="instanciaForm"/>
-                        <p:commandButton id="instanciaForm" value=" Actualizar Instancias " onclick="PF('dlg1').show();"/>   
+                            <p:commandButton id="instanciaForm" style="font-size: 90%" value="Actualizar Instancias" onclick="PF('dlg1').show();"/>   
                     </h:panelGrid>
                     
                     <p:dialog style="font-size: 80%; max-width:75%" header="Nuevas Instancias" widgetVar="dlg1" minHeight="40" showEffect="fade" hideEffect="fade">
@@ -93,70 +93,6 @@
                                     <p:message for="observaciones" />          
                         
                                 </h:panelGrid>
-           <!-- a partir de aquí es el listado de instancias asociadas -->     
-           
-        <h:form id="form">    
-            <p:panel id="pnNew" header="#{bundle.InstanciasAsociadas}" style="margin-bottom:10px;">
-                <p:growl id="msgs" showDetail="true" />
-                         <p:accordionPanel value="#{mbProcedimiento.selected.instancias}" var="ins">
-                             <p:tab title="#{ins.nombre}">
-                                <h:panelGrid columns="2" cellpadding="5">
-                                    <h:outputLabel  value="#{bundle.CreateInstanciaLabel_codigo}"/>
-                                    <h:outputText   value="#{ins.codigo}"/>
-
-                                    <h:outputLabel  value="#{bundle.CreateInstanciaLabel_ruta}"/>
-                                    <h:outputText   value="#{ins.ruta}" title="#{bundle.CreateInstanciaLabel_ruta}"/>
-                                    
-                                    <h:outputLabel  value="#{bundle.CreateInstanciaLabel_estadoInicial}"/>
-                                    <h:outputText   value="#{ins.estadoInicial.nombre}"/>   
-                                    
-                                    <h:outputLabel  value="#{bundle.CreateInstanciaLabel_estadoFinal}"/>
-                                    <h:outputText   value="#{ins.estadoFinal.nombre}"/> 
-                                    
-                                    <h:outputLabel  value="#{bundle.CreateInstanciaLabel_alerta}"/>
-                                    <h:outputText   value="#{ins.cantidadAlerta}"/>     
-                                    
-                                    <h:outputLabel  value="#{bundle.CreateInstanciaLabel_UdTAlerta}"/>
-                                    <h:outputText   value="#{ins.unidadDeTiempoAlerta.nombre}"/>
-                                    
-                                    <h:outputLabel  value="#{bundle.CreateInstanciaLabel_vto}"/>
-                                    <h:outputText   value="#{ins.cantidadVencimiento}"/>
-                                                                        
-                                    <h:outputLabel  value="#{bundle.CreateInstanciaLabel_alerta}"/>
-                                    <h:outputText   value="#{ins.unidadDeTiempoVto.nombre}"/> 
-                                    
-                                    <h:outputLabel  value="#{bundle.CreateInstanciaLabel_observaciones}"/>
-                                    <h:outputText   value="#{ins.observaciones}"/>
-
-                                    <h:outputLabel  value="#{bundle.UsuarioAlta}"/>
-                                    <h:outputText   value="#{ins.adminentidad.usAlta.nombre}" title="#{bundle.UsuarioAlta}"/>                        
-
-                                    <h:outputLabel  value="#{bundle.FechaAlta}"/>
-                                    <h:outputText   value="#{ins.adminentidad.strFechaAlta}" title="#{bundle.FechaAlta}"/>                         
-
-                                    <h:outputLabel  value="#{bundle.UsuarioModifica}"/>
-                                    <h:outputText   value="#{ins.adminentidad.usModif.nombre}" title="#{bundle.UsuarioModifica}"/>                        
-
-                                    <h:outputLabel  value="#{bundle.FechaModifica}"/>
-                                    <h:outputText   value="#{ins.adminentidad.strFechaModif}" title="#{bundle.FechaModifica}"/>                          
-
-                                    <h:outputLabel  value="#{bundle.UsuarioBaja}" rendered="#{not mbProcedimiento.instancia.adminentidad.habilitado}"/>
-                                    <h:outputText   value="#{ins.adminentidad.usBaja.nombre}" rendered="#{not ins.adminentidad.habilitado}"
-                                                    title="#{bundle.UsuarioBaja}"/>                        
-
-                                    <h:outputLabel  value="#{bundle.FechaBaja}" rendered="#{not mbProcedimiento.instancia.adminentidad.habilitado}"/>
-                                    <h:outputText   value="#{ins.adminentidad.strFechaBaja}" rendered="#{not ins.adminentidad.habilitado}"
-                                                    title="#{bundle.FechaBaja}"/>    
-                                </h:panelGrid>    
-                            </p:tab>
-                        </p:accordionPanel>
-                </p:panel>
-            </h:form>
-
-
-               
-           <!-- hasta aquí es el listado de instancias asociadas -->             
-                            </p:panel>
                             <p:toolbar>
                                   <f:facet name="left">
                                       <p:commandButton icon="ui-icon-check" value="Guardar" action="#{mbProcedimiento.createInstancia}" update="inNew" />
@@ -165,6 +101,113 @@
                                       </p:commandButton>
                                   </f:facet>
                             </p:toolbar>
+           <!-- a partir de aquí es el listado de instancias asociadas -->     
+           
+                        <h:form id="instancias">
+                            <p:growl id="msgs" showDetail="true"/>
+                            <p:contextMenu for="instancias" widgetVar="cMenu">   
+                                <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('cellInst').showCellEditor();return false"/>  
+                                <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
+                            </p:contextMenu> 
+
+                            <p:dataTable id="instancias" var="ins" value="#{mbProcedimiento.selected.instancias}" editable="true" editMode="cell" widgetVar="cellInst">
+                                <f:facet name="header">
+                                    Hacer click en el campo para editarlo
+                                </f:facet>
+
+                                <p:ajax event="cellEdit" listener="#{mbProcedimiento.onCellEdit}" update="instancias" />
+
+                                <p:column headerText="Instancias">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{ins.nombre}" /></f:facet>
+                                        <f:facet name="input"><p:inputText id="modelInput" value="#{ins.nombre}" style="width:96%"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Ruta">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{ins.ruta}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{ins.ruta}" style="width:96%" label="Ruta"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                
+                                <p:column headerText="Código" width="8%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{ins.codigo}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{ins.codigo}" style="width:96%" label="Codigo"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                
+                                <p:column headerText="Estado Inicial">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{ins.estadoInicial.nombre}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{ins.estadoInicial.nombre}" style="width:100%">
+                                                <f:selectItems value="#{mbProcedimiento.listaEstadosIniciales}" var="ini" itemLabel="#{ini.nombre}" itemValue="#{ini.nombre}" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Estado Final">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{ins.estadoFinal.nombre}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{ins.estadoFinal.nombre}" style="width:100%">
+                                                <f:selectItems value="#{mbProcedimiento.listaEstadosFinales}" var="fin" itemLabel="#{fin.nombre}" itemValue="#{fin.nombre}" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                
+                                <p:column headerText="Alerta" width="5%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{ins.cantidadAlerta}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{ins.cantidadAlerta}" style="width:96%" label="cantidadAlerta"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                
+                                <p:column headerText="Unidad de Tpo. Alerta" width="8%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{ins.unidadDeTiempoAlerta.nombre}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{ins.unidadDeTiempoAlerta.nombre}" style="width:100%">
+                                                <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposAlerta}" var="ale" itemLabel="#{ale.nombre}" itemValue="#{ale.nombre}" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>       
+                        
+                                 <p:column headerText="Vto" width="5%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{ins.cantidadVencimiento}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{ins.cantidadVencimiento}" style="width:96%" label="cantidadVencimiento"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                
+                                <p:column headerText="Unidad de Tpo. Vto." width="8%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{ins.unidadDeTiempoVto.nombre}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{ins.unidadDeTiempoVto.nombre}" style="width:100%">
+                                                <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposVto}" var="vto" itemLabel="#{vto.nombre}" itemValue="#{vto.nombre}" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column> 
+                                
+                                <p:column headerText="Observaciones">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{ins.observaciones}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{ins.observaciones}" style="width:96%" label="Observaciones"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                                                
+                            </p:dataTable>
+                        </h:form>
+
+           <!-- hasta aquí es el listado de instancias asociadas -->             
+                            </p:panel>
                         </h:form>
 
                 </p:dialog>
