@@ -35,14 +35,11 @@
         <managed-bean-class>ar.gob.ambiente.servicios.gestiontramites.managedBeans.MbUnidadDeTiempo</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    
     <managed-bean>
         <managed-bean-name>mbProcedimiento</managed-bean-name>
         <managed-bean-class>ar.gob.ambiente.servicios.gestiontramites.managedBeans.MbProcedimiento</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
-    <managed-bean>
-        <managed-bean-name>mbInstancia</managed-bean-name>
-        <managed-bean-class>ar.gob.ambiente.servicios.gestiontramites.managedBeans.MbInstancia</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
+
 </faces-config>

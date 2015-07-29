@@ -23,8 +23,9 @@
                 
                 <p:dataTable value="#{mbProcedimiento.listProcedimiento}" var="e" id="procedimientoList" rows="5" filteredValue="#{mbProcedimiento.listProcedimiento}"
                              paginator="true" widgetVar="proTable" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             rowsPerPageTemplate="5,10,15">
+                             rowsPerPageTemplate="5,10,15" draggableColumns="true">
                     <f:facet name="header">
+                        Draggable Columns
                         Listado de #{bundle.ProcedimientoListTitle}
                         <p:commandButton id="toggler" type="button" value="Columnas" icon="ui-icon-calculator" style="margin-left: 10px" />
                         <p:commandButton icon="ui-icon-refresh" value="Listar" action="#{mbProcedimiento.prepareList}" update="procedimientoList" style="margin-left: 10px"/>

@@ -363,30 +363,37 @@ public class MbProcedimiento implements Serializable{
      * Método para guardar las instancias creadas en el listInstancias que irán en el nuevo procedimiento
      */
     public void createInstancia(){
-        if(!compararInstancia(instancia)){
-            // se agregan los datos del AdminEntidad
-            Date date = new Date(System.currentTimeMillis());
-            AdminEntidad admEnt = new AdminEntidad();
-            admEnt.setFechaAlta(date);
-            admEnt.setHabilitado(true);
-            admEnt.setUsAlta(usLogeado);
-            current.setAdminentidad(admEnt);
-            
+        if(!compararInstancia(instancia)){ 
+
             // Si estoy creanto un procedimiento nuevo, agrego la instancia al list
             // Si no se la agrego a la propiedad instancias del procidimiento
+             
             if(current.getId() != null){
+
                 current.getInstancias().add(instancia);
+                // se agregan los datos del AdminEntidad
+                Date date = new Date(System.currentTimeMillis());
+                AdminEntidad admEnt = new AdminEntidad();
+                admEnt.setFechaAlta(date);
+                admEnt.setHabilitado(true);
+                admEnt.setUsAlta(usLogeado);
+                current.setAdminentidad(admEnt);
             }else{
+                // se agregan los datos del AdminEntidad
+                Date date = new Date(System.currentTimeMillis());
+                AdminEntidad admEnt = new AdminEntidad();
+                admEnt.setFechaAlta(date);
+                admEnt.setHabilitado(true);
+                admEnt.setUsAlta(usLogeado);
+                instancia.setAdminentidad(admEnt);
                 listInstancias.add(instancia);    
             }
-            
             // reseteo la instancia
             instancia = null;
             instancia = new Instancia();
         } else{
             JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaExistente"));
         }
-
     }
     
     /**
