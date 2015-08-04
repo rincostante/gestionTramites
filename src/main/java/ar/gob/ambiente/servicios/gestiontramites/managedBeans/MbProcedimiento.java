@@ -34,6 +34,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.event.ActionEvent;
+import javax.faces.model.ListDataModel;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
@@ -117,7 +119,7 @@ public class MbProcedimiento implements Serializable{
         }
     }    
 
-    public void onTabChange(TabChangeEvent event) {
+ /*   public void onTabChange(TabChangeEvent event) {
         FacesMessage msg = new FacesMessage("Tab Changed", "Active Tab: " + event.getTab().getTitle());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
@@ -125,7 +127,7 @@ public class MbProcedimiento implements Serializable{
     public void onTabClose(TabCloseEvent event) {
         FacesMessage msg = new FacesMessage("Tab Closed", "Closed tab: " + event.getTab().getTitle());
         FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
+    }*/
     /********************************
      ****** Getters y Setters *******
      ********************************/
@@ -286,7 +288,6 @@ public class MbProcedimiento implements Serializable{
         listInstancias = current.getInstancias();
         return "view";
     }
-   
 
      /** (Probablemente haya que embeberlo con el listado para una misma vista)
      * @return acción para el formulario de nuevo
@@ -359,6 +360,17 @@ public class MbProcedimiento implements Serializable{
     ** Métodos de operación **
     **************************/
     
+    public void agregarInstancias(){
+        Map<String,Object> options = new HashMap<>();
+        options.put("contentWidth", 1200);
+        RequestContext.getCurrentInstance().openDialog("dlgAddInstancias", options, null);
+    }
+        
+    public void editarInstancias(){
+        Map<String,Object> options = new HashMap<>();
+        options.put("contentWidth", 1200);
+        RequestContext.getCurrentInstance().openDialog("dlgEditInstancias", options, null);
+    }
     /**
      * Método para guardar las instancias creadas en el listInstancias que irán en el nuevo procedimiento
      */
@@ -515,12 +527,7 @@ public class MbProcedimiento implements Serializable{
     /**
      * @return mensaje que notifica el borrado
      */    
-//    public String destroyInstancia(Instancia inst) {
-//        current = instanciaSelected;
-//        performDestroyInstancia();
-//        recreateModel();
-//        return "view";
-//    }     
+
     public void destroyInstancia(Instancia inst){
         instVinc.remove(inst);
     }
