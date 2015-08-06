@@ -59,7 +59,20 @@ public class EstadoFacade extends AbstractFacade<Estado> {
         Query q = em.createQuery(queryString)
                 .setParameter("id", id);
         return q.getResultList().isEmpty();
-    }          
+    }      
     
+     /**
+     * Método que devuelve todos los estados de una app 
+     * @param app: ID de la entidad
+     * @return: True o False
+     */
+    public boolean getEstadosXapp(int app){
+        em = getEntityManager();        
+        String queryString = "SELECT est FROM Estado est "
+                + "WHERE est.app = :app";
+        Query q = em.createQuery(queryString)
+                .setParameter("app", app);
+        return q.getResultList().isEmpty();
+    }
 }
     

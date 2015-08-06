@@ -34,14 +34,12 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.event.ActionEvent;
-import javax.faces.model.ListDataModel;
+import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
-import org.primefaces.event.TabChangeEvent;
-import org.primefaces.event.TabCloseEvent;
+
 
 
 /**
@@ -52,13 +50,13 @@ public class MbProcedimiento implements Serializable{
 
     private Procedimiento current;
     private Instancia instancia;
+    private int app;
 
     private List<Instancia> instancias;
     private List<Instancia> instanciasFilter;
     private List<Instancia> listInstancias;
     private List<Procedimiento> listProcedimiento;  
-    private List<Instancia> instVinc;
-   
+
 
     @EJB
     private ProcedimientoFacade procedimientoFacade;
@@ -81,8 +79,6 @@ public class MbProcedimiento implements Serializable{
     private List<UnidadDeTiempo> listaUnidadDeTiemposVto;
     private List<Estado> listaEstadosIniciales;
     private List<Estado> listaEstadosFinales;
-   
-
 
 
     /**
@@ -90,7 +86,7 @@ public class MbProcedimiento implements Serializable{
      */
     public MbProcedimiento() {
     }
-
+  
     @PostConstruct
     public void init(){
         iniciado = false;
@@ -98,7 +94,7 @@ public class MbProcedimiento implements Serializable{
         login = (MbLogin)ctx.getSessionMap().get("mbLogin");
         usLogeado = login.getUsLogeado();
     }
-        
+    
     /**
      * Método que borra de la memoria los MB innecesarios al cargar el listado 
      */
@@ -119,19 +115,20 @@ public class MbProcedimiento implements Serializable{
         }
     }    
 
- /*   public void onTabChange(TabChangeEvent event) {
-        FacesMessage msg = new FacesMessage("Tab Changed", "Active Tab: " + event.getTab().getTitle());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
-         
-    public void onTabClose(TabCloseEvent event) {
-        FacesMessage msg = new FacesMessage("Tab Closed", "Closed tab: " + event.getTab().getTitle());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }*/
     /********************************
      ****** Getters y Setters *******
-     ********************************/
-    
+     ********************************
+    /*
+    * @return 
+    */
+    public int getApp() {
+        return app;
+    }
+
+    public void setApp(int app) {
+        this.app = app;
+    }
+
     public Instancia getInstancia() {
         return instancia;
     }
@@ -146,14 +143,6 @@ public class MbProcedimiento implements Serializable{
 
     public void setInstanciasFilter(List<Instancia> instanciasFilter) {
         this.instanciasFilter = instanciasFilter;
-    }
-
-    public List<Instancia> getInstVinc() {
-        return instVinc;
-    }
-
-    public void setInstVinc(List<Instancia> instVinc) {
-        this.instVinc = instVinc;
     }
 
     public List<Procedimiento> getListProcedimiento() {
@@ -305,7 +294,6 @@ public class MbProcedimiento implements Serializable{
         listaUnidadDeTiemposVto = unidadDeTiempoFacade.findAll();  
         
         return "new";
-
     }
 
     /**
@@ -334,21 +322,15 @@ public class MbProcedimiento implements Serializable{
     }
     
     /**
-     * Método que verifica que la Actividad Planificada que se quiere eliminar no esté siento utilizada por otra entidad
-     * @return 
+     * Método que permite habilitar y deshabilitar el Procedimiento
      */
-        /**
-     * 
-     */
+
     public void habilitar(){
         update = 2;
         update(); 
         recreateModel();
     }
-    
-    /**
-     * 
-     */
+
     public void deshabilitar(){
         update = 1;
         update();   
@@ -361,9 +343,17 @@ public class MbProcedimiento implements Serializable{
     **************************/
     
     public void agregarInstancias(){
-        Map<String,Object> options = new HashMap<>();
-        options.put("contentWidth", 1200);
-        RequestContext.getCurrentInstance().openDialog("dlgAddInstancias", options, null);
+        if(app > 0){
+            Map<String,Object> options = new HashMap<>();
+            options.put("contentWidth", 1200);
+            RequestContext.getCurrentInstance().openDialog("dlgAddInstancias", options, null); 
+            
+            
+        }else{
+            Map<String,Object> options = new HashMap<>();
+            options.put("contentWidth", 400);
+            RequestContext.getCurrentInstance().openDialog("dlgFaltaApp", options, null);     
+        }
     }
         
     public void editarInstancias(){
@@ -371,6 +361,7 @@ public class MbProcedimiento implements Serializable{
         options.put("contentWidth", 1200);
         RequestContext.getCurrentInstance().openDialog("dlgEditInstancias", options, null);
     }
+    
     /**
      * Método para guardar las instancias creadas en el listInstancias que irán en el nuevo procedimiento
      */
@@ -378,7 +369,7 @@ public class MbProcedimiento implements Serializable{
         if(!compararInstancia(instancia)){ 
 
             // Si estoy creanto un procedimiento nuevo, agrego la instancia al list
-            // Si no se la agrego a la propiedad instancias del procidimiento
+            // Si no se la agrego a la propiedad instancias del procedimiento
              
             if(current.getId() != null){
 
@@ -524,22 +515,7 @@ public class MbProcedimiento implements Serializable{
         }
     }
     
-    /**
-     * @return mensaje que notifica el borrado
-     */    
-
-    public void destroyInstancia(Instancia inst){
-        instVinc.remove(inst);
-    }
-    /**
-     * @return mensaje que notifica el borrado
-     */    
-    public String destroy() {
-        performDestroy();
-        recreateModel();
-        return "view";
-    }    
-    
+   
     /*************************
     ** Métodos de selección **
     **************************/
@@ -566,7 +542,7 @@ public class MbProcedimiento implements Serializable{
     
     
     /**
-     * Método para mostrar las Actividades Implementadas vinculadas a esta Actividad Planificada
+     * Método para mostrar las Instanciass vinculadas
      */
     public void verInstancias(){
         instancias = current.getInstancias();
@@ -585,7 +561,10 @@ public class MbProcedimiento implements Serializable{
     private ProcedimientoFacade getFacade() {
         return procedimientoFacade;
     }    
-
+    
+    /* Método para editar desde la tabla con sólo pararse en el campo a editar
+    */
+    
     public void onRowEdit(RowEditEvent event) {
         FacesMessage msg = new FacesMessage("Ins Edited", ((Instancia) event.getObject()).getNombre());
         FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -607,9 +586,21 @@ public class MbProcedimiento implements Serializable{
     }
   
     /**
+     * Método para mantener en memoria la app y permitir la carga de nuevas instancias
+     * @param event
+     */
+    public void appChangeListener(ValueChangeEvent event) {
+        app = (int) event.getNewValue();
+    }   
+  
+
+    /**
      * Restea la entidad
      */
     private void recreateModel() {
+        if(app > 0){
+            app = 0;
+        }
         listProcedimiento.clear();
         listProcedimiento = null;
         if(listInstancias != null){
@@ -645,7 +636,7 @@ public class MbProcedimiento implements Serializable{
     }
       /**
      * Opera el borrado de la instancia
-     */
+   
     private void performDestroyInstancia() {
         try {
             getFacade().remove(instancia);
@@ -653,7 +644,7 @@ public class MbProcedimiento implements Serializable{
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("InstanciaDeletedErrorOccured"));
         }
-    }  
+    }    */
     
     /**
      * Método que deshabilita la entidad

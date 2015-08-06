@@ -16,13 +16,13 @@
                     
                     <h:panelGrid columns="2">
                         <p:outputLabel value="#{bundle.ProcedimientoTitle}" for="nombre"/>
-                            <p:inputText id="nombre" value="#{mbProcedimiento.selected.nombre}" requiredMessage="#{bundle.ProcedimientoRequire_nombre}" required="true"/>   
+                        <p:inputText id="nombre" value="#{mbProcedimiento.selected.nombre}" requiredMessage="#{bundle.ProcedimientoRequire_nombre}" required="true"/>   
                         
                         <p:outputLabel value="#{bundle.CreateProcedimientoLabel_app}" for="app"/>
-                            <p:inputText id="app" value="#{mbProcedimiento.selected.app}" requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" required="true"/>     
+                        <p:inputText id="app" value="#{mbProcedimiento.selected.app}" requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" required="true"/>     
 
                         <p:outputLabel value="#{bundle.InstanciasAsociadas}" />
-                            <p:commandButton value="Agregar" action="#{mbProcedimiento.editarInstancias}" process="@this" />
+                        <p:commandButton value="Agregar" action="#{mbProcedimiento.editarInstancias}" process="@this" />
                     </h:panelGrid>
                  </p:panel>
          

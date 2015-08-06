@@ -18,15 +18,12 @@
                     <p:inputText id="nombre" value="#{mbProcedimiento.instancia.nombre}" 
                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_nombre}" required="true"/>
 
-
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_ruta}" for="ruta"/>
                     <p:inputText id="ruta" value="#{mbProcedimiento.instancia.ruta}" requiredMessage="#{bundle.CreateInstanciaRequiredMessage_ruta}" 
                                  required="true"/>
 
-
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_codigo}" for="codigo"/>
                     <p:inputText id="codigo" value="#{mbProcedimiento.instancia.codigo}" requiredMessage="#{bundle.CreateInstanciaRequiredMessage_codigo}" required="true"/>
-
 
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_estadoInicial}" for="estadoInicial"/>                             
                     <p:selectOneMenu id="estadoInicial" value="#{mbProcedimiento.instancia.estadoInicial}" 
@@ -42,13 +39,11 @@
                         <f:selectItems value="#{mbProcedimiento.listaEstadosFinales}" var="estado" itemLabel="#{estado.nombre}" itemValue="#{estadoFinal}"/>
                     </p:selectOneMenu> 
 
-
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_alerta}" for="alerta"/>
                     <p:inputText id="alerta" value="#{mbProcedimiento.instancia.cantidadAlerta}" converter="#{Integer}"
                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_cantidadAlerta}" required="true"/>
 
-
-                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTAlerta}" for="unidadDeTiempoAlerta"/>                             
+                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTAlerta}" for="unidadDeTiempoAlerta"/>                             
                     <p:selectOneMenu id="unidadDeTiempoAlerta" value="#{mbProcedimiento.instancia.unidadDeTiempoAlerta}" 
                                      requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTAlerta}" required="true">
                         <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el alerta" itemValue="" noSelectionOption="true" />                           
@@ -59,9 +54,8 @@
                     <p:inputText id="cantidadVencimiento" value="#{mbProcedimiento.instancia.cantidadVencimiento}" 
                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_vto}" required="true"/>
 
-
-                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>                             
-                     <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbProcedimiento.instancia.unidadDeTiempoVto}" 
+                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>                             
+                    <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbProcedimiento.instancia.unidadDeTiempoVto}" 
                                      requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTVto}" required="true">
                         <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el vencimiento" itemValue="" noSelectionOption="true" />                           
                         <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposVto}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoVto}"/>
@@ -71,16 +65,17 @@
                     <p:inputText id="observaciones" value="#{mbProcedimiento.instancia.observaciones}" 
                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_observaciones}" required="false"/>
 
-
                 </h:panelGrid>
-            <p:toolbar>
-                  <f:facet name="left">
-                      <p:commandButton icon="ui-icon-check" value="Guardar" action="#{mbProcedimiento.createInstancia}" update="inNew" />
-                      <p:commandButton icon="ui-icon-cancel" value="Limpiar" style="float: next">
-                          <p:ajax update="inNew" resetValues="true" />
-                      </p:commandButton>
-                  </f:facet>
-            </p:toolbar>
+ 
+                <p:toolbar>
+                    <f:facet name="left">
+                        <p:commandButton icon="ui-icon-check" value="Guardar" action="#{mbProcedimiento.createInstancia}" update="inNew" />
+                        <p:commandButton icon="ui-icon-cancel" value="Limpiar" style="float: next">
+                            <p:ajax update="inNew" resetValues="true" />
+                        </p:commandButton>
+                    </f:facet>
+                </p:toolbar>
+                
 <!-- a partir de aquí es el listado de instancias asociadas -->     
 
         <h:form id="instancias">

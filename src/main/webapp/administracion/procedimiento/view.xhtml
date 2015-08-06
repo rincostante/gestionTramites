@@ -83,20 +83,6 @@
                                             <h:outputLabel  value="#{bundle.FechaAlta}"/>
                                             <h:outputText   value="#{ins.adminentidad.strFechaAlta}" title="#{bundle.FechaAlta}"/>                         
 
-                                            <h:outputLabel  value="#{bundle.UsuarioModifica}"/>
-                                            <h:outputText   value="#{ins.adminentidad.usModif.nombre}" title="#{bundle.UsuarioModifica}"/>                        
-
-                                            <h:outputLabel  value="#{bundle.FechaModifica}"/>
-                                            <h:outputText   value="#{ins.adminentidad.strFechaModif}" title="#{bundle.FechaModifica}"/>                          
-
-                                            <h:outputLabel  value="#{bundle.UsuarioBaja}" rendered="#{not ins.adminentidad.habilitado}"/>
-                                            <h:outputText   value="#{ins.adminentidad.usBaja.nombre}" rendered="#{not ins.adminentidad.habilitado}"
-                                                            title="#{bundle.UsuarioBaja}"/>                        
-
-                                            <h:outputLabel  value="#{bundle.FechaBaja}" rendered="#{not ins.adminentidad.habilitado}"/>
-                                            <h:outputText   value="#{ins.adminentidad.strFechaBaja}" rendered="#{not ins.adminentidad.habilitado}"
-                                                            title="#{bundle.FechaBaja}"/>    
-                                            
                                         </h:panelGrid>    
                                     </p:tab>
                                 </p:accordionPanel>

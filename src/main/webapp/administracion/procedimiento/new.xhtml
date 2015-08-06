@@ -16,17 +16,22 @@
                     <p:growl id="messages" />
                     
                     <h:panelGrid columns="2">
+
                         <p:outputLabel value="#{bundle.CreateProcedimientoLabel_nombre}" for="procNombre"/>
                         <p:inputText id="procNombre" value="#{mbProcedimiento.selected.nombre}" 
-                                     requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_nombre}" required="true"/>
+                                     requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_nombre}" required="true" >
+                        </p:inputText>
 
-                        <p:outputLabel value="#{bundle.CreateProcedimientoLabel_app}" for="app"/>
-                        <p:inputText id="app" value="#{mbProcedimiento.selected.app}" 
-                                     requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" required="true"/>   
+                        <p:outputLabel for="app" value="App " />
+                        <p:inputText id="app" value="#{mbProcedimiento.selected.app}" valueChangeListener="#{mbProcedimiento.appChangeListener}"
+                                     requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_nombre}" required="true" >
+                            <p:ajax event="change"/>
+                        </p:inputText>
+                        
                         
                         <p:outputLabel value="Instancias: "/>
                         <p:commandButton value="Agregar" action="#{mbProcedimiento.agregarInstancias}" process="@this" />
-
+                        
                     </h:panelGrid>
                     
                     <p:toolbar>

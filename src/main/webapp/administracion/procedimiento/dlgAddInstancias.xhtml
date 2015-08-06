@@ -13,7 +13,7 @@
             <p:panel id="prmNew" >
                 <p:growl id="messages"/>
                 <h:panelGrid columns="2">
-
+                    
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_nombre}" for="nombre"/>
                     <p:inputText id="nombre" value="#{mbProcedimiento.instancia.nombre}" 
                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_nombre}" required="false"/>
@@ -43,7 +43,7 @@
                     <p:inputText id="alerta" value="#{mbProcedimiento.instancia.cantidadAlerta}" converter="#{Integer}"
                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_cantidadAlerta}" required="false"/>
 
-                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTAlerta}" for="unidadDeTiempoAlerta"/>                             
+                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTAlerta}" for="unidadDeTiempoAlerta"/>                             
                     <p:selectOneMenu id="unidadDeTiempoAlerta" value="#{mbProcedimiento.instancia.unidadDeTiempoAlerta}" 
                                      requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTAlerta}" required="false">
                         <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el alerta" itemValue="" noSelectionOption="true" />                           
@@ -54,8 +54,8 @@
                     <p:inputText id="cantidadVencimiento" value="#{mbProcedimiento.instancia.cantidadVencimiento}" 
                                  requiredMessage="#{bundle.CreateInstanciaRequiredMessage_vto}" required="false"/>
 
-                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>                             
-                     <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbProcedimiento.instancia.unidadDeTiempoVto}" 
+                    <p:outputLabel value="#{bundle.CreateInstanciaLabel_UdTVto}" for="unidadDeTiempoVto"/>                             
+                    <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbProcedimiento.instancia.unidadDeTiempoVto}" 
                                      requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTVto}" required="false">
                         <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el vencimiento" itemValue="" noSelectionOption="true" />                           
                         <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposVto}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoVto}"/>
