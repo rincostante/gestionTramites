@@ -74,5 +74,9 @@ public class EstadoFacade extends AbstractFacade<Estado> {
                 .setParameter("app", app);
         return q.getResultList();
     }
+
+    public List<Estado> findAll(int app) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
     

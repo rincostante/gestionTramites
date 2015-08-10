@@ -269,6 +269,7 @@ public class MbProcedimiento implements Serializable{
         listInstancias = new ArrayList();
         instancia = new Instancia();
         listaUnidadDeTiempos = unidadDeTiempoFacade.findAll();
+        listaEstados = estadoFacade.getEstadosXapp(app);
 
         
         return "new";
