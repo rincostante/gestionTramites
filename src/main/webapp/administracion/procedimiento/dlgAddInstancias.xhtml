@@ -29,14 +29,14 @@
                     <p:selectOneMenu id="estadoInicial" value="#{mbProcedimiento.instancia.estadoInicial}" 
                                      requiredMessage="#{bundle.CreateInstanciaProcedimientoRequiredMessage_estadoInicial}" required="false">                                         >
                         <f:selectItem itemLabel="Seleccione el Estado Inicial" itemValue="" noSelectionOption="true" />                           
-                        <f:selectItems value="#{mbProcedimiento.listaEstados}" var="estado" itemLabel="#{estado.nombre} / app:#{estado.app}" itemValue="#{estadoInicial}"/>
+                        <f:selectItems value="#{mbProcedimiento.listaEstados}" var="estado" itemLabel="#{estado.nombre} / #{estado.app}" itemValue="#{estadoInicial}"/>
                     </p:selectOneMenu>  
 
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_estadoFinal}" for="estadoFinal"/>      
                     <p:selectOneMenu id="estadoFinal" value="#{mbProcedimiento.instancia.estadoFinal}" 
                                      requiredMessage="#{bundle.CreateInstanciaProcedimientoRequiredMessage_estadoFinal}" required="false">
                         <f:selectItem itemLabel="Seleccione el Estado Final" itemValue="" noSelectionOption="true"/>
-                        <f:selectItems value="#{mbProcedimiento.listaEstados}" var="estado" itemLabel="#{estado.nombre} / app:#{estado.app}" itemValue="#{estadoFinal}"/>
+                        <f:selectItems value="#{mbProcedimiento.listaEstados}" var="estado" itemLabel="#{estado.nombre} / App: #{estado.app}" itemValue="#{estadoFinal}"/>
                     </p:selectOneMenu> 
 
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_alerta}" for="alerta"/>
