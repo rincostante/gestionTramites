@@ -75,10 +75,10 @@ public class MbProcedimiento implements Serializable{
     private boolean iniciado;
     private int update; // 0=updateNormal | 1=deshabiliar | 2=habilitar
     private List<UnidadDeTiempo> listaUnidadDeTiempos;
-    private List<UnidadDeTiempo> listaUnidadDeTiemposAlerta;
-    private List<UnidadDeTiempo> listaUnidadDeTiemposVto;
-    private List<Estado> listaEstadosIniciales;
-    private List<Estado> listaEstadosFinales;
+  
+    private List<Estado> listaEstados;
+ 
+
 
 
     /**
@@ -202,37 +202,17 @@ public class MbProcedimiento implements Serializable{
         this.listaUnidadDeTiempos = listaUnidadDeTiempos;
     }
 
-    public List<UnidadDeTiempo> getListaUnidadDeTiemposAlerta() {
-        return listaUnidadDeTiemposAlerta;
+    public List<Estado> getListaEstados() {
+        if(listaEstados == null){
+            listaEstados = estadoFacade.getEstadosXapp(app);
+        }
+        return listaEstados;
     }
 
-    public void setListaUnidadDeTiemposAlerta(List<UnidadDeTiempo> listaUnidadDeTiemposAlerta) {
-        this.listaUnidadDeTiemposAlerta = listaUnidadDeTiemposAlerta;
+    public void setListaEstados(List<Estado> listaEstados) {
+        this.listaEstados = listaEstados;
     }
 
-    public List<UnidadDeTiempo> getListaUnidadDeTiemposVto() {
-        return listaUnidadDeTiemposVto;
-    }
-
-    public void setListaUnidadDeTiemposVto(List<UnidadDeTiempo> listaUnidadDeTiemposVto) {
-        this.listaUnidadDeTiemposVto = listaUnidadDeTiemposVto;
-    }
-
-    public List<Estado> getListaEstadosIniciales() {
-        return listaEstadosIniciales;
-    }
-
-    public void setListaEstadosIniciales(List<Estado> listaEstadosIniciales) {
-        this.listaEstadosIniciales = listaEstadosIniciales;
-    }
-
-    public List<Estado> getListaEstadosFinales() {
-        return listaEstadosFinales;
-    }
-
-    public void setListaEstadosFinales(List<Estado> listaEstadosFinales) {
-        this.listaEstadosFinales = listaEstadosFinales;
-    }
 
     public Instancia getInstSelected() {
         return instSelected;
@@ -288,10 +268,8 @@ public class MbProcedimiento implements Serializable{
         // inicializamos la creación de instancias
         listInstancias = new ArrayList();
         instancia = new Instancia();
-        listaEstadosIniciales = estadoFacade.findAll();
-        listaEstadosFinales = estadoFacade.findAll();
-        listaUnidadDeTiemposAlerta = unidadDeTiempoFacade.findAll();
-        listaUnidadDeTiemposVto = unidadDeTiempoFacade.findAll();  
+        listaUnidadDeTiempos = unidadDeTiempoFacade.findAll();
+
         
         return "new";
     }
@@ -304,10 +282,9 @@ public class MbProcedimiento implements Serializable{
         instancia = new Instancia();
         
         // pueblo los combos
-        listaEstadosIniciales = estadoFacade.findAll();
-        listaEstadosFinales = estadoFacade.findAll();
-        listaUnidadDeTiemposAlerta = unidadDeTiempoFacade.findAll();
-        listaUnidadDeTiemposVto = unidadDeTiempoFacade.findAll();  
+        listaEstados = estadoFacade.getEstadosXapp(app);
+        listaUnidadDeTiempos = unidadDeTiempoFacade.findAll();
+ 
         
         return "edit";
     }
@@ -352,6 +329,7 @@ public class MbProcedimiento implements Serializable{
         }else{
             Map<String,Object> options = new HashMap<>();
             options.put("contentWidth", 400);
+            options.put("contentHeight", 80);
             RequestContext.getCurrentInstance().openDialog("dlgFaltaApp", options, null);     
         }
     }

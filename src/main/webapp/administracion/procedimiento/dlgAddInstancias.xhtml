@@ -29,14 +29,14 @@
                     <p:selectOneMenu id="estadoInicial" value="#{mbProcedimiento.instancia.estadoInicial}" 
                                      requiredMessage="#{bundle.CreateInstanciaProcedimientoRequiredMessage_estadoInicial}" required="false">                                         >
                         <f:selectItem itemLabel="Seleccione el Estado Inicial" itemValue="" noSelectionOption="true" />                           
-                        <f:selectItems value="#{mbProcedimiento.listaEstadosIniciales}" var="estado" itemLabel="#{estado.nombre}" itemValue="#{estadoInicial}"/>
+                        <f:selectItems value="#{mbProcedimiento.listaEstados}" var="estado" itemLabel="#{estado.nombre} / app:#{estado.app}" itemValue="#{estadoInicial}"/>
                     </p:selectOneMenu>  
 
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_estadoFinal}" for="estadoFinal"/>      
                     <p:selectOneMenu id="estadoFinal" value="#{mbProcedimiento.instancia.estadoFinal}" 
                                      requiredMessage="#{bundle.CreateInstanciaProcedimientoRequiredMessage_estadoFinal}" required="false">
                         <f:selectItem itemLabel="Seleccione el Estado Final" itemValue="" noSelectionOption="true"/>
-                        <f:selectItems value="#{mbProcedimiento.listaEstadosFinales}" var="estado" itemLabel="#{estado.nombre}" itemValue="#{estadoFinal}"/>
+                        <f:selectItems value="#{mbProcedimiento.listaEstados}" var="estado" itemLabel="#{estado.nombre} / app:#{estado.app}" itemValue="#{estadoFinal}"/>
                     </p:selectOneMenu> 
 
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_alerta}" for="alerta"/>
@@ -47,7 +47,7 @@
                     <p:selectOneMenu id="unidadDeTiempoAlerta" value="#{mbProcedimiento.instancia.unidadDeTiempoAlerta}" 
                                      requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTAlerta}" required="false">
                         <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el alerta" itemValue="" noSelectionOption="true" />                           
-                        <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposAlerta}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoAlerta}"/>
+                        <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiempos}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre} / #{unidadDeTiempo.secuencia}" itemValue="#{unidadDeTiempoAlerta}"/>
                     </p:selectOneMenu>                          
 
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_vto}" for="cantidadVencimiento"/>
@@ -58,7 +58,7 @@
                     <p:selectOneMenu id="unidadDeTiempoVto" value="#{mbProcedimiento.instancia.unidadDeTiempoVto}" 
                                      requiredMessage="#{bundle.CreateInstanciaRequiredMessage_UdTVto}" required="false">
                         <f:selectItem itemLabel="Seleccione la Unidad de Tiempo para el vencimiento" itemValue="" noSelectionOption="true" />                           
-                        <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiemposVto}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre}" itemValue="#{unidadDeTiempoVto}"/>
+                        <f:selectItems value="#{mbProcedimiento.listaUnidadDeTiempos}" var="unidadDeTiempo" itemLabel="#{unidadDeTiempo.nombre} / #{unidadDeTiempo.secuencia}" itemValue="#{unidadDeTiempoVto}"/>
                     </p:selectOneMenu>                          
 
                     <p:outputLabel value="#{bundle.CreateInstanciaLabel_observaciones}" for="observaciones"/>
