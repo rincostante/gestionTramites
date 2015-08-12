@@ -69,7 +69,10 @@ public class EstadoFacade extends AbstractFacade<Estado> {
     public List<Estado> getEstadosXapp(int app){
         em = getEntityManager();        
         String queryString = "SELECT est FROM Estado est "
-                + "WHERE est.app = :app";
+                + "WHERE est.app = :app "
+                + "ORDER BY est.nombre"; 
+
+      
         Query q = em.createQuery(queryString)
                 .setParameter("app", app);
         return q.getResultList();

@@ -203,9 +203,6 @@ public class MbProcedimiento implements Serializable{
     }
 
     public List<Estado> getListaEstados() {
-        if(listaEstados == null){
-            listaEstados = estadoFacade.getEstadosXapp(app);
-        }
         return listaEstados;
     }
 
@@ -220,6 +217,10 @@ public class MbProcedimiento implements Serializable{
 
     public void setInstSelected(Instancia instSelected) {
         this.instSelected = instSelected;
+    }
+
+    public InstanciaFacade getInstFacade() {
+        return instFacade;
     }
   
  
@@ -322,6 +323,7 @@ public class MbProcedimiento implements Serializable{
     
     public void agregarInstancias(){
         if(app > 0){
+            listaEstados = estadoFacade.getEstadosXapp(app);
             Map<String,Object> options = new HashMap<>();
             options.put("contentWidth", 1200);
             RequestContext.getCurrentInstance().openDialog("dlgAddInstancias", options, null); 
@@ -336,10 +338,15 @@ public class MbProcedimiento implements Serializable{
     }
         
     public void editarInstancias(){
-        Map<String,Object> options = new HashMap<>();
-        options.put("contentWidth", 1200);
-        RequestContext.getCurrentInstance().openDialog("dlgEditInstancias", options, null);
+            app = current.getApp();
+            listaEstados = estadoFacade.getEstadosXapp(app);
+            Map<String,Object> options = new HashMap<>();
+            options.put("contentWidth", 1200);
+            RequestContext.getCurrentInstance().openDialog("dlgEditInstancias", options, null);
+            
+
     }
+    
     
     /**
      * Método para guardar las instancias creadas en el listInstancias que irán en el nuevo procedimiento
@@ -545,7 +552,7 @@ public class MbProcedimiento implements Serializable{
     */
     
     public void onRowEdit(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Ins Edited", ((Instancia) event.getObject()).getNombre());
+        FacesMessage msg = new FacesMessage("Instancia editada", ((Instancia) event.getObject()).getNombre());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
      
@@ -613,38 +620,22 @@ public class MbProcedimiento implements Serializable{
         }
         return retorno;
     }
-      /**
-     * Opera el borrado de la instancia
-   
-    private void performDestroyInstancia() {
-        try {
-            getFacade().remove(instancia);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("InstanciaDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("InstanciaDeletedErrorOccured"));
-        }
-    }    */
     
-    /**
-     * Método que deshabilita la entidad
+       /**
+     * Método para eliminar promociones
+     * @param event
      */
-    private void performDestroy() {
-        try {
-            // Actualización de datos de administración de la entidad
-            Date date = new Date(System.currentTimeMillis());
-            current.getAdminentidad().setFechaBaja(date);
-            current.getAdminentidad().setUsBaja(usLogeado);
-            current.getAdminentidad().setHabilitado(false);
-            
-            // Deshabilito la entidad
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoDeletedErrorOccured"));
+    public void instDelete(RowEditEvent event){
+        try{
+            current.getInstancias().remove((Instancia)event.getObject());
+            //getInstFacade().remove((Instancia)event.getObject());
+            JsfUtil.addSuccessMessage("Instancia eliminada.");
+        }catch(Exception e){
+            JsfUtil.addErrorMessage("Hubo un error eliminando la Instancia. " + e.getMessage());
         }
-    }             
-
+    }    
   
+    
     /********************************************************************
     ** Converter. Se debe actualizar la entidad y el facade respectivo **
     *********************************************************************/

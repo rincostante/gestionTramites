@@ -78,19 +78,18 @@
                 
 <!-- a partir de aquí es el listado de instancias asociadas -->     
 
-        <h:form id="instancias">
-            <p:growl id="msgs" showDetail="true"/>
             <p:contextMenu for="instancias" widgetVar="cMenu">   
-                <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('cellInst').showCellEditor();return false"/>  
+                <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('instancias').showCellEditor();return false"/>  
                 <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
             </p:contextMenu> 
-
-            <p:dataTable id="instancias" var="ins" value="#{mbProcedimiento.selected.instancias}" editable="true" editMode="cell" widgetVar="cellInst">
+            
+            <p:dataTable id="instancias" var="ins" value="#{mbProcedimiento.selected.instancias}" editable="true" >
                 <f:facet name="header">
                     Hacer click en el campo para editarlo
                 </f:facet>
 
-                <p:ajax event="cellEdit" listener="#{mbProcedimiento.onCellEdit}" update="instancias" />
+                <p:ajax event="rowEdit" listener="#{mbProcedimiento.onRowEdit}" update=":frmNew:messages" />
+                <p:ajax event="rowEditCancel" listener="#{mbProcedimiento.instDelete}" update=":frmNew:messages" /> 
 
                 <p:column headerText="Instancias">
                     <p:cellEditor>
@@ -177,9 +176,12 @@
                         <f:facet name="input"><p:inputText value="#{ins.observaciones}" style="width:96%" label="Observaciones"/></f:facet>
                     </p:cellEditor>
                 </p:column>
-
+                
+                <p:column style="width:32px">
+                    <p:rowEditor/>
+                </p:column>
+                
             </p:dataTable>
-        </h:form>
 
 <!-- hasta aquí es el listado de instancias asociadas -->             
             </p:panel>

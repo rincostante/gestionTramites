@@ -60,10 +60,12 @@
                                
 
                     <p:column headerText="Acciones" style="width:140px">
-                        <p:growl id="messages" showDetail="true" />
+<!--                    <p:growl id="messages" showDetail="true" />
+  -->                  
                         <p:commandButton icon="ui-icon-zoomin" action="#{mbProcedimiento.prepareView}" title="Ver detalle">
                             <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
                         </p:commandButton>
+                    
                         <p:commandButton icon="ui-icon-pencil" action="#{mbProcedimiento.prepareEdit}" title="Editar">
                             <f:setPropertyActionListener value="#{e}" target="#{mbProcedimiento.current}" />
                         </p:commandButton>
