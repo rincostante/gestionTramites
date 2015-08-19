@@ -52,8 +52,8 @@ public class ProcedimientoFacade extends AbstractFacade<Procedimiento> {
      * @return 
      */
     public boolean noExiste(String nombre, int app){
-        em = getEntityManager();
-        String queryString = "SELECT pro FROM Procedimiento pro "
+        em = getEntityManager();       
+        String queryString = "SELECT pro.nombre FROM Procedimiento pro "
                 + "WHERE pro.nombre = :nombre "
                 + "AND pro.app = :app";
         Query q = em.createQuery(queryString)
@@ -160,13 +160,6 @@ public class ProcedimientoFacade extends AbstractFacade<Procedimiento> {
     }
 
     public void remove(Instancia instancia) {
-
     }
-
-    public boolean noExiste(String string) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
 }      
      

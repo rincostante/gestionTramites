@@ -332,9 +332,10 @@ public class MbProcedimiento implements Serializable{
         }else{
             Map<String,Object> options = new HashMap<>();
             options.put("contentWidth", 400);
-            options.put("contentHeight", 80);
+            options.put("contentHeight", 100);
             RequestContext.getCurrentInstance().openDialog("dlgFaltaApp", options, null);     
         }
+
     }
         
     public void editarInstancias(){
@@ -343,8 +344,6 @@ public class MbProcedimiento implements Serializable{
             Map<String,Object> options = new HashMap<>();
             options.put("contentWidth", 1200);
             RequestContext.getCurrentInstance().openDialog("dlgEditInstancias", options, null);
-            
-
     }
     
     
@@ -478,11 +477,10 @@ public class MbProcedimiento implements Serializable{
 
                     // Actualizo
                     getFacade().edit(current);
-                    JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoUpdated"));
-
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedimiento", "Ha sido actualizado"));
                     return "view";
                 }else{
-                    JsfUtil.addErrorMessage(ResourceBundle.getBundle("/Bundle").getString("ProcedimientoExistente"));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedimiento", "Ya Existe"));
                     return null; 
                     }
                 
@@ -496,7 +494,7 @@ public class MbProcedimiento implements Serializable{
                 return "view";
             }
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("ProcedimientoUpdatedErrorOccured"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedimiento", "Existe un error en la edición"));
             return null;
         }
     }
@@ -698,7 +696,6 @@ public class MbProcedimiento implements Serializable{
             }
         }
     }                 
-
-
 }
+
 
