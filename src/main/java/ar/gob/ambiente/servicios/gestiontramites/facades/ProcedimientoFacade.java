@@ -51,7 +51,7 @@ public class ProcedimientoFacade extends AbstractFacade<Procedimiento> {
      * @param app
      * @return 
      */
-    public boolean noExiste(String nombre, int app){
+    public boolean noExiste(String nombre, Long app){
         em = getEntityManager();       
         String queryString = "SELECT pro.nombre FROM Procedimiento pro "
                 + "WHERE pro.nombre = :nombre "
@@ -88,7 +88,7 @@ public class ProcedimientoFacade extends AbstractFacade<Procedimiento> {
      * @param app
      * @return 
      */
-    public Procedimiento getExistente(String nombre, int app){
+    public Procedimiento getExistente(String nombre, Long app){
         List<Procedimiento> lInst;
         String queryString = "SELECT pro FROM Procedimiento pro "
                 + "WHERE pro.nombre = :nombre "

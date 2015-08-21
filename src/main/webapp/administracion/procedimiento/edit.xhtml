@@ -20,8 +20,13 @@
                         <p:outputLabel value="#{bundle.ProcedimientoTitle}" for="nombre"/>
                         <p:inputText id="nombre" value="#{mbProcedimiento.selected.nombre}" requiredMessage="#{bundle.ProcedimientoRequire_nombre}" required="true"/>   
                         
-                        <p:outputLabel value="#{bundle.CreateProcedimientoLabel_app}" for="app"/>
-                        <p:inputText id="app" value="#{mbProcedimiento.selected.app}" requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" required="true"/>     
+                        <p:outputLabel value="Aplicación" for="appList"/>      
+                        <p:selectOneMenu id="appList" value="#{mbProcedimiento.app}" 
+                                         requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" 
+                                         required="true">
+                            <f:selectItem itemLabel="Seleccione la App" itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{mbProcedimiento.listApp}" var="app" itemLabel="#{app.nombre}" itemValue="#{app}"/>
+                        </p:selectOneMenu>     
 
                         <p:outputLabel value="#{bundle.InstanciasAsociadas}" />
                         <p:commandButton value="Agregar" action="#{mbProcedimiento.editarInstancias}" process="@this" />

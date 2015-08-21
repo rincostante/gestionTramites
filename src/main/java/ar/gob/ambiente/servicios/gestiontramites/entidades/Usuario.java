@@ -37,14 +37,12 @@ public class Usuario implements Serializable {
     private String nombre;
     
     /**
-     * Campo de texto que indica la clave de acceso del usuario
+     * Campo de texto que indica el nombre del usuario
      */        
-    @Column (nullable=false, length=50, unique=true)
+    @Column (nullable=false, length=100)
     @NotNull(message = "{entidades.fieldNotNullError}")
-    @Size(message = "{endidades.stringSizeError}", min = 1, max = 50)
-    private String clave; 
-    
-    private int idPersona;
+    @Size(message = "{endidades.stringSizeError}", min = 1, max = 100)
+    private String nombreCompleto;   
     
     @ManyToOne /*(fetch=FetchType.LAZY)*/
     @JoinColumn(name="rol_id")
@@ -53,6 +51,14 @@ public class Usuario implements Serializable {
     @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @NotNull(message = "{entidades.objectNotNullError}") 
     private AdminEntidad adminentidad;
+
+    public String getNombreCompleto() {
+        return nombreCompleto;
+    }
+
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
+    }
     
     public Long getId() {
         return id;
@@ -68,22 +74,6 @@ public class Usuario implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public String getClave() {
-        return clave;
-    }
-
-    public void setClave(String clave) {
-        this.clave = clave;
-    }
-
-    public int getIdPersona() {
-        return idPersona;
-    }
-
-    public void setIdPersona(int idPersona) {
-        this.idPersona = idPersona;
     }
 
     public Rol getRol() {

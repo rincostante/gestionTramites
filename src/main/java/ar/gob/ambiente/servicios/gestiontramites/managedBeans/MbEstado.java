@@ -9,7 +9,7 @@ package ar.gob.ambiente.servicios.gestiontramites.managedBeans;
 
 import ar.gob.ambiente.servicios.gestiontramites.entidades.Estado;
 import ar.gob.ambiente.servicios.gestiontramites.entidades.Instancia;
-import ar.gob.ambiente.servicios.gestiontramites.entidades.util.JsfUtil;
+import ar.gob.ambiente.servicios.gestiontramites.util.JsfUtil;
 import ar.gob.ambiente.servicios.gestiontramites.facades.EstadoFacade;
 import java.io.Serializable;
 import java.util.Enumeration;

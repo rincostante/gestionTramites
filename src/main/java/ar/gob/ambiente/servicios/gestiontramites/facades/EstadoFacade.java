@@ -66,7 +66,7 @@ public class EstadoFacade extends AbstractFacade<Estado> {
      * @param app: ID de la entidad
      * @return: True o False
      */
-    public List<Estado> getEstadosXapp(int app){
+    public List<Estado> getEstadosXapp(long app){
         em = getEntityManager();        
         String queryString = "SELECT est FROM Estado est "
                 + "WHERE est.app = :app "

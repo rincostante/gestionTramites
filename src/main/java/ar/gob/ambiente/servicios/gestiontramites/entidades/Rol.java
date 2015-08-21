@@ -9,14 +9,19 @@ package ar.gob.ambiente.servicios.gestiontramites.entidades;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -34,12 +39,26 @@ public class Rol implements Serializable {
     @Size(message = "El campo nombre debe tener entre 1 y 50 caracteres", min = 1, max = 50)
     private String nombre;
     
+    @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @JoinColumn(name="adminentidad_id")
+    private AdminEntidad adminentidad;
+    
+    @XmlTransient
     @OneToMany(mappedBy="rol")
     private List<Usuario> usuarios;
     
     public Rol(){
         usuarios = new ArrayList<>();
     }
+
+    public AdminEntidad getAdminentidad() {
+        return adminentidad;
+    }
+
+    public void setAdminentidad(AdminEntidad adminentidad) {
+        this.adminentidad = adminentidad;
+    }
+    
     public Long getId() {
         return id;
     }

@@ -1,4 +1,4 @@
-package ar.gob.ambiente.servicios.gestiontramites.entidades.util;
+package ar.gob.ambiente.servicios.gestiontramites.util;
 
 import java.util.List;
 import javax.faces.application.FacesMessage;

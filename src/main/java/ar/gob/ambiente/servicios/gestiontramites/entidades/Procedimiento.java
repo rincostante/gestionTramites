@@ -6,6 +6,7 @@
 
 package ar.gob.ambiente.servicios.gestiontramites.entidades;
 
+import ar.gob.ambiente.servicios.gestiontramites.wsExt.Aplicacion;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -48,7 +48,10 @@ public class Procedimiento implements Serializable {
     @Size(message = "El campo nombre debe tener entre 1 y 50 caracteres", min = 1, max = 50)
     private String nombre;
     
-    private int app;
+    @Column (nullable=false, length=100)
+    private String appNombre;
+
+    private Long app;
     
     @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name="adminentidad_id")
@@ -67,6 +70,22 @@ public class Procedimiento implements Serializable {
     public Procedimiento(){
         instancias = new ArrayList();
     }
+
+    public Long getApp() {
+        return app;
+    }
+
+    public void setApp(Long app) {
+        this.app = app;
+    }
+
+    public String getAppNombre() {
+        return appNombre;
+    }
+
+    public void setAppNombre(String appNombre) {
+        this.appNombre = appNombre;
+    }
     
     public Long getId() {
         return id;
@@ -82,14 +101,6 @@ public class Procedimiento implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public int getApp() {
-        return app;
-    }
-
-    public void setApp(int app) {
-        this.app = app;
     }
 
     @XmlTransient

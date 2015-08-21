@@ -36,8 +36,8 @@
                         <p:outputLabel value="#{e.nombre}"/>
                     </p:column>
                     
-                    <p:column headerText="#{bundle.CreateProcedimientoLabel_app}" sortBy="#{e.app}" filterBy="#{e.app}" filterMatchMode="contains"  >
-                        <p:outputLabel value="#{e.app}"/>
+                    <p:column headerText="#{bundle.CreateProcedimientoLabel_app}" sortBy="#{e.appNombre}" filterBy="#{e.appNombre}" filterMatchMode="contains"  >
+                        <p:outputLabel value="#{e.appNombre}"/>
                     </p:column>   
 
                     
@@ -59,7 +59,7 @@
                     </p:column>
                                
 
-                    <p:column headerText="Acciones" style="width:140px">
+                    <p:column headerText="Acciones" style="width:110px">
 <!--                    <p:growl id="messages" showDetail="true" />
   -->                  
                         <p:commandButton icon="ui-icon-zoomin" action="#{mbProcedimiento.prepareView}" title="Ver detalle">

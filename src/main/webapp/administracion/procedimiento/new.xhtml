@@ -22,13 +22,14 @@
                                      requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_nombre}" required="true" >
                         </p:inputText>
 
-                        <p:outputLabel for="app" value="App " />
-                        <p:inputText id="app" value="#{mbProcedimiento.selected.app}" valueChangeListener="#{mbProcedimiento.appChangeListener}"
-                                     requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_nombre}" required="true" >
-                            <p:ajax event="change"/>
-                        </p:inputText>
-                        
-                        
+                        <p:outputLabel value="Aplicación" for="appList"/>      
+                        <p:selectOneMenu id="appList" value="#{mbProcedimiento.app}" 
+                                         requiredMessage="#{bundle.CreateProcedimientoRequiredMessage_app}" 
+                                         required="true">
+                            <f:selectItem itemLabel="Seleccione la App" itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{mbProcedimiento.listApp}" var="app" itemLabel="#{app.nombre}" itemValue="#{app}"/>
+                        </p:selectOneMenu>  
+
                         <p:outputLabel value="Instancias: "/>
                         <p:commandButton value="Agregar" action="#{mbProcedimiento.agregarInstancias}" process="@this" />
                         

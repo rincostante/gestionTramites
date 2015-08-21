@@ -39,16 +39,16 @@
                 <p:column headerText="#{bundle.UsuarioLabelNombre}" sortBy="#{e.nombre}" filterBy="#{e.nombre}" filterMatchMode="contains">
                     <p:outputLabel value="#{e.nombre}"/>
                 </p:column> 
-
                 <p:column headerText="#{bundle.RolTitle}" filterMatchMode="contains" sortBy="#{e.rol.nombre}" filterBy="#{e.rol.nombre}">
                     <p:outputLabel value="#{e.rol.nombre}"/>
                 </p:column> 
 
-                <p:column headerText="#{bundle.UsuarioLabelUsAlta}" sortBy="#{e.admin.usAlta.nombre}" filterBy="#{e.admin.usAlta.nombre}" filterMatchMode="contains">
-                    <p:outputLabel value="#{e.admin.usAlta.nombre}"/>
+                <p:column headerText="#{bundle.UsuarioLabelUsAlta}" sortBy="#{e.adminentidad.usAlta.nombre}" filterBy="#{e.adminentidad.usAlta.nombre}" filterMatchMode="contains">
+                    <p:outputLabel value="#{e.adminentidad.usAlta.nombre}"/>
                 </p:column>
 
-                <p:column filterBy="#{e.admin.habilitado}"  headerText="Estado" filterMatchMode="equals">
+
+                <p:column filterBy="#{e.adminentidad.habilitado}"  headerText="Estado" filterMatchMode="equals">
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('usTable').filter()" style="font-size: 80%;">
                             <f:converter converterId="javax.faces.Boolean" />
@@ -57,10 +57,10 @@
                             <f:selectItem itemLabel="Inactivos" itemValue="false" />
                         </p:selectOneMenu>
                     </f:facet>
-                    <h:outputText value="#{e.admin.habilitado ? 'Habilitado': 'Deshabilitado'}" />
+                    <h:outputText value="#{e.adminentidad.habilitado ? 'Habilitado': 'Deshabilitado'}" />
                 </p:column>
 
-                <p:column headerText="Acciones" style="width:140px">
+                <p:column headerText="Acciones" style="width:110px">
                     <p:growl id="messages" showDetail="true" />
                     <p:commandButton icon="ui-icon-zoomin" action="#{mbUsuario.prepareView}">
                         <f:setPropertyActionListener value="#{e}" target="#{mbUsuario.current}" />
@@ -68,12 +68,12 @@
                     <p:commandButton icon="ui-icon-pencil" action="#{mbUsuario.prepareEdit}">
                         <f:setPropertyActionListener value="#{e}" target="#{mbUsuario.current}" />
                     </p:commandButton>
-                    <p:commandButton icon="ui-icon-close" action="#{mbUsuario.prepareDesHabilitar}" rendered="#{e.admin.habilitado == true}"
+                    <p:commandButton icon="ui-icon-close" action="#{mbUsuario.prepareDesHabilitar}" rendered="#{e.adminentidad.habilitado == true}"
                                      title="Deshabilitar" update="usList">
                         <f:setPropertyActionListener value="#{e}" target="#{mbUsuario.current}" />
                         <p:confirm header="Confirmar" message="¿Desea deshabilitar el registro de este Usuario?" />
                     </p:commandButton>
-                    <p:commandButton icon="ui-icon-check" action="#{mbUsuario.prepareHabilitar}" rendered="#{e.admin.habilitado == false}"
+                    <p:commandButton icon="ui-icon-check" action="#{mbUsuario.prepareHabilitar}" rendered="#{e.adminentidad.habilitado == false}"
                                      title="Habilitar" update="usList">
                         <f:setPropertyActionListener value="#{e}" target="#{mbUsuario.current}" />
                         <p:confirm header="Confirmar"  message="¿Desea habiltar el registro de este Usuario?" />

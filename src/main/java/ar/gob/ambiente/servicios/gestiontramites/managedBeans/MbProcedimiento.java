@@ -12,11 +12,14 @@ import ar.gob.ambiente.servicios.gestiontramites.entidades.Instancia;
 import ar.gob.ambiente.servicios.gestiontramites.entidades.Procedimiento;
 import ar.gob.ambiente.servicios.gestiontramites.entidades.UnidadDeTiempo;
 import ar.gob.ambiente.servicios.gestiontramites.entidades.Usuario;
-import ar.gob.ambiente.servicios.gestiontramites.entidades.util.JsfUtil;
+import ar.gob.ambiente.servicios.gestiontramites.util.JsfUtil;
 import ar.gob.ambiente.servicios.gestiontramites.facades.EstadoFacade;
 import ar.gob.ambiente.servicios.gestiontramites.facades.InstanciaFacade;
 import ar.gob.ambiente.servicios.gestiontramites.facades.ProcedimientoFacade;
 import ar.gob.ambiente.servicios.gestiontramites.facades.UnidadDeTiempoFacade;
+import ar.gob.ambiente.servicios.gestiontramites.wsExt.AccesoAppWebService;
+import ar.gob.ambiente.servicios.gestiontramites.wsExt.AccesoAppWebService_Service;
+import ar.gob.ambiente.servicios.gestiontramites.wsExt.Aplicacion;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -36,6 +41,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpSession;
+import javax.xml.ws.WebServiceRef;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
@@ -47,10 +53,13 @@ import org.primefaces.event.RowEditEvent;
  * @author carmendariz
  */
 public class MbProcedimiento implements Serializable{
+    
+    @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/AccesoAppWebService/AccesoAppWebService.wsdl")
+    private AccesoAppWebService_Service service;        
 
     private Procedimiento current;
     private Instancia instancia;
-    private int app;
+    private Aplicacion app;
 
     private List<Instancia> instancias;
     private List<Instancia> instanciasFilter;
@@ -77,7 +86,8 @@ public class MbProcedimiento implements Serializable{
     private List<UnidadDeTiempo> listaUnidadDeTiempos;
   
     private List<Estado> listaEstados;
- 
+    private List<Aplicacion> listApp;
+    private static final Logger logger = Logger.getLogger(Procedimiento.class.getName());  
 
 
 
@@ -121,14 +131,22 @@ public class MbProcedimiento implements Serializable{
     /*
     * @return 
     */
-    public int getApp() {
+    public Aplicacion getApp() {
         return app;
     }
 
-    public void setApp(int app) {
+    public void setApp(Aplicacion app) {
         this.app = app;
     }
 
+    public List<Aplicacion> getListApp() {
+        return listApp;
+    }
+
+    public void setListApp(List<Aplicacion> listApp) {
+        this.listApp = listApp;
+    }
+    
     public Instancia getInstancia() {
         return instancia;
     }
@@ -265,13 +283,18 @@ public class MbProcedimiento implements Serializable{
     public String prepareCreate() {
         // instanciamos el current
         current = new Procedimiento();
-
+        
+        // instancio la variable aplicación
+        if(app == null){
+            app = new Aplicacion();
+        }
+        
         // inicializamos la creación de instancias
         listInstancias = new ArrayList();
         instancia = new Instancia();
         listaUnidadDeTiempos = unidadDeTiempoFacade.findAll();
-        listaEstados = estadoFacade.getEstadosXapp(app);
-
+        listaEstados = estadoFacade.getEstadosXapp(app.getId());
+        listApp = verAplicaciones();
         
         return "new";
     }
@@ -283,10 +306,15 @@ public class MbProcedimiento implements Serializable{
         // inicializamos el objeto instancia para asignar nuevas al procedimiento que se está editando
         instancia = new Instancia();
         
+        // instancio la variable aplicación
+        if(app == null){
+            app = new Aplicacion();
+        }        
+        
         // pueblo los combos
-        listaEstados = estadoFacade.getEstadosXapp(app);
+        listaEstados = estadoFacade.getEstadosXapp(app.getId());
         listaUnidadDeTiempos = unidadDeTiempoFacade.findAll();
- 
+        listApp = verAplicaciones();
         
         return "edit";
     }
@@ -322,8 +350,8 @@ public class MbProcedimiento implements Serializable{
     **************************/
     
     public void agregarInstancias(){
-        if(app > 0){
-            listaEstados = estadoFacade.getEstadosXapp(app);
+        if(app.getId() > 0){
+            listaEstados = estadoFacade.getEstadosXapp(app.getId());
             Map<String,Object> options = new HashMap<>();
             options.put("contentWidth", 1200);
             RequestContext.getCurrentInstance().openDialog("dlgAddInstancias", options, null); 
@@ -339,8 +367,7 @@ public class MbProcedimiento implements Serializable{
     }
         
     public void editarInstancias(){
-            app = current.getApp();
-            listaEstados = estadoFacade.getEstadosXapp(app);
+            listaEstados = estadoFacade.getEstadosXapp(app.getId());
             Map<String,Object> options = new HashMap<>();
             options.put("contentWidth", 1200);
             RequestContext.getCurrentInstance().openDialog("dlgEditInstancias", options, null);
@@ -397,14 +424,14 @@ public class MbProcedimiento implements Serializable{
         admEnt.setHabilitado(true);
         admEnt.setUsAlta(usLogeado);
         current.setAdminentidad(admEnt);
+        
+        // asgino la aplicación al procedimiento
+        current.setApp(app.getId());
 
         // asigno las instancias al procedimiento
- //       Instancia inst = new Instancia();
- //       inst.setNombre("pipo");
- //       inst.setCodigo("codPipo");
- //       inst.setRuta("rutaPipo");
- //       listInstancias.add(inst);
         current.setInstancias(listInstancias);
+        listApp.clear();
+        app = null;
         
         if(current.getNombre().isEmpty()){
             JsfUtil.addSuccessMessage("El procedimiento que está guardando debe tener un nombre.");
@@ -473,10 +500,14 @@ public class MbProcedimiento implements Serializable{
                     // Actualización de datos de administración de la entidad
                     current.getAdminentidad().setFechaModif(date);
                     current.getAdminentidad().setUsModif(usLogeado);
-                   // current.getInstancias().set(Instancia, instancia);
+                   
+                    // asgino la aplicación al procedimiento
+                    current.setApp(app.getId());
 
                     // Actualizo
                     getFacade().edit(current);
+                    listApp.clear();
+                    app = null;
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedimiento", "Ha sido actualizado"));
                     return "view";
                 }else{
@@ -511,20 +542,7 @@ public class MbProcedimiento implements Serializable{
     public Procedimiento getProcedimiento(java.lang.Long id) {
         return getFacade().find(id);
     }  
-    
-    /**
-     * Método para revocar la sesión del MB
-     * @return 
-     */
-    public String cleanUp(){
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
-                .getExternalContext().getSession(true);
-        session.removeAttribute("mbProcedimiento");
 
-        return "inicio";
-    }  
-    
-    
     /**
      * Método para mostrar las Instanciass vinculadas
      */
@@ -535,19 +553,10 @@ public class MbProcedimiento implements Serializable{
         RequestContext.getCurrentInstance().openDialog("", options, null);
     }         
  
-
-    /*********************
-    ** Métodos privados **
-    **********************/
     /**
-     * @return el Facade
+     * Método para editar desde la tabla con sólo pararse en el campo a editar
+     * @param event
      */
-    private ProcedimientoFacade getFacade() {
-        return procedimientoFacade;
-    }    
-    
-    /* Método para editar desde la tabla con sólo pararse en el campo a editar
-    */
     
     public void onRowEdit(RowEditEvent event) {
         FacesMessage msg = new FacesMessage("Instancia editada", ((Instancia) event.getObject()).getNombre());
@@ -568,28 +577,48 @@ public class MbProcedimiento implements Serializable{
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
-  
+    
     /**
-     * Método para mantener en memoria la app y permitir la carga de nuevas instancias
+     * Método para eliminar promociones
      * @param event
      */
-    public void appChangeListener(ValueChangeEvent event) {
-        app = (int) event.getNewValue();
-    }   
-  
+    public void instDelete(RowEditEvent event){
+        try{
+            current.getInstancias().remove((Instancia)event.getObject());
+            //getInstFacade().remove((Instancia)event.getObject());
+            JsfUtil.addSuccessMessage("Instancia eliminada.");
+        }catch(Exception e){
+            JsfUtil.addErrorMessage("Hubo un error eliminando la Instancia. " + e.getMessage());
+        }
+    }        
+
+
+    /*********************
+    ** Métodos privados **
+    **********************/
+    /**
+     * @return el Facade
+     */
+    private ProcedimientoFacade getFacade() {
+        return procedimientoFacade;
+    }    
 
     /**
      * Restea la entidad
      */
     private void recreateModel() {
-        if(app > 0){
-            app = 0;
+        if(listApp != null){
+            listApp.clear();
+            listApp = null;
+        }
+        if(app != null){
+            app = null;
         }
         listProcedimiento.clear();
         listProcedimiento = null;
         if(listInstancias != null){
             listInstancias.clear();
-            listInstancias =null;
+            listInstancias = null;
         }
     }      
     
@@ -619,18 +648,19 @@ public class MbProcedimiento implements Serializable{
         return retorno;
     }
     
-       /**
-     * Método para eliminar promociones
-     * @param event
-     */
-    public void instDelete(RowEditEvent event){
+    private List<Aplicacion> verAplicaciones() {
+        List<Aplicacion> result;
         try{
-            current.getInstancias().remove((Instancia)event.getObject());
-            //getInstFacade().remove((Instancia)event.getObject());
-            JsfUtil.addSuccessMessage("Instancia eliminada.");
-        }catch(Exception e){
-            JsfUtil.addErrorMessage("Hubo un error eliminando la Instancia. " + e.getMessage());
+            AccesoAppWebService port = service.getAccesoAppWebServicePort();
+            return port.verAplicaciones();
+        }catch(Exception ex){
+            result = null;
+            // muestro un mensaje al usuario
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("UsuarioAppErrorWs"));
+            // lo escribo en el log del server
+            logger.log(Level.SEVERE, "{0} - {1}", new Object[]{ResourceBundle.getBundle("/Bundle").getString("UsuarioAppErrorWs"), ex.getMessage()});
         }
+        return result;
     }    
   
     

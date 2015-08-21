@@ -45,9 +45,12 @@
                           height="100" 
                           width="30%">
                     <p:dataTable value="#{mbRol.selected.usuarios}" var="g" id="rolList" filteredValue="#{mbRol.listUsFilter}">
-                        <p:column headerText="Usuarios" filterMatchMode="contains" filterBy="#{g.nombre}" sortBy="#{g.nombre}" >
+                        <p:column headerText="Nombre" filterMatchMode="contains" filterBy="#{g.nombre}" sortBy="#{g.nombre}" >
                             <p:outputLabel value="#{g.nombre}"/> 
-                        </p:column>                        
+                        </p:column>      
+                        <p:column headerText="Nombre completo" filterMatchMode="contains" filterBy="#{g.nombreCompleto}" sortBy="#{g.nombreCompleto}" >
+                            <p:outputLabel value="#{g.nombreCompleto}"/> 
+                        </p:column>       
                     </p:dataTable>
                 </p:dialog>
             </p:panel>

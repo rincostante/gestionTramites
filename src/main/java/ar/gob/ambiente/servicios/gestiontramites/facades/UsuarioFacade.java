@@ -43,25 +43,7 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
         Query q = em.createQuery(queryString)
                 .setParameter("nombre", nombre);
         return q.getResultList().isEmpty();
-    }        
-    
-    /**
-     * Método que valida si una contraseña ya está en uso
-     * @param clave: contraseña encriptada
-     * @return 
-     */
-    public boolean verificarContrasenia(String clave){
-        em = getEntityManager();
-        String queryString = "SELECT us FROM Usuario us "
-                + "WHERE us.clave = :clave";
-        Query q = em.createQuery(queryString)
-                .setParameter("clave", clave);
-        return q.getResultList().isEmpty();
-    }    
-
-    public boolean noTieneDependencias(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    }      
     
    /**
      * Método que devuelve un LIST con las entidades HABILITADAS
@@ -95,5 +77,14 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
         }else{
             return null;
         }
-    }
+    }   
+    
+    /**
+     * Método a implementar según las características de la aplicación
+     * @param id
+     * @return 
+     */
+    public boolean noTieneDependencias(Long id) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }    
 }
